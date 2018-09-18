@@ -7,7 +7,7 @@
 class simple {
 	file { '/root/test':
 		ensure => present,
-		content => 'test',
+		content => "r10k check configuration",
 	}
 	#Class[simple::pre_conf] -> Class[simple::handle_repos] -> Class[simple::config_validate] -> Class[simple::config]
 	
