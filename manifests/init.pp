@@ -5,9 +5,9 @@
 # @example
 #   include simple
 class simple {
-	file { '/root/test'
+	file { '/root/test':
 		ensure => present,
-		content => 'test'
+		content => 'test',
 	}
 	#Class[simple::pre_conf] -> Class[simple::handle_repos] -> Class[simple::config_validate] -> Class[simple::config]
 	
