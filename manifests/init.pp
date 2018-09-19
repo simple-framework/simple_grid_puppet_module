@@ -9,6 +9,7 @@ class simple {
 		ensure => present,
 		content => "r10k check configuration",
 	}
+	include simple_grid::test
 	#Class[simple::pre_conf] -> Class[simple::handle_repos] -> Class[simple::config_validate] -> Class[simple::config]
 	
 	#class{"simple::pre_conf":}
