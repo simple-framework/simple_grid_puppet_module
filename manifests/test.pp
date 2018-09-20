@@ -1,8 +1,8 @@
 class simple_grid::test (
-  String $config   = 'from class',
-  String $os_param =  'from class',
+  $config_param,
+  $os_param,
 ){
   notify {"Test Results":
-    name => "${::config} and ${::os_param}"
+    name => "${config_param} and ${os_param}"
   }
 }
