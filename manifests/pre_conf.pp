@@ -14,6 +14,7 @@ class simple_grid::pre_conf(
   #download simple grid yaml compiler
   vcsrepo { "${config_dir}/${yaml_compiler_dir_name}":
     ensure   => present,
+    provider => git,
     revision => $yaml_compiler_revision,
     source   => $yaml_compiler_repo_url,
   }
