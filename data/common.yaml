@@ -1,3 +1,6 @@
 ---
 simple_grid::test::test_param: 'common.yaml'
 simple_grid::config_dir: '/etc/simple_grid'
+simple_grid::pre_conf::yaml_compiler_dir_name: 'name'
+simple_grid::pre_conf::yaml_compiler_repo_url: 'https://github.com/WLCG-Lightweight-Sites/simple_grid_yaml_compiler'
+simple_grid::pre_conf::yaml_compiler_revision: 'master'
