@@ -1,2 +1,3 @@
 ---
 simple_grid::test::test_param: 'common.yaml'
+simple_grid::config_dir: '/etc/simple_grid'
