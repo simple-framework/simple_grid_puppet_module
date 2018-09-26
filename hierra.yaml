@@ -1,5 +1,0 @@
----
-version: 5
-hierarchy:
-  - name: "Simple_Grid module paramter defaults"
-    data_hash: "simple_grid::params"

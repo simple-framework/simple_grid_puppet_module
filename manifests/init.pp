@@ -4,15 +4,8 @@
 #
 # @example
 #   include simple
-class simple {
-	file { '/root/test':
-		ensure => present,
-		content => "r10k check configuration",
-	}
-	include simple_grid::test
-	#Class[simple::pre_conf] -> Class[simple::handle_repos] -> Class[simple::config_validate] -> Class[simple::config]
-	
-	#class{"simple::pre_conf":}
-	#class{"simple::handle_repos":}
-	#class{"simple::config":}
+class simple_grid{
+	Class[simple_grid::pre_conf] -> Class[simple_grid::orchestrator_conf]
+	class{"simple_grid::pre_conf":}
+	class{"simple_grid::orchestrator_conf":}
 }
