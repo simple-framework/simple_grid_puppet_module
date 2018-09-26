@@ -5,7 +5,7 @@
 # @example
 #   include simple
 class simple_grid{
-	Class[simple::pre_conf] -> Class[simple::orchestrator_conf]
-	class{"simple::pre_conf":}
-	class{"simple::orchestrator_conf":}
+	Class[simple_grid::pre_conf] -> Class[simple_grid::orchestrator_conf]
+	class{"simple_grid::pre_conf":}
+	class{"simple_grid::orchestrator_conf":}
 }
