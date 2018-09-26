@@ -2,7 +2,8 @@ class simple_grid::pre_conf(
   $config_dir,
   $yaml_compiler_dir_name,
   $yaml_compiler_repo_url,
-  $yaml_compiler_revision
+  $yaml_compiler_revision,
+  $site_config_file_path
 ) {
   notify{"Running State: Pre Conf":}
   #create config directory
@@ -10,7 +11,11 @@ class simple_grid::pre_conf(
     ensure => directory,
     path   => "${config_dir}", 
   }
-  #site-level-config-file
+  #check if site-level-config-file is present
+  file {"Check presence of site_config file":
+    ensure => present,
+    path   => "$site_config_file_path"
+  }
   #download simple grid yaml compiler
   vcsrepo { "${config_dir}/${yaml_compiler_dir_name}":
     ensure   => present,
