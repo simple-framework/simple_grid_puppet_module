@@ -16,9 +16,8 @@ class simple_grid(
 	notify {"aag laga di ${test_param} and ${os_param}":}
 	#include simple_grid::test
 	#notify {"config was ${test_param} and param was ${os_param}":}	
-#Class[simple::pre_conf] -> Class[simple::handle_repos] -> Class[simple::config_validate] -> Class[simple::config]
+	Class[simple::pre_conf] -> Class[simple::orchestrator_conf]
 	
-	#class{"simple::pre_conf":}
-	#class{"simple::handle_repos":}
-	#class{"simple::config":}
+	class{"simple::pre_conf":}
+	class{"simple::handle_repos":}
 }
