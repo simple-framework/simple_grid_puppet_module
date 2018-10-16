@@ -1,6 +1,8 @@
-class simple_grid::lightweight_component{
+class simple_grid::lightweight_component(
+  $site_config_dir = lookup("simple_grid::pre_conf:site_config_dir"),
+  $site_config_file = lookup("simple_grid::pre_conf::site_config_file")
+){
   file { "/etc/simple_grid":
-<<<<<<< HEAD
     ensure => directory,
     mode   => "0644",
     owner  => "puppet",
@@ -9,11 +11,7 @@ class simple_grid::lightweight_component{
         mode   => "0644",
         owner  => "puppet",
         source => 'puppet:///simple_grid/${site_config_dir}/${site_config_file}',
-        path   => "/etc/simple_grid/simple_grid_site_config_blah"
+        path   => "/etc/simple_grid/simple_grid_site_config_blah" 
     }
 
-=======
-    ensure => present,
-  }
->>>>>>> 09bf8ce929a26835c773a59b85639451e0933666
 }
