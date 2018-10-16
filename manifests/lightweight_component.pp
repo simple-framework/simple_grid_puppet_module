@@ -1,5 +1,6 @@
 class simple_grid::lightweight_component{
   file { "/etc/simple_grid":
+<<<<<<< HEAD
     ensure => directory,
     mode   => "0644",
     owner  => "puppet",
@@ -11,4 +12,8 @@ class simple_grid::lightweight_component{
         path   => "/etc/simple_grid/simple_grid_site_config_blah"
     }
 
+=======
+    ensure => present,
+  }
+>>>>>>> 09bf8ce929a26835c773a59b85639451e0933666
 }
