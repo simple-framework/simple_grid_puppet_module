@@ -15,7 +15,7 @@ class simple_grid::pre_conf(
   #create fileserver.conf
   file {"add fileserver.conf":
     ensure  => present,
-    path    => "${site_config_dir}/fileserver.conf",
+    path    => "etc/puppetlabs/puppet/fileserver.conf",
     content => template('simple_grid/fileserver.conf.erb')
   }
   #check if site-level-config-file is present
