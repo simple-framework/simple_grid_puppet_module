@@ -4,8 +4,12 @@
 #
 # @example
 #   include simple
-class simple_grid{
+class simple_grid(
+	$config_dir
+){
 	Class[simple_grid::pre_conf] -> Class[simple_grid::orchestrator_conf]
-	class{"simple_grid::pre_conf":}
+	class{"simple_grid::pre_conf":
+		config_dir => $config_dir,
+	}
 	class{"simple_grid::orchestrator_conf":}
 }
