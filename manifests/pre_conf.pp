@@ -13,9 +13,9 @@ class simple_grid::pre_conf(
     path   => "${config_dir}", 
   }
   #create fileserver.conf
-  file {"$confdir/fileserver.conf":
+  file {"add fileserver.conf":
     ensure  => present,
-    path    => "${site_config_dir}",
+    path    => "${site_config_dir}/fileserver.conf",
     content => template('simple_grid/fileserver.conf.erb')
   }
   #check if site-level-config-file is present
