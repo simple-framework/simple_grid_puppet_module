@@ -4,10 +4,12 @@
 #
 # @example
 #   include simple
-class simple {
-	Class[simple::pre_conf] -> Class[simple::handle_repos] -> Class[simple::config_validate] -> Class[simple::config]
-	
-	class{"simple::pre_conf":}
-	class{"simple::handle_repos":}
-	class{"simple::config":}
+class simple_grid(
+	$config_dir
+){
+	Class[simple_grid::pre_conf] -> Class[simple_grid::orchestrator_conf]
+	class{"simple_grid::pre_conf":
+		config_dir => $config_dir,
+	}
+	class{"simple_grid::orchestrator_conf":}
 }
