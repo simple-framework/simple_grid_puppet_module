@@ -11,6 +11,7 @@ class simple_grid::pre_conf(
   file {"main config directory":
     ensure => directory,
     path   => "${config_dir}", 
+    mode   => "0777",
   }
   #create fileserver.conf
   file {"add fileserver.conf":
