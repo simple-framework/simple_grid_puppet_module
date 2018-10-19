@@ -31,4 +31,28 @@ class simple_grid::pre_conf(
     revision => $yaml_compiler_revision,
     source   => $yaml_compiler_repo_url,
   }
+  # create virtual environment
+python::virtualenv { "virtual environment for yaml compiler": 
+    ensure       => present,
+    version      => 'system',
+    requirements => "${config_dir}/${yaml_compiler_dir_name}/requirements.txt",
+    systempkgs   => true,
+    venv_dir     => "${config_dir}/${yaml_compiler_dir_name}/.env",
+    cwd          => "${config_dir}/${yaml_compiler_dir_name}",
+  }
+  python::requirements {"${config_dir}/${yaml_compiler_dir_name}/requirements.txt":
+    virtualenv => "${config_dir}/${yaml_compiler_dir_name}/.env",
+  }
+  file {"create temp directory for compiler":
+    ensure  => directory,
+    path    => "$config_dir/$yaml_compiler_dir_name/.temp",
+  }
+  exec {"source virtualenv":
+    command => "bash -c 'source ${config_dir}/${yaml_compiler_dir_name}/.env/bin/activate'",
+    path    => "/usr/local/bin/:/usr/bin/:/bin/"
+  }
+  exec {"execute compiler":
+    command => "bash -c 'source ${config_dir}/${yaml_compiler_dir_name}/.env/bin/activate && python $config_dir/$yaml_compiler_dir_name/simple_grid_yaml_compiler.py $site_config_dir/$site_config_file  -o $config_dir/$yaml_compiler_dir_name/output.yaml'",
+    path    => '/usr/local/bin/:/usr/bin/:/bin/'
+    }
 }
