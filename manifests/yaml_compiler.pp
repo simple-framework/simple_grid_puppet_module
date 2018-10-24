@@ -5,7 +5,9 @@ class simple_grid::yaml_compiler(
   $yaml_compiler_revision,
   $site_config_dir,
   $site_config_file
-) {
+) 
+{
+ notify{"Running Stage: Yaml Compiler":}
   #4. download simple grid yaml compiler
   vcsrepo {"${config_dir}/${yaml_compiler_dir_name}":
     ensure   => present,
