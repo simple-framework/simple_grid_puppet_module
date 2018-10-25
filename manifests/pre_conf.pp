@@ -25,11 +25,6 @@ class simple_grid::pre_conf(
     path   => "${site_config_dir}/${site_config_file}"
   }
   class{"simple_grid::yaml_compiler":
-    config_dir             => $config_dir,
-    yaml_compiler_dir_name => $yaml_compiler_dir_name,
-    yaml_compiler_repo_url => $yaml_compiler_repo_url,
-    yaml_compiler_revision => $yaml_compiler_revision,
-    site_config_dir        => $site_config_dir,
-    site_config_file       => $site_config_file,
+    config_dir => $config_dir,
   }
 }
