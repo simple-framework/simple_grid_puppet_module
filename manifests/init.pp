@@ -7,6 +7,7 @@
 class simple_grid(
 	$config_dir
 ){
+	simple_grid::yaml_parser()
 	Class[simple_grid::pre_conf] -> Class[simple_grid::orchestrator_conf]
 	class{"simple_grid::pre_conf":
 		config_dir => $config_dir,
