@@ -1,0 +1,228 @@
+## Variable declaration:
+vars:
+  - &amazon_ip_address 18.184.37.92
+  - &digitalocean_ip_address 167.99.253.118
+
+cream_runtime_vars:
+  - &cream_runtime_var_ce_host lw-site-droplet-0
+  - &cream_runtime_var_queues alice
+
+pbs_runtime_vars:
+  - &pbs_runtime_var_ce_host lw-site-droplet-0
+  - &pbs_runtime_var_queues alice
+
+site:
+  name: 'simple-dev-site'
+  email: 'mayank.sharma@cern.ch'
+  latitude: 46.3
+  longitude: 6.2
+  location: CERN, Geneva, Switzerland
+  description: 'A demo site demonstrating the SIMPLE framework for site setup'
+  website: 'https://home.cern'
+  support_website: 'https://groups.google.com/forum/#!forum/wlcg-lightweight-sites'
+  support_email: 'mayank.sharma@cern.ch'
+  security_email: 'mayank.sharma@cern.ch'
+  grid: 'wlcg' #site_other_grid: str(), wlcg, egi,osg
+  tier: 3
+  bdii_host: bdii.cern.ch
+  use_argus: false
+
+preferred_tech_stack:
+  level_1_configuration: puppet
+  level_2_configuration: puppet
+  container_orchestration: docker-swarm
+  container: docker
+
+site_infrastructure:
+  - hostname: ec2-18-184-37-92.eu-central-1
+    domain: compute.amazonaws.com
+    ip_address: *amazon_ip_address
+  - hostname: lw-site-droplet-0
+    domain: digitalocean.com
+    ip_address: *digitalocean_ip_address
+
+lightweight_components:
+  - name: Cream-CE
+    repository_url: "https://github.com/WLCG-Lightweight-Sites/wlcg_lightweight_site_ce_cream"
+    nodes:
+      - node: lw-site-droplet-0
+        container_count: 1
+      - node: ec2-18-184-37-92.eu-central-1
+        container_count: 2
+    preferred_tech_stack:
+      level_2_configuration: yaim
+    config:
+      cream-info:
+          #wn_list: str()
+          #users_conf: str()
+          #groups_conf: str()
+          # edgusers: str()
+          mysql_password: fteu5746hg
+          #site_name: str()
+          #site_email: str()
+          #site_lat: str()
+          #site_long: str()
+          #site_desc: str()
+          #site_loc: str()
+          #site_web: str()
+          #site_security_email: str()
+          #site_support_email: str()
+          #site_other_grid: str()
+          #ce_host: str() #hostname of container. TODO decide if required to be explicitly entered by the site admin
+          #globus_tcp_port_range: str()
+          #ce_batch_sys: str()
+          #ce_capability: str()
+          ce_cpu_model: *cream_default_var_ce_cpu_model
+          ce_cpu_speed: 3000
+          ce_cpu_vendor: Intel
+          #ce_inboundip: str()
+          #ce_logcpu: str()
+          #ce_minphysmem: str()
+          #ce_minvirtmem: str()
+          #ce_os: str()
+          ce_os_arch: str() #move back to node definitions?
+          #ce_os_release: str()
+          #ce_os_version: str()
+          #ce_otherdescr: str()
+          #ce_outboundip: str()
+          ce_physcpu: 0
+          #ce_runtimeenv: str()
+          #ce_sf00: str()
+          #ce_si00: str()
+          #ce_smpsize: str() #
+          # should be set to pbs for this repo, given pbs in bundled #batch_server: str()
+          # should be set to default value as container provides it by default #job_manager: str()
+          # ce_batch_sys: str()
+          # batch_log_dir: str()
+          # batch_version: str()
+          blparser_with_updater_notifier: true
+          # set default as $CE_HOST #blparser_host: str()
+          # set to $CE_HOST by default #cemon_host: str()
+          cream_db_user: str()
+          cream_db_password: str()
+          #apel_mysql_host: str()
+          apel_db_password: str()
+          #ce_close_se: str()
+          #ce_close_se3_access_point: str()
+          #ce_close_se3_host: str()
+          #host namne se_list: str()
+          #se_mount_info_list: str()
+          # vo_sw_dir: str()
+          # vos: str() # supplied by site-level-config-file
+          #queues: str()
+          # alice_group_enable: str()
+          # vo_alice_default_se: str()
+          # vo_alice_queues: str()
+          # vo_alice_storage_dir: str()
+          # vo_alice_sw_dir: str()
+          # vo_alice_voms_servers: str()
+          # vo_alice_vomses: str()
+          # vo_alice_voms_ca_dn: str()
+          # dteam_group_enable: str()
+          # vo_dteam_sw_dir: str()
+          # vo_dteam_default_se: str()
+          # vo_dteam_storage_dir: str()
+          # vo_dteam_voms_servers: str()
+          # vo_dteam_vomses: str()
+          # vo_dteam_voms_ca_dn: str()
+          # ops_group_enable: str()
+          # vo_ops_sw_dir: str()
+          # vo_ops_default_se: str()
+          # vo_ops_storage_dir: str()
+          # vo_ops_vomses: str()
+          # vo_ops_voms_ca_dn: str()
+          # vo_ops_voms_servers: str()
+      supplemental_config:
+          some_additional_parameter: some_value
+
+  - name: WN-Pbs
+    repository_url: "https://github.com/WLCG-Lightweight-Sites/wlcg_lightweight_site_wn_pbs"
+    nodes:
+      - node: lw-site-droplet-0,
+        container_count: 3
+      - node: ec2-18-184-37-92.eu-central-1,
+        container_count: 3
+    preferred_tech_stack:
+      level_2_configuration: yaim
+    config:
+      - wn_pbs:
+          #wn_list: /root/wn_conf
+          #users_conf: str()
+          #groups_conf: str()
+          #site_name: str()
+          #site_email: str()
+          bdii_host: str()
+          px_host: str()
+          ce_host: str()
+          ce_smpsize: str()
+          batch_server: str()
+          ce_close_se: str()
+          ce_close_se3_access_point: str()
+          ce_close_se3_host: str()
+          se_list: str()
+          se_mount_info_list: str()
+          vo_sw_dir: str()
+          vos: str()
+          queues: str()
+          # alice_group_enable: str()
+          # vo_alice_default_se: str()
+          # vo_alice_queues: str()
+          # vo_alice_storage_dir: str()
+          # vo_alice_sw_dir: str()
+          # vo_alice_voms_servers: str()
+          # vo_alice_vomses: str()
+          # vo_alice_voms_ca_dn: str()
+          # dteam_group_enable: str()
+          # vo_dteam_sw_dir: str()
+          # vo_dteam_default_se: str()
+          # vo_dteam_storage_dir: str()
+          # vo_dteam_voms_servers: str()
+          # vo_dteam_vomses: str()
+          # vo_dteam_voms_ca_dn: str()
+          # ops_group_enable: str()
+          # vo_ops_sw_dir: str()
+          # vo_ops_default_se: str()
+          # vo_ops_storage_dir: str()
+          # vo_ops_vomses: str()
+          # vo_ops_voms_ca_dn: str()
+          # vo_ops_voms_servers: str()
+      - supplemental_config:
+          some_additional_parameter: some_value
+
+supported_virtual_organizations:
+  - *default_vo_alice
+  - *default_vo_dteam
+  - *default_vo_ops
+
+groups:
+  - gid: 1395
+    name: *default_group_alice_name
+    accepted_voms_extensions:
+      vo: 'alice' # add_vo_name_in_default_config
+      group: ''
+      role: ''
+      category: ''
+  - gid: 1397
+    name: *default_group_alicesgm_name
+    priority_group: sgm
+    accepted_voms_extensions: '/alice/ROLE=lcgadmin'
+  - *default_group_dteam
+  - *default_group_dteamsgm
+  - *default_group_ops
+  - <<: *default_group_opssgm
+    gid: 2018
+
+pool_accounts:
+  - base_name: 'alice'
+    initial_uid: '10417'
+    users_num: '5'
+    primary_group: *default_group_alice_name
+  - base_name: 'sgmali'
+    initial_uid: '60101'
+    users_num: '10'
+    primary_group: *default_group_alicesgm_name
+    secondary_group: *default_group_alice_name
+  - *default_pool_account_dteam_with_sgm
+  - *default_pool_account_ops_with_sgm
+
+

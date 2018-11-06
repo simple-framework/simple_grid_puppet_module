@@ -1,0 +1,2 @@
+#!/bin/bash
+puppet cert list -a  |  awk '{print $2}'|sed 's/"//g'> <%= $output %>

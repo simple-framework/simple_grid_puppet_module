@@ -12,9 +12,10 @@ class simple_grid(
     $fqdn = $value['fqdn']
     notify{"${fqdn}":}
   }
-	Class[simple_grid::pre_conf] -> Class[simple_grid::orchestrator_conf]
-	class{"simple_grid::pre_conf":
+	Class[simple_grid::pre_conf] -> Class[simple_grid::pre_orchestration] -> Class[simple_grid::orchestrator_conf]
+  class{"simple_grid::pre_conf":
 		config_dir => $config_dir,
 	}
+  class{"simple_grid::pre_orchestration":}
 	class{"simple_grid::orchestrator_conf":}
 }
