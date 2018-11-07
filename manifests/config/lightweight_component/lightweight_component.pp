@@ -1,6 +1,6 @@
 class simple_grid::lightweight_component(
-  $site_config_dir = lookup("simple_grid::pre_conf:site_config_dir"),
-  $site_config_file = lookup("simple_grid::pre_conf::site_config_file")
+  $site_config_dir = lookup("simple_grid::simple_config_dir"),
+  $site_config_file = lookup("simple_grid::config::config_master::pre_conf::site_config_file")
 ){
   file { "/etc/simple_grid":
     ensure => directory,
