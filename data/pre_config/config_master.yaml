@@ -1,0 +1,5 @@
+---
+
+simple_grid::pre_config::config_master::fileserver::fileserver_conf_path: '/etc/puppetlabs/puppet/fileserver.conf'
+simple_grid::pre_config::config_master::ssh_config::ssh_dir: '/etc/ssh'
+simple_grid::pre_config::config_master::ssh_config::ssh_host_key: 'simple_host_key'

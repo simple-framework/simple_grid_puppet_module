@@ -1,10 +1,10 @@
-class simple_grid::pre_conf(
-  $config_dir,
+class simple_grid::config::config_master::pre_conf(
+  $config_dir = lookup('simple_grid::simple_config_dir'),
   $yaml_compiler_dir_name,
   $yaml_compiler_repo_url,
   $yaml_compiler_revision,
-  $site_config_dir,
-  $site_config_file,
+  $site_level_config_dir,
+  $site_level_config_file,
 ) {
   notify{"Running State: Pre Conf":}
   # 1. create config directory

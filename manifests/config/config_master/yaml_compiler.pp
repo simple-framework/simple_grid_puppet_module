@@ -1,4 +1,4 @@
-class simple_grid::yaml_compiler(
+class simple_grid::config::config_master::yaml_compiler(
   $config_dir,
   $yaml_compiler_dir_name,
   $yaml_compiler_repo_url,
