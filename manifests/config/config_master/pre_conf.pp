@@ -22,9 +22,9 @@ class simple_grid::config::config_master::pre_conf(
   #3. check if site-level-config-file is present
   file {"Check presence of site_config file":
     ensure => present,
-    path   => "${site_config_dir}/${site_config_file}"
+    path   => "${site_level_config_dir}/${site_level_config_file}"
   }
-  class{"simple_grid::yaml_compiler":
+  class{"simple_grid::config::config_master::yaml_compiler":
     config_dir => $config_dir,
   }
 }
