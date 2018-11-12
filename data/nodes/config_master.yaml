@@ -1,0 +1,2 @@
+---
+simple_grid::config_master::puppet_conf: "/etc/puppetlabs/puppet/puppet.conf"
