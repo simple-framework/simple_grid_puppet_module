@@ -21,3 +21,9 @@ hierarchy:
 
   - name: "config::lightweight_component"
     path: "config/lightweight_component.yaml"
+
+  - name: "components::enc"
+    path: "components/enc.yaml"
+
+  - name: "nodes::config_master"
+    path: "nodes/config_master.yaml"
