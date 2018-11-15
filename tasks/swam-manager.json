@@ -1,0 +1,9 @@
+{
+    "name": "swarm-manager",
+    "description": "Create Swarm manager Network.",
+    "supports_noop": true,
+    "implementations": [
+        {"name": "swarm-manager.sh", "requirements": ["shell"]
+        }
+    ]
+}
