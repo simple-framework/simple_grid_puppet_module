@@ -13,11 +13,12 @@ class simple_grid::config::config_master::pre_orchestration{
     path    => ['/usr/bin', '/usr/sbin']
   }
   $output =  simple_grid::nodes_list()
-  notify {"result: ${$output}":} 
+  notify {"result: ${$output}":}
   $output.each |Integer $index, String $value| {
-     notify{"${$index} = ${value}":} 
-  } 
-  
+    notify{"${$index} = ${value}":}
+  }
+  class{"simple_grid::config::config_master::swarm":
+  }
   #notify {"result: ${output}":}
   #$output.each|String $line| {
   #    $node = $line

@@ -1,0 +1,5 @@
+{
+    "name": "swarm_manager",
+    "description": "Create Swarm manager Network.",
+    "supports_noop": true
+}

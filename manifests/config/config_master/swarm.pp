@@ -6,8 +6,9 @@ class simple_grid::config::config_master::swarm(
 $output =  simple_grid::nodes_list()
   notify {"result: ${$output}":}
   $output.each |Integer $index, String $value| {
-      notify{"${$index} = ${value}":}
+    notify{"${$index} = ${value}":}
   }
+
 
 docker::swarm {'cluster_manager':
   init           => true,
