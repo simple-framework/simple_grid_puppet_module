@@ -9,7 +9,7 @@ class simple_grid::pre_deploy::config_master::swarm(
 notify{"Test ${site_level_config_dir}/${site_level_config_file}":}
 
 # Get nodes hostname and ip address
-$output =  simple_grid::site_config_parser("$site_level_config_dir/$site_level_config_file")
+$output =  simple_grid::site_config_parser("$site_level_config_dir/$site_level_config_file","site_infrastructure")
   notify {"result: ${$output}":}
   $output.each |Integer $index, Hash $value| {
       $ip = $value[ip_address]
