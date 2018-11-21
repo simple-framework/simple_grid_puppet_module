@@ -5,7 +5,7 @@
 # @example
 #   include simple_grid
 class simple_grid(
-	$config_dir
+$config_dir
 ){
 
 }
