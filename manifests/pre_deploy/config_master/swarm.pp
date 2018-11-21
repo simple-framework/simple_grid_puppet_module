@@ -11,9 +11,9 @@ notify{"Test ${site_level_config_dir}/${site_level_config_file}":}
 # Get nodes hostname and ip address
 $output =  simple_grid::site_config_parser("$site_level_config_dir/$site_level_config_file","site_infrastructure")
   notify {"result: ${$output}":}
-  $output.each |Integer $index, Hash $value| {
+    $output.each |Integer $index, Hash $value| {
       $ip = $value[ip_address]
-      notify{"IP address is ${ip}":}
+        notify{"IP address is ${ip}":}
       exec{"swarm init for $ip":
         command => "bolt task run docker::swarm_init --node $ip",
         path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',

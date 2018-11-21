@@ -17,13 +17,14 @@ Puppet::Functions.create_function(:'simple_grid::site_config_parser') do
         #end
         
         def parse_param(site_level_config_file_path, query)
-                if $query == 'site_infrastructure' then
+                return_value = Hash.new
+                if query == "site_infrastructure" then
                         data = YAML.load_file(site_level_config_file_path)
-                        data['site_infrastructure']
-                else $query == 'lightweight_components' then
+                        return_value = data['site_infrastructure']
+                elsif query == "lightweight_components"
                         data = YAML.load_file(site_level_config_file_path)
-                        data['lightweight_components']
+                        return_value = data['lightweight_components']
                 end
-
+                return_value
         end
 end
