@@ -48,7 +48,7 @@ $output_lightweight_components.each |Integer $index, Hash $value| {
           $ip_wn = $value[ip_address]
           notify{"WN IP Address ${ip_wn}":}
           exec{"swarm join for ${ip_wn}":
-              command => "bolt task run docker::swarm_init --node ${ip_ce}",
+              command => "bolt task run docker::swarm_init --node ${ip_wn}",
               path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
               user    => 'root',
                 }
