@@ -22,12 +22,12 @@ Puppet::Functions.create_function(:'simple_grid::puppet_conf_editor') do
         section_key = ""
         File.open(puppetfile, "r").each do |line|
             if line.include? "["
-                section_key = line.delete(' ')
+                section_key = line.strip
                 _data.update(section_key => {})
             elsif line.include? "="
                 split_data = line.split('=')
-                key = split_data[0].delete(' ')
-                value = split_data[1].delete(' ')
+                key = split_data[0].strip
+                value = split_data[1].strip
                 _data[section_key].update(key => value)
             end
         end
