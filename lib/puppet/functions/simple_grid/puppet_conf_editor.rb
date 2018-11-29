@@ -6,15 +6,9 @@ Puppet::Functions.create_function(:'simple_grid::puppet_conf_editor') do
         param 'String', :value
     end
     def edit_puppet_conf(puppetfile, section, key, value)
-        _data = deserialize(puppetfile)     
-        if _data.keys.include? "[master]"
-            _data.fetch("[master]").update(node_terminus => "execyolo")
-        end 
-
-        if _data.keys.include? "[agent]"
-        end
-
-        _data.include? " [master]"
+        _data = deserialize(puppetfile)
+        _section = _data["[" + section + "]"]
+        _section
     end
 
     def deserialize(puppetfile)
