@@ -7,8 +7,13 @@ Puppet::Functions.create_function(:'simple_grid::puppet_conf_editor') do
     end
     def edit_puppet_conf(puppetfile, section, key, value)
         _data = deserialize(puppetfile)
-        _section = _data["[" + section + "]"]
-        _section
+        _section_name = "[" + section + "]"
+        _output = "False"
+        if !(_data.keys.include? _section_name)
+            _data.update(_section_name => Hash.new)
+        end
+        _data[_section_name].update( key => value)
+        serialize(puppetfile, _data)
     end
 
     def deserialize(puppetfile)
@@ -27,6 +32,15 @@ Puppet::Functions.create_function(:'simple_grid::puppet_conf_editor') do
         end
         _data
     end
-    def serialize(puppetfile)
+    def serialize(puppetfile, data)
+        _output = String.new
+        data.each do |section, section_content| 
+            _output << section << "\n"
+            section_content.each do |key, value|
+                _output << key << " = " << value << "\n" 
+            end
+        end
+        File.open(puppetfile, "w") {|file| file.write(_output)}
+        _output
     end
 end

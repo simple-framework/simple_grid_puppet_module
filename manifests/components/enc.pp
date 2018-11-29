@@ -3,7 +3,7 @@ class simple_grid::components::enc::install(
   $revision,
   $enc_dir = lookup('simple_grid::components::enc::enc_dir'),
 ){
-  notify{"Installing ENC from: $enc_dir": }
+  notify{"Installing ENC at $enc_dir": }
   
   vcsrepo {"${enc_dir}":
     ensure   => present,
@@ -16,9 +16,12 @@ class simple_grid::components::enc::install(
 
 class simple_grid::components::enc::configure(
   $enc_dir = lookup('simple_grid::components::enc::enc_dir'),
+  $enc_executable = lookup('simple_grid::components::enc::enc_executable'),
   $puppet_conf = lookup('simple_grid::config_master::puppet_conf')
 ){
   notify{"Configuring ENC":}
-  $output = simple_grid::puppet_conf_editor("$puppet_conf",'master','node_terminus','exec')
+  simple_grid::puppet_conf_editor("$puppet_conf",'master','node_terminus','execute')
+  $output = simple_grid::puppet_conf_editor("$puppet_conf",'master','external_nodes', "${enc_executable}")
   notify{"Here it is $output":}
 }
+
