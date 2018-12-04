@@ -25,5 +25,8 @@ hierarchy:
   - name: "components::enc"
     path: "components/enc.yaml"
 
+  - name: "components::site_level_config_file"
+    path: "components/site_level_config_file.yaml"
+
   - name: "nodes::config_master"
     path: "nodes/config_master.yaml"
