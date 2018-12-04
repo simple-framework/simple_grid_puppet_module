@@ -20,8 +20,13 @@ class simple_grid::components::enc::configure(
   $puppet_conf = lookup('simple_grid::config_master::puppet_conf')
 ){
   notify{"Configuring ENC":}
+  
   simple_grid::puppet_conf_editor("$puppet_conf",'master','node_terminus','execute')
+  
   $output = simple_grid::puppet_conf_editor("$puppet_conf",'master','external_nodes', "${enc_executable}")
-  notify{"Here it is $output":}
+  file {"Trigger change event for Puppet.conf":
+    path => "$puppet_conf",
+    ensure => present
+  }
 }
 
