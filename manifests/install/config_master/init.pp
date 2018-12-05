@@ -30,3 +30,6 @@ service {'puppetserver':
 
 notify{"Creating a sample site level configuration file":}
 class {"simple_grid::components::site_level_config_file::install":}
+
+notify{"Installing Puppet CCM":}
+class {"simple_grid::components::ccm::install":}

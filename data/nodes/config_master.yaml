@@ -1,2 +1,3 @@
 ---
 simple_grid::config_master::puppet_conf: "/etc/puppetlabs/puppet/puppet.conf"
+simple_grid::config_master::puppet_code_environments_dir: "/etc/puppetlabs/code/environments"

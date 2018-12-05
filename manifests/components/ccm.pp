@@ -18,7 +18,7 @@ class simple_grid::components::ccm::install(
   $env_cleanup_revision,
   $env_cleanup_dir,
 ){
-    notify {"Downloading Install environment":}
+    notify {"Downloading Install environment at ${env_install_dir}":}
     vcsrepo {"${env_install_dir}":
     ensure   => present,
     provider => git,
