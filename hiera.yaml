@@ -28,5 +28,8 @@ hierarchy:
   - name: "components::site_level_config_file"
     path: "components/site_level_config_file.yaml"
 
+  - name: "components::ccm"
+    path: "components/ccm.yaml"
+    
   - name: "nodes::config_master"
     path: "nodes/config_master.yaml"
