@@ -30,6 +30,9 @@ hierarchy:
 
   - name: "components::ccm"
     path: "components/ccm.yaml"
-    
+
   - name: "nodes::config_master"
     path: "nodes/config_master.yaml"
+
+  - name: "nodes::lightweight_component"
+    path: "nodes/lightweight_component.yaml"

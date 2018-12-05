@@ -156,7 +156,7 @@ class simple_grid::components::ccm::installation_helper::reset_agent(
   simple_grid::puppet_conf_editor("$puppet_conf",'agent','environment','config', true)
   $puppet_conf_data = simple_grid::puppet_conf_editor("$puppet_conf",'agent','runinterval',"$runinterval", false)
   
-  file{'Updating Puppet.conf': 
+  file{'Updating puppet.conf': 
     path    => "$puppet_conf_path",
     content => "$puppet_conf_data"
   }

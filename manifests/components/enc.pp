@@ -23,6 +23,15 @@ class simple_grid::components::enc::configure(
   
   simple_grid::puppet_conf_editor("$puppet_conf",'master','node_terminus','exec', true)
   
-  simple_grid::puppet_conf_editor("$puppet_conf",'master','external_nodes', "${enc_executable}", true)
+  notify{"Restarting puppetserver":}
+  $puppet_conf_enc = simple_grid::puppet_conf_editor("$puppet_conf",'master','external_nodes', "${enc_executable}", false)
+  file {"Writing data to puppet conf":
+  path => "${puppet_conf}",
+  content => "$puppet_conf_enc",
+  }
+  service {'puppetserver':
+  ensure    => running,
+  subscribe => File["$puppet_conf"]
+  } 
 }
 
