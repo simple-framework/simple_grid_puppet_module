@@ -1,35 +1,9 @@
-include 'simple_grid::ccm_function::create_config_dir'
+class simple_grid::pre_config::config_master::init {
+  Class['simple_grid::pre_config::create_config_dir'] -> Class['simple_grid::pre_config::config_master::fileserver'] -> Class['simple_grid::pre_config::config_master::ssh_config'] -> Class['simple_grid::pre_config::lightweight_component::reset_agent']
+  
+  class {'simple_grid::pre_config::create_config_dir':}
+  class {'simple_grid::pre_config::config_master::fileserver':}
+  class {'simple_grid::pre_config::config_master::ssh_config':}
+  class {'simple_grid::pre_config::lightweight_component::reset_agent':}
 
-info("Installing git")
-package {"Install git":
-  name   => 'git',
-  ensure => present,
 }
-
-info("Installing External Node Classifier")
-class {'simple_grid::components::enc::install':}
-
-notice("Configuring External Node Classifier")
-class {'simple_grid::components::enc::configure':}
-
-notify{"Configuring Puppet Agent":}
-$puppet_conf = lookup('simple_grid::config_master::puppet_conf')
-simple_grid::puppet_conf_editor("$puppet_conf",'agent','server',"$fqdn", true)
-simple_grid::puppet_conf_editor("$puppet_conf",'agent','runinterval',"0", true)
-$puppet_conf_content = simple_grid::puppet_conf_editor("$puppet_conf",'agent','environment',"config", false)
-
-notify{"Restarting Puppet":}
-file {"Writing data to puppet conf":
-  path => "${puppet_conf}",
-  content => "$puppet_conf_content",
-} 
-service {'puppetserver':
-  ensure    => running,
-  subscribe => File["$puppet_conf"]
-}
-
-notify{"Creating a sample site level configuration file":}
-class {"simple_grid::components::site_level_config_file::install":}
-
-notify{"Installing Puppet CCM":}
-class {"simple_grid::components::ccm::install":}

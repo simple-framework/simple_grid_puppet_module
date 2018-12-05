@@ -1,4 +1,4 @@
-class simple_grid::pre_config::config_master::fileserver(
+class simple_grid::pre_install::config_master::fileserver(
   $fileserver_conf_path
 ){
   file {"add fileserver.conf":

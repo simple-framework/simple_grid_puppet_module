@@ -66,3 +66,52 @@ class simple_grid::components::ccm::install(
     source   => $env_cleanup_repository_url,
     }
 }
+
+################################################
+#       Helpers for SSH and Fileserver
+################################################
+class simple_grid::components::ccm::fileserver(
+  $fileserver_conf_path,
+){
+  file {"Creating fileserver.conf":
+    ensure  => present,
+    path    => "${fileserver_conf_path}",
+    content => template('simple_grid/fileserver.conf.erb')
+  }
+}
+
+class simple_grid::components::ccm::ssh_config(
+  $simple_config_dir = lookup('simple_grid::simple_config_dir'),
+  $ssh_host_key,
+  $ssh_dir,
+){
+  ssh_keygen{'root':
+    filename => "${ssh_dir}/${ssh_host_key}"
+  }
+  file {'Checking presence of ssh host private key for config master':
+    ensure => present,
+    path   => "${ssh_dir}/${ssh_host_key}",
+    mode   => "600",
+  }
+  file {'Checking presence of ssh host public key for config dir':
+    ensure => present,
+    path   => "${ssh_dir}/${ssh_host_key}.pub",
+    mode   => "644"
+  }
+  file {'Copy ssh host public key to simple config dir':
+    ensure => present,
+    source => "${ssh_dir}/${ssh_host_key}.pub",
+    path   => "${simple_config_dir}/${ssh_host_key}.pub"
+  }
+}
+
+class simple_grid::components::ccm::config(
+  $node_type,
+){
+  if ($node_type == "CM") {
+    class{"simple_grid::components::ccm::fileserver":}
+    class{"simple_grid::components::ccm::ssh_config":}
+  }elsif ($node_type == "LC") {
+    notify{"Code for LC":}
+  }
+}
