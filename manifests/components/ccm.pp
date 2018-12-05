@@ -153,7 +153,7 @@ class simple_grid::components::ccm::installation_helper::init_agent(
   notify{"Configuring Puppet Agent":}
   simple_grid::puppet_conf_editor("$puppet_conf",'agent','server',"$puppet_master", true)
   simple_grid::puppet_conf_editor("$puppet_conf",'agent','runinterval',"$runinterval", true)
-  $puppet_conf_content = simple_grid::puppet_conf_editor("$puppet_conf",'agent','environment',"production", false)
+  $puppet_conf_content = simple_grid::puppet_conf_editor("$puppet_conf",'agent','environment',"install", false)
   
   notify{"Restarting Puppet":}
   file {"Writing data to puppet conf":
@@ -171,7 +171,7 @@ class simple_grid::components::ccm::installation_helper::reset_agent(
   $puppet_conf = lookup('simple_grid::nodes::lightweight_component::puppet_conf'),
 ) {
   
-  simple_grid::puppet_conf_editor("$puppet_conf",'agent','environment','install', true)
+  simple_grid::puppet_conf_editor("$puppet_conf",'agent','environment','config', true)
   $puppet_conf_data = simple_grid::puppet_conf_editor("$puppet_conf",'agent','runinterval',"$runinterval", false)
     
   notify{"Restarting Puppet":}
