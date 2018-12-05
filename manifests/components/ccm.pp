@@ -75,7 +75,8 @@ class simple_grid::components::ccm::config(
     class{"simple_grid::components::ccm::installation_helper::ssh_config::config_master":}
   }elsif ($node_type == "LC") {
     notify{"Code for LC":}
-    class{"simple_grid::components::ccm::ssh_config::lightweight_component":}
+    class{"simple_grid::components::ccm::installation_helper::ssh_config::lightweight_component":}
+    class{"simple_grid::components::ccm::installation_helper::reset_agent":}
   }
 }
 
@@ -94,8 +95,8 @@ class simple_grid::components::ccm::installation_helper::fileserver(
 
 class simple_grid::components::ccm::installation_helper::ssh_config::config_master(
   $simple_config_dir = lookup('simple_grid::simple_config_dir'),
-  $ssh_host_key,
-  $ssh_dir,
+  $ssh_host_key      = lookup('simple_grid::nodes::config_master::installation_helper::ssh_config::ssh_host_key'),
+  $ssh_dir           = lookup('simple_grid::nodes::config_master::installation_helper::ssh_config::ssh_dir'),
 ){
   ssh_keygen{'root':
     filename => "${ssh_dir}/${ssh_host_key}"
@@ -151,13 +152,16 @@ class simple_grid::components::ccm::installation_helper::reset_agent(
   $runinterval,
   $puppet_conf = lookup('simple_grid::nodes::lightweight_component::puppet_conf'),
 ) {
+  
   simple_grid::puppet_conf_editor("$puppet_conf",'agent','environment','config', true)
   $puppet_conf_data = simple_grid::puppet_conf_editor("$puppet_conf",'agent','runinterval',"$runinterval", false)
+  
   file{'Updating Puppet.conf': 
-    path => "$puppet_conf_path",
+    path    => "$puppet_conf_path",
     content => "$puppet_conf_data"
   }
-  service {"Restart Puppet":
-    command
+  service {"puppet":
+    ensure    => running,
+    subscribe => File["$puppet_conf_path"]
   }
 }

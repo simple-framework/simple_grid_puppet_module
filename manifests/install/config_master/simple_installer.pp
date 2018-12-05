@@ -1,17 +1,18 @@
 include 'simple_grid::ccm_function::create_config_dir'
 
-info("Installing git")
+notify{"Installing git":}
 package {"Install git":
   name   => 'git',
   ensure => present,
 }
 
-info("Installing External Node Classifier")
+notify{"Installing External Node Classifier":}
 class {'simple_grid::components::enc::install':}
 
-notice("Configuring External Node Classifier")
+notify{"Configuring External Node Classifier":}
 class {'simple_grid::components::enc::configure':}
 
+#TODO add an if statement
 notify{"Configuring Puppet Agent":}
 $puppet_conf = lookup('simple_grid::config_master::puppet_conf')
 simple_grid::puppet_conf_editor("$puppet_conf",'agent','server',"$fqdn", true)
@@ -38,3 +39,4 @@ notify{"Configuring CCM on Config Master":}
 class{"simple_grid::components::ccm::config":
   node_type => "CM"
 }
+#TODO if puppet agent also needs to be installed, configure the CCM puppet agent too

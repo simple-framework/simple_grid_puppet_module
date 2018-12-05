@@ -30,4 +30,4 @@ simple_grid::components::ccm::install::env_cleanup_revision: "master"
 simple_grid::components::ccm::install::env_cleanup_dir: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/cleanup"
 
 # fileserver
-simple_grid::components::ccm::fileserver::fileserver_conf_path: '/etc/puppetlabs/puppet/fileserver.conf'
+simple_grid::components::ccm::installation_helper::fileserver::fileserver_conf_path: '/etc/puppetlabs/puppet/fileserver.conf'
