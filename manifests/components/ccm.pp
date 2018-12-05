@@ -67,10 +67,22 @@ class simple_grid::components::ccm::install(
     }
 }
 
-################################################
-#       Helpers for SSH and Fileserver
-################################################
-class simple_grid::components::ccm::fileserver(
+class simple_grid::components::ccm::config(
+  $node_type,
+){
+  if ($node_type == "CM") {
+    class{"simple_grid::components::ccm::installation_helper::fileserver":}
+    class{"simple_grid::components::ccm::installation_helper::ssh_config::config_master":}
+  }elsif ($node_type == "LC") {
+    notify{"Code for LC":}
+    class{"simple_grid::components::ccm::ssh_config::lightweight_component":}
+  }
+}
+
+####################################################
+# Installation Helpers for SSH and Fileserver on CM
+####################################################
+class simple_grid::components::ccm::installation_helper::fileserver(
   $fileserver_conf_path,
 ){
   file {"Creating fileserver.conf":
@@ -80,7 +92,7 @@ class simple_grid::components::ccm::fileserver(
   }
 }
 
-class simple_grid::components::ccm::ssh_config(
+class simple_grid::components::ccm::installation_helper::ssh_config::config_master(
   $simple_config_dir = lookup('simple_grid::simple_config_dir'),
   $ssh_host_key,
   $ssh_dir,
@@ -105,13 +117,47 @@ class simple_grid::components::ccm::ssh_config(
   }
 }
 
-class simple_grid::components::ccm::config(
-  $node_type,
+#####################################################
+#     Installation Helpers for SSH on LC
+#####################################################
+
+class simple_grid::components::ccm::installation_helper::ssh_config::lightweight_component (
+  $ssh_authorized_keys_path,
+  $ssh_host_key = lookup('simple_grid::nodes::config_master::installation_helper::ssh_config::ssh_host_key'),
+  $simple_config_dir = lookup('simple_grid::simple_config_dir')
 ){
-  if ($node_type == "CM") {
-    class{"simple_grid::components::ccm::fileserver":}
-    class{"simple_grid::components::ccm::ssh_config":}
-  }elsif ($node_type == "LC") {
-    notify{"Code for LC":}
+    file {"Copy public key of master to config dir":
+      source => "puppet:///simple_grid/${ssh_host_key}.pub",
+      path   => "${simple_config_dir}/${ssh_host_key}.pub",
+      mode   => "644"
+    }
+    # TODO ensure you do not keep adding keys on each run
+    file_line {'append public key':
+      path => "${ssh_authorized_keys_path}",
+      line => file("${simple_config_dir}/${ssh_host_key}.pub"),
+    }
+    sshd_config {'Permit Root Login for Puppet Bolt to run Tasks':
+      key    => "PermitRootLogin",
+      ensure => present,
+      value  => 'yes'
+    }
+}
+#####################################################
+#     Generic Installation Helpers
+#####################################################
+
+class simple_grid::components::ccm::installation_helper::reset_agent(
+  $puppet_conf_path,
+  $runinterval,
+  $puppet_conf = lookup('simple_grid::nodes::lightweight_component::puppet_conf'),
+) {
+  simple_grid::puppet_conf_editor("$puppet_conf",'agent','environment','config', true)
+  $puppet_conf_data = simple_grid::puppet_conf_editor("$puppet_conf",'agent','runinterval',"$runinterval", false)
+  file{'Updating Puppet.conf': 
+    path => "$puppet_conf_path",
+    content => "$puppet_conf_data"
+  }
+  service {"Restart Puppet":
+    command
   }
 }

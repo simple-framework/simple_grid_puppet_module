@@ -31,7 +31,3 @@ simple_grid::components::ccm::install::env_cleanup_dir: "%{hiera('simple_grid::c
 
 # fileserver
 simple_grid::components::ccm::fileserver::fileserver_conf_path: '/etc/puppetlabs/puppet/fileserver.conf'
-
-# ssh
-simple_grid::components::ccm::ssh_config::ssh_dir: '/etc/ssh'
-simple_grid::components::ccm::ssh_config::ssh_host_key: 'simple_host_key'
