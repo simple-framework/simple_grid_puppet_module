@@ -21,7 +21,7 @@ class simple_grid::components::enc::configure(
 ){
   notify{"Configuring ENC":}
   
-  simple_grid::puppet_conf_editor("$puppet_conf",'master','node_terminus','execute', true)
+  simple_grid::puppet_conf_editor("$puppet_conf",'master','node_terminus','exec', true)
   
   simple_grid::puppet_conf_editor("$puppet_conf",'master','external_nodes', "${enc_executable}", true)
 }
