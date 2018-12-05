@@ -1,7 +1,9 @@
-class simple_grid::install::config_master::init(
+# class simple_grid::pre_config::config_master::init {
+#   Class['simple_grid::pre_config::create_config_dir'] -> Class['simple_grid::pre_config::config_master::fileserver'] -> Class['simple_grid::pre_config::config_master::ssh_config'] -> Class['simple_grid::pre_config::lightweight_component::reset_agent']
   
-){
-  include 'simple_grid::ccm_function::create_config_dir'
-  class {'simple_grid::components::enc::install':}
-  class {'simple_grid::components::enc::configure':}
-}
+#   class {'simple_grid::pre_config::create_config_dir':}
+#   class {'simple_grid::pre_config::config_master::fileserver':}
+#   class {'simple_grid::pre_config::config_master::ssh_config':}
+#   class {'simple_grid::pre_config::lightweight_component::reset_agent':}
+
+# }

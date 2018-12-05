@@ -1,6 +1,7 @@
 ---
 
 simple_grid::simple_config_dir: '/etc/simple_grid'
+simple_grid::site_config_dir: "%{hiera('simple_grid::simple_config_dir')}/site_config"
 
 simple_grid::config::config_master::pre_conf::yaml_compiler_dir_name: 'simple_grid_yaml_compiler'
 simple_grid::config::config_master::pre_conf::yaml_compiler_repo_url: 'https://github.com/WLCG-Lightweight-Sites/simple_grid_yaml_compiler'
@@ -14,3 +15,4 @@ simple_grid::config::config_master::yaml_compiler::yaml_compiler_repo_url: 'http
 simple_grid::config::config_master::yaml_compiler::yaml_compiler_revision: 'master'
 simple_grid::config::config_master::yaml_compiler::site_config_dir: '/etc/simple_grid/simple_grid_site_config'
 simple_grid::config::config_master::yaml_compiler::site_config_file: 'site-level-configuration-file.yaml'
+

@@ -7,3 +7,4 @@ simple_grid::components::enc::install::revision: "master"
 
 #common
 simple_grid::components::enc::enc_dir: "%{hiera('simple_grid::simple_config_dir')}/enc"
+simple_grid::components::enc::enc_executable: "%{hiera('simple_grid::components::enc::enc_dir')}/enc.sh"
