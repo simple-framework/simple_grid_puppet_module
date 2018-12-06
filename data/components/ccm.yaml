@@ -35,3 +35,6 @@ simple_grid::components::ccm::installation_helper::fileserver::fileserver_conf_p
 # runintervals
 simple_grid::components::ccm::installation_helper::init_agent::runinterval: "1m"
 simple_grid::components::ccm::installation_helper::reset_agent::runinterval: "30m"
+
+# puppet module installation into all environments
+simple_grid::components::ccm::install::puppet_module_install_path: "maany-simple"

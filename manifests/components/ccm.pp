@@ -17,6 +17,7 @@ class simple_grid::components::ccm::install(
   $env_cleanup_repository_url,
   $env_cleanup_revision,
   $env_cleanup_dir,
+  $puppet_module_install_path,
 ){
     notify {"Downloading Install environment at ${env_install_dir}":}
     vcsrepo {"${env_install_dir}":
@@ -48,6 +49,11 @@ class simple_grid::components::ccm::install(
     provider => git,
     revision => $env_deploy_revision,
     source   => $env_deploy_repository_url,
+    } ~> 
+    exec{'Install modules in the deploy environment':
+      command => "puppet module install ${puppet_module_install_path} --environment=deploy"
+      cwd     => "$env_deploy_dir",
+      path    => "/usr/local/bin/:/usr/bin/:/bin/",
     }
 
     notify {"Downloading Test environment":}
