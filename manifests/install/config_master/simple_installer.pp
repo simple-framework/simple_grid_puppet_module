@@ -11,14 +11,14 @@ class simple_grid::install::config_master::simple_installer{
     ensure => present,
   }
 
-  notify{"Installing External Node Classifier":}
-  class {'simple_grid::components::enc::install':}
+  # notify{"Installing External Node Classifier":}
+  # class {'simple_grid::components::enc::install':}
 
-  notify{"Configuring External Node Classifier":}
-  class {'simple_grid::components::enc::configure':}
+  # notify{"Configuring External Node Classifier":}
+  # class {'simple_grid::components::enc::configure':}
 
-  notify{"Creating a sample site level configuration file":}
-  class {"simple_grid::components::site_level_config_file::install":}
+  # notify{"Creating a sample site level configuration file":}
+  # class {"simple_grid::components::site_level_config_file::install":}
 
   notify{"Installing Puppet CCM":}
   class {"simple_grid::components::ccm::install":}
