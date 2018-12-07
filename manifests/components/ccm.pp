@@ -2,7 +2,6 @@ class simple_grid::components::ccm::install(
   $env_repository_url,
   $env_revision,
   $env_dir,
-  $puppet_module_install_path,
 ){
     notify {"Downloading puppet environment for SIMPLE at ${env_dir}":}
     vcsrepo {"${env_dir}":
@@ -29,6 +28,7 @@ class simple_grid::components::ccm::config(
   if ($node_type == "CM") {
     class{"simple_grid::components::ccm::installation_helper::fileserver":}
     class{"simple_grid::components::ccm::installation_helper::ssh_config::config_master":}
+    class{"simple_grid::components::ccm::installation_helper::generate_site_manifest":}
   }elsif ($node_type == "LC") {
     class{"simple_grid::components::ccm::installation_helper::ssh_config::lightweight_component":}
     class{"simple_grid::components::ccm::installation_helper::reset_agent":}
@@ -38,6 +38,15 @@ class simple_grid::components::ccm::config(
 ####################################################
 # Installation Helpers for SSH and Fileserver on CM
 ####################################################
+class simple_grid::components::ccm::installation_helper::generate_site_manifest(
+  $site_manifest_path
+){
+  file{"Creating site.pp":
+    path    => '/etc/puppetlabs/code/environments/simple/manifests/site.pp',
+    ensure  => present,
+    content => epp("simple_grid/site.pp")
+  }
+}
 class simple_grid::components::ccm::installation_helper::fileserver(
   $fileserver_conf_path,
 ){
