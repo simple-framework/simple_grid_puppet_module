@@ -2,12 +2,13 @@
 #puppet env
 simple_grid::components::ccm::install::env_repository_url: https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_env
 simple_grid::components::ccm::install::env_revision: "master"
-simple_grid::components::ccm::install::env_dir: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/simple"
+simple_grid::components::ccm::install::env_name: "simple"
+simple_grid::components::ccm::install::env_dir: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/%{hiera('simple_grid::components::ccm::install::env_name')}"
 
 # fileserver
 simple_grid::components::ccm::installation_helper::fileserver::fileserver_conf_path: '/etc/puppetlabs/puppet/fileserver.conf'
 
-# runintervals
+# runintervals LC
 simple_grid::components::ccm::installation_helper::init_agent::runinterval: "1m"
 simple_grid::components::ccm::installation_helper::reset_agent::runinterval: "30m"
 

@@ -29,6 +29,8 @@ class simple_grid::components::ccm::config(
     class{"simple_grid::components::ccm::installation_helper::fileserver":}
     class{"simple_grid::components::ccm::installation_helper::ssh_config::config_master":}
     class{"simple_grid::components::ccm::installation_helper::generate_site_manifest":}
+    class{"simple_grid::components::ccm::installation_helper::puppet_agent":}
+    class{"simple_grid::components::ccm::installation_helper::puppet_server":}
   }elsif ($node_type == "LC") {
     class{"simple_grid::components::ccm::installation_helper::ssh_config::lightweight_component":}
     class{"simple_grid::components::ccm::installation_helper::reset_agent":}
@@ -45,6 +47,21 @@ class simple_grid::components::ccm::installation_helper::generate_site_manifest(
     path    => '/etc/puppetlabs/code/environments/simple/manifests/site.pp',
     ensure  => present,
     content => epp("simple_grid/site.pp")
+  }
+}
+class simple_grid::components::ccm::installation_helper::puppet_agent(
+  $puppet_conf = lookup("simple_grid::config_master::puppet_conf"),
+  $env_name = lookup("simple_grid::components::ccm::install::env_name"),
+){
+  notify{"Adding [agent] config to ${puppet_conf}":}
+  simple_grid::puppet_conf_editor("${puppet_conf}",'agent','environment',"${env_name}", true)
+  simple_grid::puppet_conf_editor("${puppet_conf}",'agent','server',"${fqdn}", true)
+}
+class simple_grid::components::ccm::installation_helper::puppet_server
+{
+  notify{"Starting PuppetServer":}
+  service{"puppetserver":
+    ensure => running
   }
 }
 class simple_grid::components::ccm::installation_helper::fileserver(
