@@ -5,11 +5,11 @@ class simple_grid::install::config_master::simple_installer{
   notify{"Creating simple config directory":}
   include 'simple_grid::ccm_function::create_config_dir'
 
-  notify{"Installing git":}
-  package {"Install git":
-    name   => 'git',
-    ensure => present,
-  }
+  # notify{"Installing git":}
+  # package {"Install git":
+  #   name   => 'git',
+  #   ensure => present,
+  # }
 
   # notify{"Installing External Node Classifier":}
   # class {'simple_grid::components::enc::install':}

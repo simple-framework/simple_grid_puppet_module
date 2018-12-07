@@ -4,16 +4,21 @@ class simple_grid::components::ccm::install(
   $env_dir,
   $puppet_module_install_path,
 ){
-    notify {"Downloading puppet environment for SIMPLE at ${env_install_dir}":}
-    vcsrepo {"${env_install_dir}":
+    notify {"Downloading puppet environment for SIMPLE at ${env_dir}":}
+    vcsrepo {"${env_dir}":
     ensure   => present,
     provider => git,
-    revision => $env_install_revision,
-    source   => $env_install_repository_url,
-    } ~> 
+    revision => $env_revision,
+    source   => $env_repository_url,
+    }
+
+    notify {"Installing r10k":}
+    class {'r10k':}
+    
+    notify {"Installing modules for simple environment.":}
     exec{'Install modules in the deploy environment':
-      command => "puppet module install ${puppet_module_install_path} --environment=simple "
-      cwd     => "$env_deploy_dir",
+      command => "r10k puppetfile install .",
+      cwd     => "$env_dir",
       path    => "/usr/local/bin/:/usr/bin/:/bin/",
     }
 }
