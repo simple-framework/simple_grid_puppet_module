@@ -61,7 +61,8 @@ class simple_grid::components::ccm::installation_helper::puppet_agent(
       "server"      => "${fqdn}"
     }
   }
-  $puppet_conf_content = simple_grid::puppet_conf_editor($puppet_conf_data, $puppet_conf_updates)
+  $puppet_conf_content_hash = simple_grid::puppet_conf_editor($puppet_conf_data, $puppet_conf_updates)
+  $puppet_conf_content = simple_grid::serialize_puppet_conf($puppet_conf_content_hash)
   file {"Update puppet conf":
     path => "${puppet_conf}",
     content => $puppet_conf_content
