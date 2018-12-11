@@ -1,10 +1,20 @@
 class simple_grid::config::config_master::init(
-  $simple_config_dir = lookup('simple_grid::simple_config_dir')
+
 )
 {
-  Class[simple_grid::config::config_master::pre_conf] -> Class[simple_grid::config::config_master::orchestrator_conf]   
-  class{"simple_grid::config::config_master::pre_conf":
-    config_dir =>  $simple_config_dir,
+  notify{"***** Stage:Config; Node: CM *****":}
+  notify{"Installing Python and virtualenv":}
+  class {'python':
+    version    => 'system',
+    pip        => 'present',
+    virtualenv => 'present'
   }
-  class{"simple_grid::config::config_master::orchestrator_conf":}
+  Class[simple_grid::components::yaml_compiler::download] -> Class[simple_grid::components::yaml_compiler::install] -> Class[simple_grid::components::yaml_compiler::execute] 
+  notify{"Downloading YAML Compiler":}
+  class{"simple_grid::components::yaml_compiler::download":}
+  notify{"Installing YAML Compiler":}
+  class{"simple_grid::components::yaml_compiler::install":}
+  notify{"Executing YAML Compiler":}
+  class{"simple_grid::components::yaml_compiler::execute":}
+  
 }

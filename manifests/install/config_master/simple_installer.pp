@@ -13,8 +13,9 @@ class simple_grid::install::config_master::simple_installer{
   class{"simple_grid::components::ccm::config":
     node_type => "CM"
   }
-  notify{"***** Stage:Config; Node: CM *****":}
-  
+  # Config stage
+  class{"simple_grid::config::config_master::init":}
+
 }
 
 # Execution command
