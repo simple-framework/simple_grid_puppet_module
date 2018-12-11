@@ -135,7 +135,7 @@ class simple_grid::components::ccm::installation_helper::init_agent(
   notify{"Configuring Puppet Agent":}
   simple_grid::puppet_conf_editor("$puppet_conf",'agent','server',"$puppet_master", true)
   simple_grid::puppet_conf_editor("$puppet_conf",'agent','runinterval',"$runinterval", true)
-  $puppet_conf_content = simple_grid::puppet_conf_editor("$puppet_conf",'agent','environment',"install", false)
+  $puppet_conf_content = simple_grid::puppet_conf_editor("$puppet_conf",'agent','environment',"simple", false)
   
   notify{"Restarting Puppet":}
   file {"Writing data to puppet conf":
