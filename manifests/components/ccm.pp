@@ -171,7 +171,7 @@ class simple_grid::components::ccm::installation_helper::reset_agent(
   $runinterval,
   $puppet_conf = lookup('simple_grid::nodes::lightweight_component::puppet_conf'),
 ) {
-  $puppet_conf_data = simple_grid::deserialize_puppet_conf("${puppet_conf}")
+  $puppet_conf_data = simple_grid::puppet_conf_from_fact($facts["puppet_conf"])
   notify{"data was ${puppet_conf_data}":}
   $puppet_conf_updates = {
     "agent" => {
