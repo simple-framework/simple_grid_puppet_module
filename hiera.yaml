@@ -28,6 +28,9 @@ hierarchy:
   - name: "components::site_level_config_file"
     path: "components/site_level_config_file.yaml"
 
+  - name: "components::yaml_compiler"
+    path: "components/yaml_compiler.yaml"
+
   - name: "components::ccm"
     path: "components/ccm.yaml"
 

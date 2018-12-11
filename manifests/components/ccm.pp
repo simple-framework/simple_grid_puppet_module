@@ -1,75 +1,24 @@
 class simple_grid::components::ccm::install(
-  $env_install_repository_url,
-  $env_install_revision,
-  $env_install_dir,
-  $env_config_repository_url,
-  $env_config_revision,
-  $env_config_dir,
-  $env_pre_deploy_repository_url,
-  $env_pre_deploy_revision,
-  $env_pre_deploy_dir,
-  $env_deploy_repository_url,
-  $env_deploy_revision,
-  $env_deploy_dir,
-  $env_test_repository_url,
-  $env_test_revision,
-  $env_test_dir,
-  $env_cleanup_repository_url,
-  $env_cleanup_revision,
-  $env_cleanup_dir,
-  $puppet_module_install_path,
+  $env_repository_url,
+  $env_revision,
+  $env_dir,
 ){
-    notify {"Downloading Install environment at ${env_install_dir}":}
-    vcsrepo {"${env_install_dir}":
+    notify {"Downloading puppet environment for SIMPLE at ${env_dir}":}
+    vcsrepo {"${env_dir}":
     ensure   => present,
     provider => git,
-    revision => $env_install_revision,
-    source   => $env_install_repository_url,
+    revision => $env_revision,
+    source   => $env_repository_url,
     }
 
-    notify {"Downloading Config environment":}
-    vcsrepo {"${env_config_dir}":
-    ensure   => present,
-    provider => git,
-    revision => $env_config_revision,
-    source   => $env_config_repository_url,
-    }
-
-    notify {"Downloading Pre_Deploy environment":}
-    vcsrepo {"${env_pre_deploy_dir}":
-    ensure   => present,
-    provider => git,
-    revision => $env_pre_deploy_revision,
-    source   => $env_pre_deploy_repository_url,
-    }
-
-    notify {"Downloading Deploy environment":}
-    vcsrepo {"${env_deploy_dir}":
-    ensure   => present,
-    provider => git,
-    revision => $env_deploy_revision,
-    source   => $env_deploy_repository_url,
-    } ~> 
+    notify {"Installing r10k":}
+    class {'r10k':}
+    
+    notify {"Installing modules for simple environment.":}
     exec{'Install modules in the deploy environment':
-      command => "puppet module install ${puppet_module_install_path} --environment=deploy"
-      cwd     => "$env_deploy_dir",
+      command => "r10k puppetfile install .",
+      cwd     => "$env_dir",
       path    => "/usr/local/bin/:/usr/bin/:/bin/",
-    }
-
-    notify {"Downloading Test environment":}
-    vcsrepo {"${env_test_dir}":
-    ensure   => present,
-    provider => git,
-    revision => $env_test_revision,
-    source   => $env_test_repository_url,
-    }
-
-    notify {"Downloading Cleanup environment":}
-    vcsrepo {"${env_cleanup_dir}":
-    ensure   => present,
-    provider => git,
-    revision => $env_cleanup_revision,
-    source   => $env_cleanup_repository_url,
     }
 }
 
@@ -79,6 +28,9 @@ class simple_grid::components::ccm::config(
   if ($node_type == "CM") {
     class{"simple_grid::components::ccm::installation_helper::fileserver":}
     class{"simple_grid::components::ccm::installation_helper::ssh_config::config_master":}
+    class{"simple_grid::components::ccm::installation_helper::generate_site_manifest":}
+    class{"simple_grid::components::ccm::installation_helper::puppet_agent":}
+    class{"simple_grid::components::ccm::installation_helper::puppet_server":}
   }elsif ($node_type == "LC") {
     class{"simple_grid::components::ccm::installation_helper::ssh_config::lightweight_component":}
     class{"simple_grid::components::ccm::installation_helper::reset_agent":}
@@ -88,6 +40,30 @@ class simple_grid::components::ccm::config(
 ####################################################
 # Installation Helpers for SSH and Fileserver on CM
 ####################################################
+class simple_grid::components::ccm::installation_helper::generate_site_manifest(
+  $site_manifest_path
+){
+  file{"Creating site.pp":
+    path    => '/etc/puppetlabs/code/environments/simple/manifests/site.pp',
+    ensure  => present,
+    content => epp("simple_grid/site.pp")
+  }
+}
+class simple_grid::components::ccm::installation_helper::puppet_agent(
+  $puppet_conf = lookup("simple_grid::config_master::puppet_conf"),
+  $env_name = lookup("simple_grid::components::ccm::install::env_name"),
+){
+  notify{"Adding [agent] config to ${puppet_conf}":}
+  simple_grid::puppet_conf_editor("${puppet_conf}",'agent','environment',"${env_name}", true)
+  simple_grid::puppet_conf_editor("${puppet_conf}",'agent','server',"${fqdn}", true)
+}
+class simple_grid::components::ccm::installation_helper::puppet_server
+{
+  notify{"Starting PuppetServer":}
+  service{"puppetserver":
+    ensure => running
+  }
+}
 class simple_grid::components::ccm::installation_helper::fileserver(
   $fileserver_conf_path,
 ){

@@ -1,40 +1,16 @@
 ---
-#install environment
-simple_grid::components::ccm::install::env_install_repository_url: "https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_env_install"
-simple_grid::components::ccm::install::env_install_revision: "master"
-simple_grid::components::ccm::install::env_install_dir: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/install"
-
-#config environment
-simple_grid::components::ccm::install::env_config_repository_url: "https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_env_test"
-simple_grid::components::ccm::install::env_config_revision: "master"
-simple_grid::components::ccm::install::env_config_dir: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/config"
-
-#pre_deploy environment
-simple_grid::components::ccm::install::env_pre_deploy_repository_url: "https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_env_pre_deploy"
-simple_grid::components::ccm::install::env_pre_deploy_revision: "master"
-simple_grid::components::ccm::install::env_pre_deploy_dir: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/pre_deploy"
-
-# deploy environment
-simple_grid::components::ccm::install::env_deploy_repository_url: "https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_env_deploy"
-simple_grid::components::ccm::install::env_deploy_revision: "master"
-simple_grid::components::ccm::install::env_deploy_dir: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/deploy"
-
-# test environment
-simple_grid::components::ccm::install::env_test_repository_url: "https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_env_test"
-simple_grid::components::ccm::install::env_test_revision: "master"
-simple_grid::components::ccm::install::env_test_dir: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/test"
-
-# reporting/cleanup environment
-simple_grid::components::ccm::install::env_cleanup_repository_url: "https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_env_cleanup"
-simple_grid::components::ccm::install::env_cleanup_revision: "master"
-simple_grid::components::ccm::install::env_cleanup_dir: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/cleanup"
+#puppet env
+simple_grid::components::ccm::install::env_repository_url: https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_env
+simple_grid::components::ccm::install::env_revision: "master"
+simple_grid::components::ccm::install::env_name: "simple"
+simple_grid::components::ccm::install::env_dir: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/%{hiera('simple_grid::components::ccm::install::env_name')}"
 
 # fileserver
 simple_grid::components::ccm::installation_helper::fileserver::fileserver_conf_path: '/etc/puppetlabs/puppet/fileserver.conf'
 
-# runintervals
+# runintervals LC
 simple_grid::components::ccm::installation_helper::init_agent::runinterval: "1m"
 simple_grid::components::ccm::installation_helper::reset_agent::runinterval: "30m"
 
-# puppet module installation into all environments
-simple_grid::components::ccm::install::puppet_module_install_path: "maany-simple"
+# site manifest
+simple_grid::components::ccm::installation_helper::generate_site_manifest::site_manifest_path: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/simple/manifests/site.pp"

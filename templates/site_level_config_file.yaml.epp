@@ -42,13 +42,20 @@ site_infrastructure:
     ip_address: *digitalocean_ip_address
 
 lightweight_components:
-  - name: Cream-CE
+  - type: compute_element
+    name: Cream-CE
     repository_url: "https://github.com/WLCG-Lightweight-Sites/wlcg_lightweight_site_ce_cream"
+    execution_id: 10
+    lifecycle_hooks:
+      pre_config: 
+        - /etc/simple_grid/lifecycle/ce_pre_config.sh
+      pre_inst:
+        - /etc/simple_grid/lifecycle/ce_pre_inst1.sh
+      post_inst: 
+        - /etc/simple_grid/lifecycle/ce_post_inst1.sh
     deploy:
-      - node: lw-site-droplet-0
+      - node: ce-simple
         container_count: 1
-      - node: ec2-18-184-37-92.eu-central-1
-        container_count: 2
     preferred_tech_stack:
       level_2_configuration: yaim
     config:
@@ -68,7 +75,16 @@ lightweight_components:
           some_additional_parameter: some_value
 
   - name: WN-Pbs
+    type: worker_node
     repository_url: "https://github.com/WLCG-Lightweight-Sites/wlcg_lightweight_site_wn_pbs"
+    execution_id: 11
+    lifecycle_hooks:
+      pre_config: 
+        - /etc/simple_grid/lifecycle/wn_pre_config.sh
+      pre_inst:
+        - /etc/simple_grid/lifecycle/wn_pre_inst1.sh
+      post_inst: 
+        - /etc/simple_grid/lifecycle/wn_post_inst1.sh
     deploy:
       - node: lw-site-droplet-0,
         container_count: 3
