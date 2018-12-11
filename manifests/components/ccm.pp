@@ -104,7 +104,7 @@ class simple_grid::components::ccm::installation_helper::ssh_config::config_mast
 #####################################################
 
 class simple_grid::components::ccm::installation_helper::ssh_config::lightweight_component (
-  $ssh_authorized_keys_path,
+  $ssh_authorized_keys_path = lookup("simple_grid::nodes::lightweight_component::ssh_config::ssh_authorized_keys_path"),
   $ssh_host_key = lookup('simple_grid::nodes::config_master::installation_helper::ssh_config::ssh_host_key'),
   $simple_config_dir = lookup('simple_grid::simple_config_dir')
 ){
@@ -135,7 +135,7 @@ class simple_grid::components::ccm::installation_helper::init_agent(
   notify{"Configuring Puppet Agent":}
   simple_grid::puppet_conf_editor("$puppet_conf",'agent','server',"$puppet_master", true)
   simple_grid::puppet_conf_editor("$puppet_conf",'agent','runinterval',"$runinterval", true)
-  $puppet_conf_content = simple_grid::puppet_conf_editor("$puppet_conf",'agent','environment',"install", false)
+  $puppet_conf_content = simple_grid::puppet_conf_editor("$puppet_conf",'agent','environment',"simple", false)
   
   notify{"Restarting Puppet":}
   file {"Writing data to puppet conf":
@@ -148,21 +148,20 @@ class simple_grid::components::ccm::installation_helper::init_agent(
   }
 }
 class simple_grid::components::ccm::installation_helper::reset_agent(
-  $puppet_conf_path,
   $runinterval,
   $puppet_conf = lookup('simple_grid::nodes::lightweight_component::puppet_conf'),
 ) {
   
-  simple_grid::puppet_conf_editor("$puppet_conf",'agent','environment','config', true)
+  #simple_grid::puppet_conf_editor("$puppet_conf",'agent','environment','config', true)
   $puppet_conf_data = simple_grid::puppet_conf_editor("$puppet_conf",'agent','runinterval',"$runinterval", false)
     
   notify{"Restarting Puppet":}
   file{'Updating puppet.conf': 
-    path    => "$puppet_conf_path",
+    path    => "$puppet_conf",
     content => "$puppet_conf_data"
   }
   service {"puppet":
     ensure    => running,
-    subscribe => File["$puppet_conf_path"]
+    subscribe => File["$puppet_conf"]
   }
 }

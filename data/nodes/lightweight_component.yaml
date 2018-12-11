@@ -1,6 +1,6 @@
 ---
 # ssh
-simple_grid::nodes::lightweight_component::installation_helper::ssh_config::ssh_authorized_keys_path: '/root/.ssh/authorized_keys'
+simple_grid::nodes::lightweight_component::ssh_config::ssh_authorized_keys_path: '/root/.ssh/authorized_keys'
 # puppet agent
 simple_grid::nodes::lightweight_component::puppet_conf: '/etc/puppetlabs/puppet/puppet.conf'
 simple_grid::nodes::lightweight_component::installation_helper::reset_agent::puppet_conf_path: '/etc/puppetlabs/puppet/puppet.conf'

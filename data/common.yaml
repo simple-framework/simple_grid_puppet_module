@@ -1,5 +1,4 @@
 ---
-
 simple_grid::simple_config_dir: '/etc/simple_grid'
 simple_grid::site_config_dir: "%{hiera('simple_grid::simple_config_dir')}/site_config"
 
