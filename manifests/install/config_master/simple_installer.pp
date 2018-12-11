@@ -20,6 +20,7 @@ class simple_grid::install::config_master::simple_installer{
 
 # Execution command
 # puppet apply -e 'class{"simple_grid::install::config_master::simple_installer::create_sample_site_level_config_file":}'
+
 class simple_grid::install::config_master::simple_installer::create_sample_site_level_config_file
 {
   notify{"Creating simple config directory":}
