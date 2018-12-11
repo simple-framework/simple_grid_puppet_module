@@ -7,7 +7,7 @@ Puppet::Functions.create_function(:'simple_grid::puppet_conf_editor') do
         param 'Boolean', :write_file
     end
     def edit_puppet_conf(puppetfile, section, key, value, write_file)
-        _data = deserialize(puppetfile)
+        _data = deserialize(puppetfile)  
         _section_name = "[" + section + "]"
         _output = "False"
         if !(_data.keys.include? _section_name)
