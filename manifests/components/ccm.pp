@@ -122,11 +122,18 @@ class simple_grid::components::ccm::installation_helper::ssh_config::lightweight
     file {"${ssh_authorized_keys_path}":
       ensure => present
     }
-    # TODO ensure you do not keep adding keys on each run
+    $newkey = split(file("${simple_config_dir}/${ssh_host_key}.pub"), " ")[1]
+    notify{"Key was : ${newkey}":}
+    ssh_authorized_key { 'append ssh public key':
+      ensure => present,
+      user   => "root",
+      key    => $newkey,
+}
+    /*# TODO ensure you do not keep adding keys on each run
     file_line {'append public key':
       path => "${ssh_authorized_keys_path}",
       line => file("${simple_config_dir}/${ssh_host_key}.pub"),
-    }
+    }*/
     sshd_config {'Permit Root Login for Puppet Bolt to run Tasks':
       key    => "PermitRootLogin",
       ensure => present,
