@@ -48,7 +48,7 @@ class simple_grid::components::ccm::install(
       notify {"Installing CCM in Release MODE. The value for simple_grid::mode is : ${mode}":}
       exec {'Installing Simple Grid Puppet Module from Puppet Forge':
         command => "puppet module install ${forge_module_name} --version ${forge_module_version} --environment ${env_name}",
-        path    => "/usr/local/bin/:/usr/bin/:/bin/",
+        path    => "/usr/local/bin/:/usr/bin/:/bin/::/opt/puppetlabs/bin/",
       }
     } 
 }
