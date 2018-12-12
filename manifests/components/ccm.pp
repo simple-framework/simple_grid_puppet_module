@@ -23,13 +23,14 @@ class simple_grid::components::ccm::install(
       notify {"Installing CCM in DEV MODE. The value for simple_grid::mode is : ${mode}":}
       
       class {"simple_grid::components::ccm::installation_helper::r10k::install":}
-      notify {"Installing SIMPLE Grid Puppet Module from Github":}
-        vcsrepo {"${module_dir}":
-          ensure   => present,
-          provider => git,
-          revision => $dev_mode_revision,
-          source   => $dev_mode_repository,
-        }
+      
+      notify {"Installing SIMPLE Grid Puppet Module from Github at $module_dir":}
+      vcsrepo {"${module_dir}":
+        ensure   => present,
+        provider => git,
+        revision => $dev_mode_revision,
+        source   => $dev_mode_repository,
+      }
     }
     elsif $mode == lookup('simple_grid::mode::docker') {
       notify {"Installing CCM in Docker Dev MODE. The value for simple_grid::mode is : ${mode}":}

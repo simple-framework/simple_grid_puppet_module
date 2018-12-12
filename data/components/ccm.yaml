@@ -8,7 +8,7 @@ simple_grid::components::ccm::install::modules_dir: "%{hiera('simple_grid::compo
 
 #puppet module
 simple_grid::components::ccm::install::simple_module_name: simple_grid
-simple_grid::components::ccm::install::module_dir: "%{hiera('simple_grid::components::ccm::install::modules_dir')}/%{'simple_grid::components::ccm::install::simple_module_name'}"
+simple_grid::components::ccm::install::module_dir: "%{hiera('simple_grid::components::ccm::install::modules_dir')}/%{hiera('simple_grid::components::ccm::install::simple_module_name')}"
 
 # puppet module for dev mode
 simple_grid::components::ccm::install::mode::dev::repository_url: "https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module"
