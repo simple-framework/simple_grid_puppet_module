@@ -44,7 +44,7 @@ class simple_grid::components::ccm::installation_helper::generate_site_manifest(
   $site_manifest_path
 ){
   file{"Creating site.pp":
-    path    => '/etc/puppetlabs/code/environments/simple/manifests/site.pp',
+    path    => "${site_manifest_path}",
     ensure  => present,
     content => epp("simple_grid/site.pp")
   }
@@ -115,6 +115,7 @@ class simple_grid::components::ccm::installation_helper::ssh_config::config_mast
 #####################################################
 
 class simple_grid::components::ccm::installation_helper::ssh_config::lightweight_component (
+  $ssh_dir = lookup('simple_grid::nodes::lightweight_component::ssh_config::dir'),
   $ssh_authorized_keys_path = lookup("simple_grid::nodes::lightweight_component::ssh_config::ssh_authorized_keys_path"),
   $ssh_host_key = lookup('simple_grid::nodes::config_master::installation_helper::ssh_config::ssh_host_key'),
   $simple_config_dir = lookup('simple_grid::simple_config_dir')
@@ -124,10 +125,17 @@ class simple_grid::components::ccm::installation_helper::ssh_config::lightweight
       path   => "${simple_config_dir}/${ssh_host_key}.pub",
       mode   => "644"
     }
+    file {"Checking presence of .ssh directory":
+      path   => "${ssh_dir}",
+      ensure => directory
+    }
+    file {"${ssh_authorized_keys_path}":
+      ensure => present
+    }
     # TODO ensure you do not keep adding keys on each run
     file_line {'append public key':
       path => "${ssh_authorized_keys_path}",
-      line => file("${simple_config_dir}/${ssh_host_key}.pub"),
+      line => "${simple_config_dir}/${ssh_host_key}.pub,
     }
     sshd_config {'Permit Root Login for Puppet Bolt to run Tasks':
       key    => "PermitRootLogin",
@@ -169,14 +177,15 @@ class simple_grid::components::ccm::installation_helper::init_agent(
 }
 class simple_grid::components::ccm::installation_helper::reset_agent(
   $runinterval,
+  $env_name = lookup("simple_grid::components::ccm::install::env_name"),
   $puppet_conf = lookup('simple_grid::nodes::lightweight_component::puppet_conf'),
 ) {
   $puppet_conf_data = simple_grid::puppet_conf_from_fact($facts["puppet_conf"])
   notify{"data was ${puppet_conf_data}":}
   $puppet_conf_updates = {
     "agent" => {
-      "environment" => "simple",
-      "runinterval" => "$runinterval"
+      "environment" => "${env_name}",
+      "runinterval" => "${runinterval}"
     }
   }
   $puppet_conf_content_hash = simple_grid::puppet_conf_editor($puppet_conf_data, $puppet_conf_updates)
