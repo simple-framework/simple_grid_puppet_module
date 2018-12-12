@@ -78,7 +78,9 @@ class simple_grid::components::ccm::installation_helper::generate_site_manifest(
     content => epp("simple_grid/site.pp")
   }
 }
-class simple_grid::components::ccm::installation_helper::r10k::install{
+class simple_grid::components::ccm::installation_helper::r10k::install(
+  $env_dir = lookup('simple_grid::components::ccm::install::env_dir')
+){
   notify {"Installing r10k":}
   class {'r10k':}
     
