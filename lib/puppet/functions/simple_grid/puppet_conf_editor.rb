@@ -1,20 +1,19 @@
 Puppet::Functions.create_function(:'simple_grid::puppet_conf_editor') do
     dispatch :edit_puppet_conf do
-        param 'String', :puppetfile
-        param 'String', :section
-        param 'String', :key
-        param 'String', :value
-        param 'Boolean', :write_file
+        param 'Hash', :puppetfile_data
+        param 'Hash', :data
     end
-    def edit_puppet_conf(puppetfile, section, key, value, write_file)
-        _data = deserialize(puppetfile)  
-        _section_name = "[" + section + "]"
-        _output = "False"
-        if !(_data.keys.include? _section_name)
-            _data.update(_section_name => Hash.new)
-        end
-        _data[_section_name].update( key => value)
-        serialize(puppetfile, _data, write_file)
+    def edit_puppet_conf(puppetfile_data, data)
+        data.each do |section_name, key_value|
+            _section_name = "[" + section_name + "]"
+            if !(puppetfile_data.keys.include? _section_name)
+                puppetfile_data.update(_section_name => Hash.new)
+            end
+            key_value.each do |key, value|
+                puppetfile_data[_section_name].update(key => value)
+            end   
+        end 
+        puppetfile_data
     end
 
     def deserialize(puppetfile)
