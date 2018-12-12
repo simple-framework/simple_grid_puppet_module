@@ -4,7 +4,7 @@ class simple_grid::components::ccm::install(
   $env_dir,
   $env_name,
   $module_dir,
-  $module_name          = lookup('simple_grid::components::ccm::install::simple_module_name'),
+  $simple_module_name,
   $mode                 = lookup('simple_grid::mode'),
   $dev_mode_repository  = lookup('simple_grid::components::ccm::install::mode::dev::repository_url'),
   $dev_mode_revision    = lookup('simple_grid::components::ccm::install::mode::dev::revision'),
@@ -35,10 +35,10 @@ class simple_grid::components::ccm::install(
       class {"simple_grid::components::ccm::installation_helper::r10k::install":}
       file{'Creating a directory for simple grid puppet module in $env_dir':
         ensure => directory,
-        path   => "${module_dir}/${module_name}",
+        path   => "${module_dir}/${simple_module_name}",
       } ~>
-      exec{"Mounting Simple Grid Puppet Module to ${module_dir}/${module_name}":
-        command => "mount --bind /${module_name} ${module_dir}/${module_name}",
+      exec{"Mounting Simple Grid Puppet Module to ${module_dir}/${simple_module_name}":
+        command => "mount --bind /${simple_module_name} ${module_dir}/${simple_module_name}",
         path    => "/usr/local/bin/:/usr/bin/:/bin/",
       }
     }
