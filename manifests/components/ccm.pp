@@ -4,7 +4,7 @@ class simple_grid::components::ccm::install(
   $env_dir,
   $env_name,
   $module_dir,
-  $module_name          = lookup('simple_grid::components::ccm::install::simple_module_name')
+  $module_name          = lookup('simple_grid::components::ccm::install::simple_module_name'),
   $mode                 = lookup('simple_grid::mode'),
   $dev_mode_repository  = lookup('simple_grid::components::ccm::install::mode::dev::repository_url'),
   $dev_mode_revision    = lookup('simple_grid::components::ccm::install::mode::dev::revision'),
