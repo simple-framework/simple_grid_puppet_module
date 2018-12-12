@@ -18,6 +18,7 @@ class simple_grid::components::ccm::install(
     revision => $env_revision,
     source   => $env_repository_url,
     }
+    notify{"Mode is $mode":}
     if $mode == lookup('simple_grid::mode::dev') {
       notify {"Installing CCM in DEV MODE. The value for simple_grid::mode is : ${mode}":}
       
