@@ -143,8 +143,6 @@ class simple_grid::components::ccm::installation_helper::init_agent(
 ){
   notify{"Configuring Puppet Agent":}
   notify{"Puppet master is $puppet_master":}
-  #simple_grid::puppet_conf_editor("$puppet_conf",'agent','server',"$puppet_master", true)
-  #simple_grid::puppet_conf_editor("$puppet_conf",'agent','runinterval',"$runinterval", true)
   $puppet_conf_data = simple_grid::deserialize_puppet_conf("${puppet_conf}")
   $puppet_conf_updates = {
     "agent" => {
@@ -155,6 +153,7 @@ class simple_grid::components::ccm::installation_helper::init_agent(
     }
   $puppet_conf_content_hash = simple_grid::puppet_conf_editor($puppet_conf_data, $puppet_conf_updates)
   $puppet_conf_content = simple_grid::serialize_puppet_conf($puppet_conf_content_hash)
+
   notify{"Restarting Puppet":}
   file {"Writing data to puppet conf":
     path => "${puppet_conf}",
@@ -170,6 +169,7 @@ class simple_grid::components::ccm::installation_helper::reset_agent(
   $env_name = lookup("simple_grid::components::ccm::install::env_name"),
   $puppet_conf = lookup('simple_grid::nodes::lightweight_component::puppet_conf'),
 ) {
+
   $puppet_conf_data = simple_grid::puppet_conf_from_fact($facts["puppet_conf"])
   notify{"data was ${puppet_conf_data}":}
   $puppet_conf_updates = {
@@ -184,6 +184,7 @@ class simple_grid::components::ccm::installation_helper::reset_agent(
   file{'Updating puppet.conf': 
     path    => "$puppet_conf",
     content => "$puppet_conf_content"
+
   }
   service {"puppet":
     ensure    => running,
