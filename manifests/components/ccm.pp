@@ -92,22 +92,12 @@ class simple_grid::components::ccm::installation_helper::ssh_config::config_mast
 ){
   ssh_keygen{'root':
     filename => "${ssh_dir}/${ssh_host_key}"
+  } ~> 
+  exec {'Copying ssh host public key to fileserver':
+    command => "cp ${ssh_dir}/${ssh_host_key}.pub ${simple_config_dir}/",
+    path    => "/usr/local/bin/:/usr/bin/:/bin/"
   }
-  file {'Checking presence of ssh host private key for config master':
-    ensure => present,
-    path   => "${ssh_dir}/${ssh_host_key}",
-    mode   => "600",
-  }
-  file {'Checking presence of ssh host public key for config dir':
-    ensure => present,
-    path   => "${ssh_dir}/${ssh_host_key}.pub",
-    mode   => "644"
-  }
-  file {'Copy ssh host public key to simple config dir':
-    ensure => present,
-    source => "${ssh_dir}/${ssh_host_key}.pub",
-    path   => "${simple_config_dir}/${ssh_host_key}.pub"
-  }
+
 }
 
 #####################################################
@@ -135,7 +125,7 @@ class simple_grid::components::ccm::installation_helper::ssh_config::lightweight
     # TODO ensure you do not keep adding keys on each run
     file_line {'append public key':
       path => "${ssh_authorized_keys_path}",
-      line => "${simple_config_dir}/${ssh_host_key}.pub,
+      line => file("${simple_config_dir}/${ssh_host_key}.pub"),
     }
     sshd_config {'Permit Root Login for Puppet Bolt to run Tasks':
       key    => "PermitRootLogin",
