@@ -13,17 +13,17 @@ class simple_grid::components::ccm::install(
 ){
     notify {"Downloading puppet environment for SIMPLE at ${env_dir}":}
     vcsrepo {"${env_dir}":
-    ensure   => present,
-    provider => git,
-    revision => $env_revision,
-    source   => $env_repository_url,
+      ensure   => present,
+      provider => git,
+      revision => $env_revision,
+      source   => $env_repository_url,
     }
-    notify{"Mode is $mode":}
+    notify{"Mode is $mode $module_dir":}
     if $mode == lookup('simple_grid::mode::dev') {
       notify {"Installing CCM in DEV MODE. The value for simple_grid::mode is : ${mode}":}
       
       class {"simple_grid::components::ccm::installation_helper::r10k::install":}
-      
+  
       notify {"Installing SIMPLE Grid Puppet Module from Github at $module_dir":}
       vcsrepo {"${module_dir}":
         ensure   => present,
@@ -37,10 +37,10 @@ class simple_grid::components::ccm::install(
       class {"simple_grid::components::ccm::installation_helper::r10k::install":}
       file{'Creating a directory for simple grid puppet module in $env_dir':
         ensure => directory,
-        path   => "${module_dir}/${simple_module_name}",
+        path   => "${module_dir}",
       } ~>
       exec{"Mounting Simple Grid Puppet Module to ${module_dir}/${simple_module_name}":
-        command => "mount --bind /${simple_module_name} ${module_dir}/${simple_module_name}",
+        command => "mount --bind /${simple_module_name} ${module_dir}",
         path    => "/usr/local/bin/:/usr/bin/:/bin/",
       }
     }
@@ -169,6 +169,7 @@ class simple_grid::components::ccm::installation_helper::ssh_config::lightweight
     }
     $newkey = split(file("${simple_config_dir}/${ssh_host_key}.pub"), " ")[1]
     ssh_authorized_key { 'append ssh public key':
+      type   => 'ssh-rsa',
       ensure => present,
       user   => "root",
       key    => $newkey,
