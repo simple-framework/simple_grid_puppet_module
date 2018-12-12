@@ -2,6 +2,14 @@ class simple_grid::components::ccm::install(
   $env_repository_url,
   $env_revision,
   $env_dir,
+  $env_name,
+  $module_dir,
+  $simple_module_name,
+  $mode                 = lookup('simple_grid::mode'),
+  $dev_mode_repository  = lookup('simple_grid::components::ccm::install::mode::dev::repository_url'),
+  $dev_mode_revision    = lookup('simple_grid::components::ccm::install::mode::dev::revision'),
+  $forge_module_name    = lookup('simple_grid::components::ccm::install::mode::release::forge_module_name'),
+  $forge_module_version = lookup('simple_grid::components::ccm::install::mode::release::forge_module_version'),
 ){
     notify {"Downloading puppet environment for SIMPLE at ${env_dir}":}
     vcsrepo {"${env_dir}":
@@ -10,16 +18,39 @@ class simple_grid::components::ccm::install(
     revision => $env_revision,
     source   => $env_repository_url,
     }
-
-    notify {"Installing r10k":}
-    class {'r10k':}
-    
-    notify {"Installing modules for simple environment.":}
-    exec{'Install modules in the deploy environment':
-      command => "r10k puppetfile install .",
-      cwd     => "$env_dir",
-      path    => "/usr/local/bin/:/usr/bin/:/bin/",
+    notify{"Mode is $mode":}
+    if $mode == lookup('simple_grid::mode::dev') {
+      notify {"Installing CCM in DEV MODE. The value for simple_grid::mode is : ${mode}":}
+      
+      class {"simple_grid::components::ccm::installation_helper::r10k::install":}
+      
+      notify {"Installing SIMPLE Grid Puppet Module from Github at $module_dir":}
+      vcsrepo {"${module_dir}":
+        ensure   => present,
+        provider => git,
+        revision => $dev_mode_revision,
+        source   => $dev_mode_repository,
+      }
     }
+    elsif $mode == lookup('simple_grid::mode::docker') {
+      notify {"Installing CCM in Docker Dev MODE. The value for simple_grid::mode is : ${mode}":}
+      class {"simple_grid::components::ccm::installation_helper::r10k::install":}
+      file{'Creating a directory for simple grid puppet module in $env_dir':
+        ensure => directory,
+        path   => "${module_dir}/${simple_module_name}",
+      } ~>
+      exec{"Mounting Simple Grid Puppet Module to ${module_dir}/${simple_module_name}":
+        command => "mount --bind /${simple_module_name} ${module_dir}/${simple_module_name}",
+        path    => "/usr/local/bin/:/usr/bin/:/bin/",
+      }
+    }
+    elsif $mode == lookup('simple_grid::mode::release'){
+      notify {"Installing CCM in Release MODE. The value for simple_grid::mode is : ${mode}":}
+      exec {'Installing Simple Grid Puppet Module from Puppet Forge':
+        command => "puppet module install ${forge_module_name} --version ${forge_module_version} --environment ${env_name}",
+        path    => "/usr/local/bin/:/usr/bin/:/bin/::/opt/puppetlabs/bin/",
+      }
+    } 
 }
 
 class simple_grid::components::ccm::config(
@@ -37,9 +68,9 @@ class simple_grid::components::ccm::config(
   }
 }
 
-####################################################
-# Installation Helpers for SSH and Fileserver on CM
-####################################################
+##################################################################
+# Installation Helpers for site.pp, r10k, SSH and Fileserver on CM
+##################################################################
 class simple_grid::components::ccm::installation_helper::generate_site_manifest(
   $site_manifest_path
 ){
@@ -48,6 +79,20 @@ class simple_grid::components::ccm::installation_helper::generate_site_manifest(
     ensure  => present,
     content => epp("simple_grid/site.pp")
   }
+}
+class simple_grid::components::ccm::installation_helper::r10k::install(
+  $env_dir = lookup('simple_grid::components::ccm::install::env_dir')
+){
+  notify {"Installing r10k":}
+  class {'r10k':}
+    
+  notify {"Installing modules for simple environment.":}
+  exec{'Install modules in the deploy environment':
+    command => "r10k puppetfile install .",
+    cwd     => "$env_dir",
+    path    => "/usr/local/bin/:/usr/bin/:/bin/",
+  }
+  
 }
 class simple_grid::components::ccm::installation_helper::puppet_agent(
   $puppet_conf = lookup("simple_grid::config_master::puppet_conf"),

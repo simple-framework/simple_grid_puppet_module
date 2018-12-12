@@ -5,7 +5,10 @@ class simple_grid::install::config_master::simple_installer{
   notify{"***** Stage:Install; Node: CM *****":}
   notify{"Creating simple config directory":}
   include 'simple_grid::ccm_function::create_config_dir'
-
+  
+  notify {"Installing Git":}
+  include 'git'
+  
   notify{"Installing Puppet CCM":}
   class {"simple_grid::components::ccm::install":}
 

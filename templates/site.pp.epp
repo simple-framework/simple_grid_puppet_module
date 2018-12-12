@@ -1,9 +1,7 @@
 node default {
   #TODO find execution id
-  class {"simple_grid::nodes::lightweight_component::init":
-  
-  }
+  class {"role::lightweight_component":}
 }
 node <%= $facts[fqdn]%> {
-  class {"simple_grid::nodes::config_master::init":}
+  class {"role::config_master":}
 }
