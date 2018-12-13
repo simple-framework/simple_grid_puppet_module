@@ -1,0 +1,7 @@
+{
+  "description": "Implements Docker Swarm from the SIMPLE Framework",
+  
+  "implementations": [
+    {"name": "swarm.rb"}
+  ]
+}
