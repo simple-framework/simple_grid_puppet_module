@@ -17,5 +17,6 @@ class simple_grid::nodes::lightweight_component::init
     class {"simple_grid::components::execution_stage_manager::set_stage":
       simple_stage => lookup('simple_grid::stage::pre_deploy') #handled by tasks executed by CM
     }
+    include docker
   }
 }

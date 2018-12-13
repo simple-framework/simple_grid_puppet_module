@@ -70,12 +70,12 @@ augmented_site_level_config_file_path = params['augmented_site_level_config_file
 modulepath = params['modulepath']
 begin
         ce_ip = get_element_ip(augmented_site_level_config_file_path,"compute_element")
-        #wn_ip = get_element_ip(augmented_site_level_config_file_path,"worker_node")
+        wn_ip = get_element_ip(augmented_site_level_config_file_path,"worker_node")
 
-        #swarm_init(ce_ip, modulepath)
-        #swarm_token(ce_ip,wn_ip, modulepath) 
+        swarm_init(ce_ip, modulepath)
+        swarm_token(ce_ip,wn_ip, modulepath) 
 
 rescue Exception => e
-  #puts({ status: 'failure', error: e.message, exception: e.message })
+  puts({ status: 'failure', error: e.message, exception: e.message })
   exit 1
 end
