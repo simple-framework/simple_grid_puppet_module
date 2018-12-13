@@ -2,6 +2,6 @@ node default {
   #TODO find execution id
   class {"role::lightweight_component":}
 }
-node <%= $facts[fqdn]%> {
+node "<%= $facts[fqdn]%>" {
   class {"role::config_master":}
 }

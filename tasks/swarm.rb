@@ -3,7 +3,7 @@ require 'yaml'
 require 'open3'
 require 'json'
 
-site_level_config_file_path = "/etc/simple_grid/simple_grid_site_config/site-level-configuration-file.yaml"
+#augmented_site_level_config_file_path = "/etc/simple_grid/site_config/augmented_site_level_config_file.yaml"
 
 # Get all ip addresses
 def get_element_ip(site_level_config_file_path, element)
@@ -14,20 +14,24 @@ def get_element_ip(site_level_config_file_path, element)
     nodes =Array.new
     node =Array.new
     ip = Array.new
-    data = YAML.load_file(site_level_config_file_path)
+    data = YAML::load_file(site_level_config_file_path)
     site_infrastructure = data["site_infrastructure"]
     lightweight_components = data["lightweight_components"]
+    #puts(site_infrastructure)
     lightweight_components.each do |lc|
         if lc["type"] == element then
-            nodes << lc["nodes"]
+            nodes << lc["deploy"]
             nodes.each do |node_array|
+                #puts node_array
                 node_array.each do |value|
-                    site_infrastructure.each do |site_infra|
-                        if site_infra["hostname"] ==  value["node"]
-                                ip << site_infra["ip_address"]
-                        end
-                    end
-                end
+                     puts value
+                        #site_infrastructure.each do |site_infra|
+                     #   puts value[0]
+                         #if site_infra["fqdn"] ==  value["node"]
+                                 #ip << site_infra["ip_address"]
+                         #end
+                     #end
+                 end
             end
         end
     end
@@ -79,12 +83,12 @@ augmented_site_level_config_file_path = params['augmented_site_level_config_file
 modulepath = params['modulepath']
 begin
         ce_ip = get_element_ip(augmented_site_level_config_file_path,"compute_element")
-        wn_ip = get_element_ip(augmented_site_level_config_file_path,"worker_node")
+        #wn_ip = get_element_ip(augmented_site_level_config_file_path,"worker_node")
 
-        swarm_init(ce_ip, modulepath)
-        swarm_token(ce_ip,wn_ip, modulepath) 
+        #swarm_init(ce_ip, modulepath)
+        #swarm_token(ce_ip,wn_ip, modulepath) 
 
-rescue Puppet::Error => e
-  puts({ status: 'failure', error: e.message, exception: e.message })
+rescue Exception => e
+  #puts({ status: 'failure', error: e.message, exception: e.message })
   exit 1
 end
