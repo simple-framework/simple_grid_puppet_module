@@ -36,7 +36,7 @@ preferred_tech_stack:
 site_infrastructure:
   - fqdn: basic_config_master.cern.ch
     ip_address: *basic_config_master_ip_address
-  - fqdn: lightweight_component01
+  - fqdn: lightweight_component01.cern.ch
     ip_address: *lightweight_component01_ip_address
 
 lightweight_components:
