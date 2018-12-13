@@ -1,14 +1,14 @@
 ### Variable declaration:
 vars:
-  - &amazon_ip_address 18.184.37.92
-  - &digitalocean_ip_address 167.99.253.118
+  - &basic_config_master_ip_address 192.168.176.2
+  - &lightweight_component01_ip_address 192.168.176.4
 
 cream_runtime_vars:
-  - &cream_runtime_var_ce_host lw-site-droplet-0
+  - &cream_runtime_var_ce_host lightweight_component01.cern.ch
   - &cream_runtime_var_queues alice
 
 pbs_runtime_vars:
-  - &pbs_runtime_var_ce_host lw-site-droplet-0
+  - &pbs_runtime_var_ce_host lightweight_component01.cern.ch
   - &pbs_runtime_var_queues alice
 
 site:
@@ -34,18 +34,16 @@ preferred_tech_stack:
   container: docker
 
 site_infrastructure:
-  - hostname: ec2-18-184-37-92.eu-central-1
-    domain: compute.amazonaws.com
-    ip_address: *amazon_ip_address
-  - hostname: lw-site-droplet-0
-    domain: digitalocean.com
-    ip_address: *digitalocean_ip_address
+  - fqdn: basic_config_master.cern.ch
+    ip_address: *basic_config_master_ip_address
+  - fqdn: lightweight_component01
+    ip_address: *lightweight_component01_ip_address
 
 lightweight_components:
   - type: compute_element
     name: Cream-CE
     repository_url: "https://github.com/WLCG-Lightweight-Sites/wlcg_lightweight_site_ce_cream"
-    execution_id: 10
+    execution_id: 1
     lifecycle_hooks:
       pre_config: 
         - /etc/simple_grid/lifecycle/ce_pre_config.sh
@@ -54,7 +52,7 @@ lightweight_components:
       post_inst: 
         - /etc/simple_grid/lifecycle/ce_post_inst1.sh
     deploy:
-      - node: ce-simple
+      - node: lightweight_component01.cern.ch
         container_count: 1
     preferred_tech_stack:
       level_2_configuration: yaim
@@ -77,7 +75,7 @@ lightweight_components:
   - name: WN-Pbs
     type: worker_node
     repository_url: "https://github.com/WLCG-Lightweight-Sites/wlcg_lightweight_site_wn_pbs"
-    execution_id: 11
+    execution_id: 2
     lifecycle_hooks:
       pre_config: 
         - /etc/simple_grid/lifecycle/wn_pre_config.sh
@@ -86,10 +84,8 @@ lightweight_components:
       post_inst: 
         - /etc/simple_grid/lifecycle/wn_post_inst1.sh
     deploy:
-      - node: lw-site-droplet-0,
-        container_count: 3
-      - node: ec2-18-184-37-92.eu-central-1,
-        container_count: 3
+      - node: lightweight_component01.cern.ch
+        container_count: 1
     preferred_tech_stack:
       level_2_configuration: yaim
     config:
