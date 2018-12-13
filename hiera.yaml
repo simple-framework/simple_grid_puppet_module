@@ -25,6 +25,9 @@ hierarchy:
   - name: "components::enc"
     path: "components/enc.yaml"
 
+  - name: "components::execution_stage_manager"
+    path: "components/execution_stage_manager.yaml"
+
   - name: "components::site_level_config_file"
     path: "components/site_level_config_file.yaml"
 

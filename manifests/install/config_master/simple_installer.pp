@@ -2,6 +2,9 @@
 # puppet apply --modulepath /etc/puppetlabs/code/environments/production/modules -e 'class{"simple_grid::install::config_master::simple_installer":}'
 
 class simple_grid::install::config_master::simple_installer{
+  notify{"Setting up Execution Pipeline Manager":}
+  include simple_grid::components::execution_stage_manager::install
+
   notify{"***** Stage:Install; Node: CM *****":}
   notify{"Creating simple config directory":}
   include 'simple_grid::ccm_function::create_config_dir'
@@ -11,14 +14,24 @@ class simple_grid::install::config_master::simple_installer{
   
   notify{"Installing Puppet CCM":}
   class {"simple_grid::components::ccm::install":}
-
+  
+  notify{"Installation Stage has ended":}
+  class {"simple_grid::components::execution_stage_manager::set_stage":
+    $new_stage => lookup('simple_grid::stage::install')
+  }
+  
   notify{"Configuring CCM on Config Master":}
   class{"simple_grid::components::ccm::config":
     node_type => "CM"
   }
+  
   # Config stage
   class{"simple_grid::config::config_master::init":}
-
+  
+  notify{"Configuration Stage has ended":}
+  class {"simple_grid::components::execution_stage_manager::set_stage":
+    $new_stage => lookup('simple_grid::stage::config')
+  }
 }
 
 # Execution command
