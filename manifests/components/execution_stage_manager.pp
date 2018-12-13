@@ -5,6 +5,6 @@ class simple_grid::components::execution_stage_manager::set_stage(
   file{"Updating Stage to $simple_stage":
     path    => "${config_file}",
     ensure  => present,
-    content => "${new_stage}"
+    content => "${simple_stage}"
   }
 }

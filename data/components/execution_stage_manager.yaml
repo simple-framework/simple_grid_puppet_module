@@ -1,10 +1,10 @@
 ---
 # Execution Stages
 simple_grid::components::execution_stage_manager::config_file: "%{hiera('simple_grid::simple_config_dir')}/.stage"
-simple_grid::stage::init: awaiting-install
-simple_grid::stage::install: install
-simple_grid::stage::config: config
-simple_grid::stage::pre_deploy: pre_deploy
-simple_grid::stage::deploy: deploy
-simple_grid::stage::test: test
-simple_grid::stage::final: final
+simple_grid::stage::init: "awaiting-install"
+simple_grid::stage::install: "install"
+simple_grid::stage::config: "config"
+simple_grid::stage::pre_deploy: "pre_deploy"
+simple_grid::stage::deploy: "deploy"
+simple_grid::stage::test: "test"
+simple_grid::stage::final: "final"
