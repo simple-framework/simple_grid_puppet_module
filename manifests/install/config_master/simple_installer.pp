@@ -26,7 +26,7 @@ class simple_grid::install::config_master::simple_installer{
   
   notify{"Configuration Stage has ended":}
   class {"simple_grid::components::execution_stage_manager::set_stage":
-    simple_stage => lookup('simple_grid::stage::config')
+    simple_stage => lookup('simple_grid::stage::pre_deploy')
   }
 }
 
