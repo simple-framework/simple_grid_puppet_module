@@ -1,19 +1,17 @@
 ---
+# Current Mode
+simple_grid::mode: "%{hiera('simple_grid::mode::docker')}"
 
+# Types of Modes
+simple_grid::mode::dev: dev
+simple_grid::mode::docker: dev-docker
+simple_grid::mode::release: production
+
+# Configuration Directories
 simple_grid::simple_config_dir: '/etc/simple_grid'
+simple_grid::site_config_dir: "%{hiera('simple_grid::simple_config_dir')}/site_config"
+simple_grid::hidden_config_dir: "%{hiera('simple_grid::site_config_dir')/.config}"
 
-simple_grid::config::config_master::pre_conf::yaml_compiler_dir_name: 'simple_grid_yaml_compiler'
-simple_grid::config::config_master::pre_conf::yaml_compiler_repo_url: 'https://github.com/WLCG-Lightweight-Sites/simple_grid_yaml_compiler'
-simple_grid::config::config_master::pre_conf::yaml_compiler_revision: 'master'
+# Config files
+simple_grid::config_file: "%{hiera(simple_grid::hidden_config_dir)}/simple_config.yaml"
 
-simple_grid::config::config_master::pre_conf::site_level_config_dir: '/etc/simple_grid/simple_grid_site_config'
-simple_grid::config::config_master::pre_conf::site_level_config_file: 'site-level-configuration-file.yaml'
-
-simple_grid::config::config_master::pre_deploy::site_level_config_dir: '/etc/simple_grid/simple_grid_site_config'
-simple_grid::config::config_master::pre_deploy::site_level_config_file: 'site-level-configuration-file.yaml'
-
-simple_grid::config::config_master::yaml_compiler::yaml_compiler_dir_name: 'simple_grid_yaml_compiler'
-simple_grid::config::config_master::yaml_compiler::yaml_compiler_repo_url: 'https://github.com/WLCG-Lightweight-Sites/simple_grid_yaml_compiler'
-simple_grid::config::config_master::yaml_compiler::yaml_compiler_revision: 'master'
-simple_grid::config::config_master::yaml_compiler::site_config_dir: '/etc/simple_grid/simple_grid_site_config'
-simple_grid::config::config_master::yaml_compiler::site_config_file: 'site-level-configuration-file.yaml'
