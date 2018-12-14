@@ -20,16 +20,16 @@ def get_element_ip(site_level_config_file_path, element)
             end
         end
     end
-    puts "YOLO"
-    puts ip
     return ip
 end
 # Init Swarm on CE and create NW simple
 def swarm_init(ce_ip, modulepath)
-        ce_ip.each do |index, ip|
+        puts ce_ip.class
+        ce_ip.each_with_index do |ip, index|
+                puts ip
                 puts  "** Initializing SWARM on #{ip} **"
                 init_cmd = "bolt task run docker::swarm_init --node #{ip} --modulepath #{modulepath}"
-                puts  "***"
+                puts  "*** index was #{index}"
                 system init_cmd
                 if index == 0
                         puts  "** Creating SIMPLE Network on #{ip} **"
@@ -45,11 +45,11 @@ def swarm_token(ce_ip,wn_ip, modulepath)
         ce_ip.each do |cip|
                 puts  "** Generating Token on #{cip} **"
                 puts  "***"
-                get_cmd = "bolt task run docker::swarm_token node_role=worker --nodes  #{cip} > /tmp/ce/#{cip}"
+                get_cmd = "bolt task run docker::swarm_token node_role=worker --nodes #{cip} --modulepath #{modulepath} > /tmp/#{cip}" 
                 system get_cmd
                 puts  "** Extracting Token **"
                 puts  "***"
-                token = IO.readlines("/tmp/ce/#{cip}")[2]
+                token = IO.readlines("/tmp/#{cip}")[2]
                 token = token.delete(' ')
                 token = token.chop
                 puts token
@@ -57,7 +57,7 @@ def swarm_token(ce_ip,wn_ip, modulepath)
                 wn_ip.each do |wip|
                         puts  "***"
                         puts  "** Join Manager:#{cip} Worker:#{wip} with token:#{token} **"
-                        join_cmd = "bolt task run docker::swarm_join listen_addr=10.0.1.10  token=#{token}  manager_ip=#{cip}:2377 --nodes #{wip}"
+                        join_cmd = "bolt task run docker::swarm_join listen_addr=10.0.1.10  token=#{token}  manager_ip=#{cip}:2377 --nodes #{wip} --modulepath #{modulepath}"
                         puts join_cmd
                         puts  "***"
                         system join_cmd
@@ -71,7 +71,6 @@ modulepath = params['modulepath']
 begin
         ce_ip = get_element_ip(augmented_site_level_config_file_path,"compute_element")
         wn_ip = get_element_ip(augmented_site_level_config_file_path,"worker_node")
-
         swarm_init(ce_ip, modulepath)
         swarm_token(ce_ip,wn_ip, modulepath) 
 
