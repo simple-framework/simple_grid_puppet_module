@@ -3,8 +3,6 @@ require 'yaml'
 require 'open3'
 require 'json'
 
-#augmented_site_level_config_file_path = "/etc/simple_grid/site_config/augmented_site_level_config_file.yaml"
-
 # Get all ip addresses
 def get_element_ip(site_level_config_file_path, element)
     ip = Array.new

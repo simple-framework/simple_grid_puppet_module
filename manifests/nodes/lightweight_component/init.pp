@@ -18,5 +18,9 @@ class simple_grid::nodes::lightweight_component::init
       simple_stage => lookup('simple_grid::stage::pre_deploy') #handled by tasks executed by CM
     }
     include docker
+    #TODO firewall
+    # firewall{'open port ':
+    #   dport => 2376
+    # }
   }
 }
