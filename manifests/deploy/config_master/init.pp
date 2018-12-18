@@ -11,13 +11,21 @@ class simple_grid::deploy::config_master::init(
      path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
      user    => 'root',
     }
+    # exec{" ${node_fqdn}  ${index}":
+    #  command => "bolt task run simple_grid::deploy_status execution_id=${index} --modulepath /etc/puppetlabs/code/environments/simple/site/:/etc/puppetlabs/code/environments/simple/modules/ --nodes ${node_fqdn}",
+    #  path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
+    #  user    => 'root',
+    # }
     #task > /tmp/status
     #if status is completed
       #execution for the current node
     #if not completed, try again
-    wait_for {"waiting for deployment of ${index} to end':
-      query => "bolt task run simple_grid::deploy execution_id=${index} --modulepath /etc/puppetlabs/code/environments/simple/site/ --nodes ${node_fqdn}",
-      
+    #notify{"Waiting for execution of $index to complete: bolt task run simple_grid::deploy execution_id=${index} --modulepath /etc/puppetlabs/code/environments/simple/site/:/etc/puppetlabs/code/environments/simple/modules/ --nodes ${node_fqdn} > dev/null":}
+    wait_for {"waiting for deployment of ${index} to end":
+      query => "bolt task run simple_grid::deploy_status execution_id=${index} --modulepath /etc/puppetlabs/code/environments/simple/site/:/etc/puppetlabs/code/environments/simple/modules/ --nodes ${node_fqdn} > /etc/simple_grid/${execution_id}.status",
+      seconds => 10,
+      polling_frequency => "10",
+      max_retries => "1"
     }
   }
 
