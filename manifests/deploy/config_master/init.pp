@@ -9,7 +9,10 @@ class simple_grid::deploy::config_master::init(
     #task > /tmp/status
     #if status is completed
       #execution for the current node
-    #if not completed, try again 
+    #if not completed, try again
+    #wait_for {'wait for completion of task'
+    #    
+    #:}
   }
 
 }
