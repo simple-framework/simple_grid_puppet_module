@@ -9,7 +9,7 @@
 
     "parameters": {
         "execution_id": {
-          "type": "Integer[1]",
+          "type": "String[1]",
           "description": "The execution_id of the lightweight component that has to be deployed."
         }
     }
