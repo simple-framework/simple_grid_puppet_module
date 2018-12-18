@@ -10,7 +10,7 @@ end
 params = JSON.parse(STDIN.read)
 execution_id = params['execution_id']
 begin
-    init_deploy(execution_id.to_i)
+    init_deploy(execution_id)
 rescue Exception => e
     puts({status: 'failure', error: e.message, exception: e.message})
     exit 1

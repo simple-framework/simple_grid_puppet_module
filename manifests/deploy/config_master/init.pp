@@ -5,11 +5,11 @@ class simple_grid::deploy::config_master::init(
   $lightweight_components = $augmented_site_level_config['lightweight_components']
   $lightweight_components.each |Integer $index, Hash $lightweight_component| {
     notify{"Executing ${index} for ${lightweight_component['name']}":}
-    $node_fqdn = lightweight_component['deploy']['fqdn']
+    $node_fqdn = $lightweight_component['deploy']['node']
     exec{"Works ${index}":
-      command => "bolt task run simple_grid::deploy execution_id=${index} --modulepath /etc/puppetlabs/code/environments/simple/site/ --nodes ${node_fqdn}",
-      path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
-      user    => 'root',
+     command => "bolt task run simple_grid::deploy execution_id=${index} --modulepath /etc/puppetlabs/code/environments/simple/site/ --nodes ${node_fqdn}",
+     path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
+     user    => 'root',
     }
     #wait for previous node to be completely execution
     #task > /tmp/status
