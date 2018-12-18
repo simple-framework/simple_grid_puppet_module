@@ -11,14 +11,14 @@ class simple_grid::deploy::config_master::init(
      path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
      user    => 'root',
     }
-    #wait for previous node to be completely execution
     #task > /tmp/status
     #if status is completed
       #execution for the current node
     #if not completed, try again
-    #wait_for {'wait for completion of task'
-    #    
-    #:}
+    wait_for {"waiting for deployment of ${index} to end':
+      query => "bolt task run simple_grid::deploy execution_id=${index} --modulepath /etc/puppetlabs/code/environments/simple/site/ --nodes ${node_fqdn}",
+      
+    }
   }
 
 }
