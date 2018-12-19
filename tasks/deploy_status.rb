@@ -11,8 +11,16 @@ class DeployStatus <TaskHelper
         return last_successful_deployment
     end
     def task(execution_id:nil, **kwargs)
-        last_successful_deployment = get_last_successful_deployment()
-        result = (execution_id.to_i == last_successful_deployment)
+        result = false
+        retry_interval = 10
+        max_retries = 1
+        trial = 0
+        begin
+            last_successful_deployment = get_last_successful_deployment()
+            result = (execution_id.to_i == last_successful_deployment)
+            sleep(retry_interval)
+            trial += 1
+        end until result == false or trial <= max_retries 
         {status: result}
     end
 end
