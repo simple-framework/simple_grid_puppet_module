@@ -9,9 +9,9 @@ Puppet::Functions.create_function(:'simple_grid::generate_deploy_status') do
         content['lightweight_components'].each do |lc|
             if lc['deploy']['node'] == fqdn 
                 data = {
-                    execution_id => lc['execution_id'],
-                    status       => "pending",
-                    logs     => []
+                    "execution_id" => lc['execution_id'],
+                    "status"       => "pending",
+                    "logs"         => []
                 }
                 execution_ids << data
             end

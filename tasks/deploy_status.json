@@ -21,6 +21,10 @@
           "type": "String[1]",
           "description": "The execution_id of the lightweight component whose deployment is to be monitored."
         },
+        "modulepath": {
+            "type": "String[1]",
+            "description": "The modulepath to be used when sending probes to a node"
+        },
         "retry_interval": {
             "type": "String[1]",
             "description": "Number of seconds after which the probe will be resent to monitor deployment status"
