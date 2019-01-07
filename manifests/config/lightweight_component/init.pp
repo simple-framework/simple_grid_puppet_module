@@ -5,11 +5,11 @@ class simple_grid::config::lightweight_component::init(
   notify{"**** Node LC; Stage Config; Not part of project specification, this stage only does puppet specific edits on LC":}
   $deploy_status_file = lookup('simple_grid::nodes::lightweight_component::deploy_status_file')
   $content = loadyaml("${augmented_site_level_config_file}")
-  $execution_ids = simple_grid::generate_execution_ids($content, $fqdn)
-  notify{"Execution id for $fqdn are $execution_ids":}
+  $deploy_statuses = simple_grid::generate_deploy_status($content, $fqdn)
+  notify{"Deploy status for $fqdn are $deploy_status":}
   $deploy_status = {
-    "execution_pending"    => $execution_ids,
-    "execution_completed"  => []
+    "deploy_status"             => $deploy_statuses,
+    "execution_request_history" => [],
   }
   file{"Write execution ID's to ${deploy_status_file}":
     path    => "${deploy_status_file}",

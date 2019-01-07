@@ -9,9 +9,25 @@
     ],
 
     "parameters": {
+        "node_fqdn": {
+            "type": "String[1]",
+            "description": "The lightweight component node to which the probe will be sent."
+        },
+        "deploy_status_file": {
+            "type": "String[1]",
+            "description": "The location of the deploy_status_file on the LC node where the probes are run."
+        },
         "execution_id": {
           "type": "String[1]",
           "description": "The execution_id of the lightweight component whose deployment is to be monitored."
+        },
+        "retry_interval": {
+            "type": "String[1]",
+            "description": "Number of seconds after which the probe will be resent to monitor deployment status"
+        },
+        "max_retries": {
+            "type": "String[1]",
+            "description": "Max number of times a probe should be sent before a timeout occurs."
         }
     }
 }
