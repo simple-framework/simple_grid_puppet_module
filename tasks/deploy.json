@@ -1,6 +1,7 @@
 {
     "description": "Initiate deployment of a lightweight component on an LC type node",
-
+    "input_method": "stdin",
+    "files": ["ruby_task_helper/files/task_helper.rb"],
     "implementation": [
       { 
           "name": "deploy.rb"

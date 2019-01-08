@@ -40,7 +40,7 @@ class DeployStatus <TaskHelper
                 puts exception.message
             end until result['status'] == "error" or result['status'] == "completed"
         end
-        if result == "error" or result == "completed"
+        if result['status'] == "error" or result['status'] == "completed"
             return result
         end
     end

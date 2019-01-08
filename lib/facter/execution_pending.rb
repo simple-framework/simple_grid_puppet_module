@@ -13,4 +13,4 @@ Facter.add('execution_pending') do
         ex.message
       end
     end
-  end
+end
