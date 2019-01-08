@@ -7,6 +7,12 @@ Puppet::Functions.create_function(:'simple_grid::post_execution_deploy_status') 
     def post_execution_deploy_status(deploy_status_file, exeuction_id)
         new_deploy_status = {}
         data = YAML.load(File.read(deploy_status_file)) 
+        data['execution_request_history'] << execution_id
+        data['deploy_status'].each do |deploy_status|
+            if deploy_status['execution_id'].to_i == execution_id.ro_i
+                deploy_status['status'] = ''
+            end 
+        end
         execution_pending = data['execution_pending']
         if execution_pending.empty?
             return data

@@ -10,7 +10,7 @@ class simple_grid::deploy::config_master::init(
   $lightweight_components.each |Integer $index, Hash $lightweight_component| {
     if $index > 0 {
       $last_index = $index -1 
-      $execution_status = file("etc/simple_grid/.${last_index}.status")
+      $execution_status = file("/etc/simple_grid/.${last_index}.status")
       notify{"Execution Status of ${last_index} was ${execution_status}":}
       if $execution_status == "error" {
         fail("Error Message will be shown here")
@@ -23,9 +23,7 @@ class simple_grid::deploy::config_master::init(
      path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
      user    => 'root',
     }
-    file{"etc/simple_grid/.${index}.status":
-      ensure => present,
-    }
+  
     exec{"Waiting for deployment of ${index} to end":
       command => "bolt task run simple_grid::deploy_status \
       node_fqdn=${node_fqdn} \
