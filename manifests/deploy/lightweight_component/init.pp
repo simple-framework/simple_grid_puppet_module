@@ -7,7 +7,7 @@ class simple_grid::deploy::lightweight_component::init(
     simple_grid::update_execution_request_history('/etc/simple_grid/.deploy_status.yaml', $int_execution_id)
     $execute_now = simple_grid::execute_now('/etc/simple_grid/.deploy_status.yaml', $int_execution_id)
     if $execute_now {
-        simple_grid::set_execution_status('/etc/simple_grid/.deploy_status.yaml', $execution_id, "started")
+        #simple_grid::set_execution_status('/etc/simple_grid/.deploy_status.yaml', $execution_id, "started")
         notify{"EXECUTING ${execution_id} NOW!!!!":}
         #file {'/etc/simple_grid/.deploy_status.yaml':
         #    content => to_yaml($post_execution_deploy_status)

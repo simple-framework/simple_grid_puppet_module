@@ -6,7 +6,8 @@ require 'puppet'
 
 # This task is run on the LC node. It stored output on /etc/simple_grid/.deploy.log
 def init_deploy(execution_id)
-    puppet_apply = "puppet apply -e \"class{'simple_grid::deploy::lightweight_component::init':execution_id =>#{execution_id}}\" > /etc/simple_grid/.deploy.log"
+    deploy_log_file = "/etc/simple_grid/.0.deploy_" + Time.now.strftime("%d-%m-%Y_%H-%M") + ".log"
+    puppet_apply = "puppet apply -e \"class{'simple_grid::deploy::lightweight_component::init':execution_id =>#{execution_id}}\" > #{deploy_log_file}"
     stdout, stderr, status = Open3.capture3(puppet_apply)
     raise Puppet::Error, ("stderr: '#{stderr}'") if status !=0
     puts "Output",stdout
