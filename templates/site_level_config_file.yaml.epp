@@ -1,7 +1,7 @@
 ### Variable declaration:
 vars:
-  - &basic_config_master_ip_address 192.168.176.2
-  - &lightweight_component01_ip_address 192.168.176.4
+  - &basic_config_master_ip_address 192.168.0.2
+  - &lightweight_component01_ip_address 192.168.0.4
 
 cream_runtime_vars:
   - &cream_runtime_var_ce_host lightweight_component01.cern.ch

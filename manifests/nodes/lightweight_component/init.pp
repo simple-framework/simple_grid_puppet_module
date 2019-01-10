@@ -1,4 +1,6 @@
-class simple_grid::nodes::lightweight_component::init
+class simple_grid::nodes::lightweight_component::init(
+  $mode = lookup('simple_grid::mode')
+)
 {
   if $simple_stage == lookup('simple_grid::stage::pre_deploy') {
     # Docker Swarm responsibilities delegated to tasks. Rest happens here
@@ -20,7 +22,10 @@ class simple_grid::nodes::lightweight_component::init
     class {"simple_grid::components::execution_stage_manager::set_stage":
       simple_stage => lookup('simple_grid::stage::pre_deploy') #handled by tasks executed by CM
     }
-    include docker
+    #TODO should this be in release mode? Check
+    if $mode == lookup('simple_grid::mode::release') {
+      include docker
+    }
     #TODO firewall
     # firewall{'open port ':
     #   dport => 2376

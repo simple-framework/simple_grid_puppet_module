@@ -97,7 +97,7 @@ class simple_grid::components::ccm::installation_helper::r10k::install(
 class simple_grid::components::ccm::installation_helper::puppet_agent(
   $puppet_conf = lookup("simple_grid::config_master::puppet_conf"),
   $env_name = lookup("simple_grid::components::ccm::install::env_name"),
-  $runinterval = lookup("simple_grid::components::ccm::installation_helper::init_agent::runinterval")
+  #$runinterval = lookup("simple_grid::components::ccm::installation_helper::puppet_agent::runinterval")
 ){
   notify{"Adding [agent] config to ${puppet_conf}":}
   $puppet_conf_data = simple_grid::deserialize_puppet_conf("${puppet_conf}")
@@ -105,7 +105,7 @@ class simple_grid::components::ccm::installation_helper::puppet_agent(
     "agent" => {
       "environment" => "${env_name}",
       "server"      => "${fqdn}",
-      "runinterval" => "${runinterval}"
+      #"runinterval" => "${runinterval}"
     }
   }
   $puppet_conf_content_hash = simple_grid::puppet_conf_editor($puppet_conf_data, $puppet_conf_updates)
