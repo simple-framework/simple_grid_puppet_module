@@ -22,6 +22,8 @@ class simple_grid::deploy::config_master::init(
      command => "bolt task run simple_grid::deploy execution_id=${index} --modulepath /etc/puppetlabs/code/environments/simple/site/ --nodes ${node_fqdn}",
      path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
      user    => 'root',
+     logoutput => 'on_failure',
+     environment => ["HOME=/root"]
     }
   
     exec{"Waiting for deployment of ${index} to end":
@@ -34,7 +36,9 @@ class simple_grid::deploy::config_master::init(
       --modulepath /etc/puppetlabs/code/environments/simple/site/:/etc/puppetlabs/code/environments/simple/modules/ \
       --nodes localhost > /etc/simple_grid/.${index}.status", #${node_fqdn} > /etc/simple_grid/${index}.status",
       path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
-      user    => root
+      user    => root,
+      logoutput => 'on_failure',
+      environment => ["HOME=/root"]
     }
   
     #$status_file = file("etc/simple_grid/.${index}.status")
