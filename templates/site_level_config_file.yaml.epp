@@ -43,7 +43,7 @@ lightweight_components:
   - type: compute_element
     name: Cream-CE
     repository_url: "https://github.com/WLCG-Lightweight-Sites/wlcg_lightweight_site_ce_cream"
-    execution_id: 1
+    execution_id: 0
     lifecycle_hooks:
       pre_config: 
         - /etc/simple_grid/lifecycle/ce_pre_config.sh
@@ -75,7 +75,7 @@ lightweight_components:
   - name: WN-Pbs
     type: worker_node
     repository_url: "https://github.com/WLCG-Lightweight-Sites/wlcg_lightweight_site_wn_pbs"
-    execution_id: 2
+    execution_id: 1
     lifecycle_hooks:
       pre_config: 
         - /etc/simple_grid/lifecycle/wn_pre_config.sh
