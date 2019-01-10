@@ -1,14 +1,14 @@
 ### Variable declaration:
 vars:
-  - &basic_config_master_ip_address 192.168.0.2
   - &lightweight_component01_ip_address 192.168.0.4
+  - &lightweight_component02_ip_address 192.168.0.5
 
 cream_runtime_vars:
   - &cream_runtime_var_ce_host lightweight_component01.cern.ch
   - &cream_runtime_var_queues alice
 
 pbs_runtime_vars:
-  - &pbs_runtime_var_ce_host lightweight_component01.cern.ch
+  - &pbs_runtime_var_ce_host lightweight_component02.cern.ch
   - &pbs_runtime_var_queues alice
 
 site:
@@ -34,10 +34,10 @@ preferred_tech_stack:
   container: docker
 
 site_infrastructure:
-  - fqdn: basic_config_master.cern.ch
-    ip_address: *basic_config_master_ip_address
   - fqdn: lightweight_component01.cern.ch
     ip_address: *lightweight_component01_ip_address
+  - fqdn: lightweight_component02.cern.ch
+    ip_address: *lightweight_component02_ip_address
 
 lightweight_components:
   - type: compute_element
@@ -84,7 +84,7 @@ lightweight_components:
       post_inst: 
         - /etc/simple_grid/lifecycle/wn_post_inst1.sh
     deploy:
-      - node: lightweight_component01.cern.ch
+      - node: lightweight_component02.cern.ch
         container_count: 1
     preferred_tech_stack:
       level_2_configuration: yaim
