@@ -1,0 +1,21 @@
+{
+    "description": "Forces a puppet agent run on the specified host",
+    "input_method": "stdin",
+    "files": ["ruby_task_helper/files/task_helper.rb"],
+    "implementation": [
+      { 
+          "name": "run_puppet_agent.rb"
+      }
+    ],
+
+    "parameters": {
+        "ipv4_address": {
+            "type": "String[1]",
+            "description": "The IPv4 Address of the node on which \"puppet agent -t\" has to be executed."
+        },
+        "hostname": {
+          "type": "String[1]",
+          "description": "The hostname of the node on which \"puppet agent -t\" has to be executed"
+        }
+    }
+}

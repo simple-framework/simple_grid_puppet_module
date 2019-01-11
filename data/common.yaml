@@ -9,7 +9,8 @@ simple_grid::mode::release: production
 
 # Configuration Directories
 simple_grid::simple_config_dir: '/etc/simple_grid'
-simple_grid::site_config_dir: "%{hiera('simple_grid::simple_config_dir')}/site_config"
+simple_grid::site_config_dir_name: site_config
+simple_grid::site_config_dir: "%{hiera('simple_grid::simple_config_dir')}/%{hiera('simple_grid::site_config_dir_name')}"
 simple_grid::hidden_config_dir: "%{hiera('simple_grid::site_config_dir')/.config}"
 
 # Config files
