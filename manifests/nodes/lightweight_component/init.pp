@@ -3,7 +3,8 @@ class simple_grid::nodes::lightweight_component::init(
 )
 {
   if $simple_stage == lookup('simple_grid::stage::pre_deploy') {
-    # Docker Swarm responsibilities delegated to tasks. Rest happens here
+    # Docker Swarm responsibilities delegated to tasks that are executed directly by CM. 
+    # Rest happens here
     class{"simple_grid::pre_deploy::lightweight_component::init":}
     # class {"simple_grid::components::execution_stage_manager::set_stage":
     #   simple_stage => lookup('simple_grid::stage::deploy') #handled by tasks executed by CM

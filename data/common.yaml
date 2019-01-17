@@ -16,3 +16,6 @@ simple_grid::hidden_config_dir: "%{hiera('simple_grid::site_config_dir')/.config
 # Config files
 simple_grid::config_file: "%{hiera(simple_grid::hidden_config_dir)}/simple_config.yaml"
 
+# Lifecycle Scripts 
+simple_grid::scripts_dir_name: "scripts"
+simple_grid::scripts_dir: "%{hiera('simple_grid::simple_config_dir')}/%{hiera('simple_grid::scripts_dir_name')}"
