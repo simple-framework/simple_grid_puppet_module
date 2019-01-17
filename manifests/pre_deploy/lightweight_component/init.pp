@@ -23,10 +23,9 @@ class simple_grid::pre_deploy::lightweight_component::init(
     path   => "${site_config_dir}",
   }
   class{"simple_grid::ccm_function::copy":
-    unique_message => "Copying augmented site level configuration file from CM to ${augmented_site_level_config_file}",
+    message => "Copying augmented site level configuration file from CM to ${augmented_site_level_config_file}",
     source => "${site_config_dir_name}/${augmented_site_level_config_file_name}",
     destination => "${augmented_site_level_config_file}",
     mode => "0644",
   }
-  
 }

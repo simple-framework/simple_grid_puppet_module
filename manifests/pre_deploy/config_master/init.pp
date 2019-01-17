@@ -29,7 +29,18 @@ class simple_grid::pre_deploy::config_master::init(
     notify{"Running Pre-Deploy stage for Lightweight Component ${node_fqdn}":}
     if $mode == lookup('simple_grid::mode::docker') or $mode == lookup('simple_grid::mode::dev') {
 
-      exec{"Running puppet agent on ${node_fqdn}":
+      exec{"Running puppet agent on ${node_fqdn} to initiate part 1 of pre_deploy stage":
+        command => "bolt task run simple_grid::run_puppet_agent \
+          ipv4_address=${node['ip_address']} \
+          hostname=${node_fqdn} \
+          --nodes ${node_fqdn} \
+          --modulepath /etc/puppetlabs/code/environments/simple/site/",
+        path    => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
+        user    => 'root',
+        logoutput => true,
+        environment => ["HOME=/root"]
+      }
+      exec{"Running puppet agent on ${node_fqdn} to initiate part 2 of pre_deploy stage ":
         command => "bolt task run simple_grid::run_puppet_agent \
           ipv4_address=${node['ip_address']} \
           hostname=${node_fqdn} \
@@ -43,6 +54,16 @@ class simple_grid::pre_deploy::config_master::init(
     }
     elsif $mode == lookup('simple_grid::mode::release') {
       exec{"Running puppet agent on ${node_fqdn}":
+        command => "bolt task run simple_grid::run_puppet_agent \
+          ipv4_address=${node['ip_address']} \
+          hostname=${node_fqdn} \
+          --nodes ${node_fqdn} \
+          --modulepath /etc/puppetlabs/code/environments/simple/site/",
+        path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
+        user    => 'root',
+        logoutput => true
+      }
+      exec{"Running puppet agent on ${node_fqdn} to initiate part 2 of pre_deploy stage ":
         command => "bolt task run simple_grid::run_puppet_agent \
           ipv4_address=${node['ip_address']} \
           hostname=${node_fqdn} \

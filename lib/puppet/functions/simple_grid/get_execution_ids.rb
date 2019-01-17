@@ -9,11 +9,10 @@ Puppet::Functions.create_function(:'simple_grid::get_execution_ids') do
                 data = YAML.load_file(augmented_site_level_config_file_path)
                 lightweight_components = data["lightweight_components"]
                 lightweight_components.each do |lightweight_component, index|
-                    if lightweight_component["deploy"]["node"] == hostname.strip
+                    if lightweight_component["deploy"]["node"] == fqdn.strip
                         exec_ids << lightweight_component["execution_id"]
                     end   
-                    exec_id.store(key["execution_id"],key["lifecycle_hooks"])
                 end
-                return exec_id
+                return exec_ids
         end
 end
