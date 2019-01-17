@@ -43,6 +43,7 @@ lightweight_components:
   - type: compute_element
     name: Cream-CE
     repository_url: "https://github.com/WLCG-Lightweight-Sites/wlcg_lightweight_site_ce_cream"
+    repository_revision: "master"
     execution_id: 0
     lifecycle_hooks:
       pre_config: 
@@ -75,6 +76,7 @@ lightweight_components:
   - name: WN-Pbs
     type: worker_node
     repository_url: "https://github.com/WLCG-Lightweight-Sites/wlcg_lightweight_site_wn_pbs"
+    repository_revision: "master"
     execution_id: 1
     lifecycle_hooks:
       pre_config: 

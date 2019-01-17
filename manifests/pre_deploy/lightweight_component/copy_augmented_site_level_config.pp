@@ -1,4 +1,4 @@
-class simple_grid::pre_deploy::lightweight_component::init(
+class simple_grid::pre_deploy::lightweight_component::copy_augmented_site_level_config(
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
   $site_config_dir = lookup('simple_grid::site_config_dir'),
   $site_config_dir_name = lookup('simple_grid::site_config_dir_name'),
