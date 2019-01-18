@@ -12,6 +12,10 @@
         "execution_id": {
           "type": "String[1]",
           "description": "The execution_id of the lightweight component that has to be deployed."
-        }
+        },
+        "deploy_status_file": {
+            "type": "String[1]",
+            "description": "The deploy status file path presnet on Lightweight Component Node."
+          }
     }
 }

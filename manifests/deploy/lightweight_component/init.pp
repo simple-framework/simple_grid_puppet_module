@@ -1,7 +1,7 @@
-class simple_grid::deploy::lightweight_component::init(
+ class simple_grid::deploy::lightweight_component::init(
   $execution_id
 ){
-    #execution happens using puppet agent -t through the deploy task during the deploy stage   
+    #execution happens using puppet apply through the deploy task during the deploy stage   
     notify{"Incoming request for exeuction id ${execution_id}":} 
     $int_execution_id = 0 + $execution_id
     simple_grid::update_execution_request_history('/etc/simple_grid/.deploy_status.yaml', $int_execution_id)
@@ -20,7 +20,7 @@ class simple_grid::deploy::lightweight_component::init(
     #   path   => "${augmented_site_level_config_file}",
     #   mode   => "744"
     # }
-  }
+  #}
     file{"/Chala":
         content => "BCBCBCBC"
     }

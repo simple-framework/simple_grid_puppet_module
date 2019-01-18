@@ -32,7 +32,7 @@ class simple_grid::nodes::config_master::init{
     #for each entry in loop, do a task to execute puppet apply -e 'class{"simple_grid::deploy::lightweight_component::init": execution_id => "{value from loop}"}
     include simple_grid::deploy::config_master::init
     # class {"simple_grid::components::execution_stage_manager::set_stage":
-    #  simple_stage => lookup('simple_grid::stage::deploy')
+    #  simple_stage => lookup('simple_grid::stage::final')
     # }
   }
   elsif $simple_stage == lookup('simple_grid::stage::final'){
