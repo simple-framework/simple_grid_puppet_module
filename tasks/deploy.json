@@ -16,6 +16,14 @@
         "deploy_status_file": {
             "type": "String[1]",
             "description": "The deploy status file path presnet on Lightweight Component Node."
-          }
+        },
+        "deploy_status_success": {
+            "type": "String[1]",
+            "description": "Value updated in deploy_status_file on success"
+        },
+        "deploy_status_failure": {
+            "type": "String[1]",
+            "description": "Value updated in deploy_status_file on error"
+        }
     }
 }

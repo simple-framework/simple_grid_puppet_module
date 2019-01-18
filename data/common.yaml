@@ -19,3 +19,8 @@ simple_grid::config_file: "%{hiera(simple_grid::hidden_config_dir)}/simple_confi
 # Lifecycle Scripts 
 simple_grid::scripts_dir_name: "scripts"
 simple_grid::scripts_dir: "%{hiera('simple_grid::simple_config_dir')}/%{hiera('simple_grid::scripts_dir_name')}"
+
+# Deploy status
+simple_grid::stage::deploy::status::file: "%{hiera('simple_grid::nodes::lightweight_component::deploy_status_file')"
+simple_grid::stage::deploy::status::success: 'success'
+simple_grid::stage::deploy::status::failure: 'error'

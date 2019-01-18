@@ -18,7 +18,7 @@ class DeployStatus <TaskHelper
         puts "Output",stdout
         stdout.strip
     end
-    def task(node_fqdn:nil, deploy_status_file:nil, execution_id:nil, retry_interval:nil, max_retries:nil, modulepath:nil, **kwargs)
+    def task(node_fqdn:nil, deploy_status_file:nil, execution_id:nil, modulepath:nil, **kwargs)
         retry_interval = retry_interval.to_i #10
         max_retries = max_retries.to_i #6
         trial = 0

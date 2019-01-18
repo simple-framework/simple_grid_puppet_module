@@ -25,13 +25,13 @@
             "type": "String[1]",
             "description": "The modulepath to be used when sending probes to a node"
         },
-        "retry_interval": {
+        "deploy_status_success": {
             "type": "String[1]",
-            "description": "Number of seconds after which the probe will be resent to monitor deployment status"
+            "description": "Value updated in deploy_status_file on success"
         },
-        "max_retries": {
+        "deploy_status_failure": {
             "type": "String[1]",
-            "description": "Max number of times a probe should be sent before a timeout occurs."
+            "description": "Value updated in deploy_status_file on error"
         }
     }
 }
