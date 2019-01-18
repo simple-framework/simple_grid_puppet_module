@@ -9,10 +9,6 @@
     ],
 
     "parameters": {
-        "node_fqdn": {
-            "type": "String[1]",
-            "description": "The lightweight component node to which the probe will be sent."
-        },
         "deploy_status_file": {
             "type": "String[1]",
             "description": "The location of the deploy_status_file on the LC node where the probes are run."
@@ -20,18 +16,6 @@
         "execution_id": {
           "type": "String[1]",
           "description": "The execution_id of the lightweight component whose deployment is to be monitored."
-        },
-        "modulepath": {
-            "type": "String[1]",
-            "description": "The modulepath to be used when sending probes to a node"
-        },
-        "deploy_status_success": {
-            "type": "String[1]",
-            "description": "Value updated in deploy_status_file on success"
-        },
-        "deploy_status_failure": {
-            "type": "String[1]",
-            "description": "Value updated in deploy_status_file on error"
         }
     }
 }

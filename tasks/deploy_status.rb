@@ -11,38 +11,18 @@ require 'open3'
 # If status is executing, it keeps monitoring until status changes to Error or Completed
 # If status is error or completed, the message is forwarded to CM which does appropriate handling.
 class DeployStatus <TaskHelper
-    def send_probe(node_fqdn, deploy_status_file, execution_id, modulepath)
-        send_probe = "bolt task run simple_grid::deploy_probe deploy_status_file=#{deploy_status_file} execution_id=#{execution_id} --modulepath=#{modulepath} --nodes #{node_fqdn}"
-        stdout, stderr, status = Open3.capture3(send_probe)
-        raise Puppet::Error, ("stderr: '#{stderr}'") if status !=0
-        puts "Output",stdout
-        stdout.strip
-    end
-    def task(node_fqdn:nil, deploy_status_file:nil, execution_id:nil, modulepath:nil, **kwargs)
-        retry_interval = retry_interval.to_i #10
-        max_retries = max_retries.to_i #6
-        trial = 0
-        result = send_probe(node_fqdn, deploy_status_file, execution_id, modulepath)
-        while result['status'] == "pending" and trial <= max_retries do 
-            result = send_probe(node_fqdn, deploy_status_file, execution_id, modulepath)
-            trial = trial + 1
-            sleep(retry_interval)
+
+    def task(deploy_status_file:nil, execution_id:nil, **kwargs)
+        deploy_status_file_hash = YAML.load(File.read(deploy_status_file))
+        deploy_statuses = deploy_status_file_hash['deploy_status']
+        current_deploy_status = Hash.new
+        deploy_statuses.each do |deploy_status|
+            if deploy_status['execution_id'].to_i == execution_id.to_i 
+                current_deploy_status = deploy_status
+                break
+            end
         end
-        if trial == max_retries
-            return {status: "timeout", logs: result['logs']}
-        end
-        # result !=pending
-        trial = 0
-        if result['status'] == "deploying"
-            begin
-                result = send_probe(node_fqdn, deploy_status_file, execution_id, modulepath)
-            rescue => exception
-                puts exception.message
-            end until result['status'] == "error" or result['status'] == "completed"
-        end
-        if result['status'] == "error" or result['status'] == "completed"
-            return result
-        end
+        current_deploy_status.to_yaml
     end
 end
 

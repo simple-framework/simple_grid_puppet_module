@@ -43,23 +43,17 @@ class simple_grid::deploy::config_master::init(
       environment => ["HOME=/root"]
       }
     
-      # exec{"Waiting for deployment of ${index} to end":
-      #   command => "bolt task run simple_grid::deploy_status \
-      #   node_fqdn=${node_fqdn} \
-      #   deploy_status_file=${deploy_status_file} \
-      #   execution_id=${index} \
-      #   modulepath= /etc/puppetlabs/code/environments/production/modules/ \
-      #   deploy_status_success=${deploy_status_success} \
-      #   deploy_status_failure=${deploy_status_failure} \
-      #   --modulepath /etc/puppetlabs/code/environments/simple/site/:/etc/puppetlabs/code/environments/simple/modules/ \
-      #   --nodes localhost > /etc/simple_grid/.${index}.status", #${node_fqdn} > /etc/simple_grid/${index}.status",
-      #   path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
-      #   user    => root,
-      #   logoutput => true,
-      #   environment => ["HOME=/root"]
-      # }
-      exec{"chak de phattay $index":
-        command => "/init.sh"
+      exec{"Writing deployment status to /etc/simple_grid/.${index}.status":
+        command => "bolt task run simple_grid::deploy_status \
+        deploy_status_file=${deploy_status_file} \
+        execution_id=${index} \
+        --modulepath /etc/puppetlabs/code/environments/simple/site/:/etc/puppetlabs/code/environments/simple/modules/ \
+        --nodes ${node_fqdn} \
+        > /etc/simple_grid/.${index}.status",
+        path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
+        user    => root,
+        logoutput => true,
+        environment => ["HOME=/root"]
       }
     }
   }
