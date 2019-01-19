@@ -1,5 +1,6 @@
 class simple_grid::deploy::config_master::init(
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
+  $simple_config_dir = lookup('simple_grid::simple_config_dir'),
   $deploy_status_file = lookup("simple_grid::nodes::lightweight_component::deploy_status_file"),
   $deploy_status_success = lookup("simple_grid::stage::deploy::status::success"),
   $deploy_status_failure = lookup("simple_grid::stage::deploy::status::failure")
@@ -15,15 +16,16 @@ class simple_grid::deploy::config_master::init(
   $final_index = length($lightweight_components_augmented) - 1
   $lightweight_components_augmented.each |Integer $index, Hash $lightweight_component| {
     if $index > 0 { 
-      $last_index = $index -1 
-      #$execution_status = file("/etc/simple_grid/.${last_index}.status")
-      #notify{"Execution Status of ${last_index} was ${execution_status}":}
-      #if $execution_status == "error" {
-      #  fail("Error Message will be shown here")
+      $last_index = $index - 1
+      $execution_status_file = "${simple_config_dir}/.${last_index}.status" 
+      $execution_data = simple_grid::process_deploy_status("${execution_status_file}")
+      notify{"Execution Status of ${last_index} was ${execution_data['status']}":}
+      #if $execution_data['status'] == $deploy_status_failure {
+      #  fail("Terminating deployment of Lightweight Components. Execution of Lightweight Component with execution_id ${last_index} failed. Please see /etc/simple_grid/.${last_index}.status for more details.")
       #}
     }
     #if index is last element (dummy component, exit here), else do the following
-    if( $index == $final_index){
+    if($index == $final_index){
         notify{"*** Reached end of Deployment Stage ****":}
     }
     else {
@@ -39,7 +41,7 @@ class simple_grid::deploy::config_master::init(
         --nodes ${node_fqdn}",
       path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
       user    => 'root',
-      logoutput => true,
+      logoutput => 'on_failure',
       environment => ["HOME=/root"]
       }
     
@@ -52,7 +54,7 @@ class simple_grid::deploy::config_master::init(
         > /etc/simple_grid/.${index}.status",
         path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
         user    => root,
-        logoutput => true,
+        logoutput => 'on_failure',
         environment => ["HOME=/root"]
       }
     }

@@ -20,7 +20,7 @@
     #   path   => "${augmented_site_level_config_file}",
     #   mode   => "744"
     # }
-  #}
+  }
     file{"/Chala":
         content => "BCBCBCBC"
     }
