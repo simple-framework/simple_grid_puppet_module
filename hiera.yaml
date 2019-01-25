@@ -37,6 +37,9 @@ hierarchy:
   - name: "components::ccm"
     path: "components/ccm.yaml"
 
+  - name: "components::component_repository"
+    path: "components/component_repository.yaml"
+
   - name: "nodes::config_master"
     path: "nodes/config_master.yaml"
 

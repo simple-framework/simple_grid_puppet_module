@@ -4,7 +4,6 @@ Puppet::Functions.create_function(:'simple_grid::generate_lifecycle_script_direc
                 param 'String', :site_level_config_file_path
         end
         def get_lifecycle_scripts(site_level_config_file_path)
-                lightweight_components = Hash.new
                 exec_id = Hash.new
                 data = YAML.load_file(site_level_config_file_path)
                 lightweight_components = data["lightweight_components"]

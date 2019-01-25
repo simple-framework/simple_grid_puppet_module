@@ -1,6 +1,7 @@
 {
   "description": "Implements Docker Swarm from the SIMPLE Framework",
-  
+  "input_method": "stdin",
+  "files": ["ruby_task_helper/files/task_helper.rb"],
   "implementations": [
     {"name": "swarm.rb"}
   ],

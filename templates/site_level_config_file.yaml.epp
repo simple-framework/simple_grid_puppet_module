@@ -1,14 +1,14 @@
 ### Variable declaration:
 vars:
-  - &basic_config_master_ip_address 192.168.176.2
-  - &lightweight_component01_ip_address 192.168.176.4
+  - &lightweight_component01_ip_address 192.168.0.4
+  - &lightweight_component02_ip_address 192.168.0.5
 
 cream_runtime_vars:
   - &cream_runtime_var_ce_host lightweight_component01.cern.ch
   - &cream_runtime_var_queues alice
 
 pbs_runtime_vars:
-  - &pbs_runtime_var_ce_host lightweight_component01.cern.ch
+  - &pbs_runtime_var_ce_host lightweight_component02.cern.ch
   - &pbs_runtime_var_queues alice
 
 site:
@@ -34,22 +34,23 @@ preferred_tech_stack:
   container: docker
 
 site_infrastructure:
-  - fqdn: basic_config_master.cern.ch
-    ip_address: *basic_config_master_ip_address
   - fqdn: lightweight_component01.cern.ch
     ip_address: *lightweight_component01_ip_address
+  - fqdn: lightweight_component02.cern.ch
+    ip_address: *lightweight_component02_ip_address
 
 lightweight_components:
   - type: compute_element
     name: Cream-CE
     repository_url: "https://github.com/WLCG-Lightweight-Sites/wlcg_lightweight_site_ce_cream"
-    execution_id: 1
+    repository_revision: "master"
+    execution_id: 0
     lifecycle_hooks:
       pre_config: 
         - /etc/simple_grid/lifecycle/ce_pre_config.sh
-      pre_inst:
+      pre_init:
         - /etc/simple_grid/lifecycle/ce_pre_inst1.sh
-      post_inst: 
+      post_init: 
         - /etc/simple_grid/lifecycle/ce_post_inst1.sh
     deploy:
       - node: lightweight_component01.cern.ch
@@ -75,16 +76,17 @@ lightweight_components:
   - name: WN-Pbs
     type: worker_node
     repository_url: "https://github.com/WLCG-Lightweight-Sites/wlcg_lightweight_site_wn_pbs"
-    execution_id: 2
+    repository_revision: "master"
+    execution_id: 1
     lifecycle_hooks:
       pre_config: 
         - /etc/simple_grid/lifecycle/wn_pre_config.sh
-      pre_inst:
+      pre_init:
         - /etc/simple_grid/lifecycle/wn_pre_inst1.sh
-      post_inst: 
+      post_init: 
         - /etc/simple_grid/lifecycle/wn_post_inst1.sh
     deploy:
-      - node: lightweight_component01.cern.ch
+      - node: lightweight_component02.cern.ch
         container_count: 1
     preferred_tech_stack:
       level_2_configuration: yaim
