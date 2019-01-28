@@ -50,6 +50,7 @@ class simple_grid::pre_deploy::config_master::init(
         user    => 'root',
         logoutput => true,
         environment => ["HOME=/root"]
+      }
 
         exec{"Running puppet agent on ${node_fqdn} to initiate step 3 of pre_deploy stage ":
         command => "bolt task run simple_grid::run_puppet_agent \
