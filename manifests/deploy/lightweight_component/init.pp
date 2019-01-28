@@ -8,10 +8,13 @@
     $execute_now = simple_grid::execute_now('/etc/simple_grid/.deploy_status.yaml', $int_execution_id)
     if $execute_now {
         #simple_grid::set_execution_status('/etc/simple_grid/.deploy_status.yaml', $execution_id, "deploying")
-        notify{"EXECUTING ${execution_id} NOW!!!!":}
+        notify{"Deploying execution_id ${execution_id} now!!!!":}
+        $repo_meta_info = loadyaml("meta-info.yaml")
         #file {'/etc/simple_grid/.deploy_status.yaml':
         #    content => to_yaml($post_execution_deploy_status)
         #}
+    }else {
+        fail("The execution id ${execution_id} is either not suppoed to be executed on the host or has already been deployed during this deployment cycle.")
     }
     # $execution_ids = simple_grid::get_execution_ids($augmented_site_level_config_file, $fqdn)
     # $execution_ids.each |execution_id| {
@@ -20,7 +23,7 @@
     #   path   => "${augmented_site_level_config_file}",
     #   mode   => "744"
     # }
-  }
+  #}
     file{"/Chala":
         content => "BCBCBCBC"
     }

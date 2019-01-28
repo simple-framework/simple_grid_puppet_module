@@ -2,7 +2,6 @@
 require 'json'
 require 'yaml'
 require_relative "../../ruby_task_helper/files/task_helper.rb"
-require 'open3'
 
 # This task runs on CM node
 class DeployStatus <TaskHelper
