@@ -1,2 +1,3 @@
 ---
 simple_grid::components::component_repository::default_revision: master
+simple_grid::components::component_repository::meta_info_file: meta-info.yaml
