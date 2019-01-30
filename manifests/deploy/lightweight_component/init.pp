@@ -28,10 +28,9 @@
                 }
             notify{"Meta Info: ${firewall_rule}":}
         }
-        #$repo_meta_info = loadyaml("/etc/simple_grid/repositories/meta-info.yaml")
-        #file {'/etc/simple_grid/.deploy_status.yaml':
-        #    content => to_yaml($post_execution_deploy_status)
-        #}
+        if $cvmfs == "true" {
+            
+        }
     #}else {
     #    fail("The execution id ${execution_id} is either not supposed to be executed on the host or has already been deployed during this deployment cycle.")
     #}
