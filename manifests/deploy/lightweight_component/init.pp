@@ -5,6 +5,7 @@
   $component_repository_dir = lookup('simple_grid::nodes::lightweight_component::component_repository_dir'),
   $meta_info_file_name = lookup('simple_grid::components::component_repository::meta_info_file')
 ){
+
     #execution happens using puppet apply through the deploy task during the deploy stage   
     notify{"Incoming request for execution id ${execution_id}":} 
     simple_grid::update_execution_request_history($deploy_status_file, $execution_id)
@@ -20,10 +21,10 @@
         $firewall_rules = $meta_info['host_requirements']['firewall']
         $cvmfs = $meta_info['host_requirements']['cvmfs']
         $firewall_rules.each |Integer $index, Hash $firewall_rule| {
-            firewall { 'Setting rule number $index':
-                        dport  => $firewall_rule[ports],
-                        action => $firewall_rule[action],
-                        proto  => $firewall_rule[protocol],
+            firewall { "${index} SIMPLE Framework Firewall rule for ${repository_name} container with execution id ${execution_id}":
+                        dport  => "${firewall_rule[ports]}",
+                        action => "${firewall_rule[action]}",
+                        proto  => "${firewall_rule[protocol]}",
                 }
             notify{"Meta Info: ${firewall_rule}":}
         }
