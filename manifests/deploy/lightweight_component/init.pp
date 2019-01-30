@@ -20,7 +20,11 @@
         $firewall_rules = $meta_info['host_requirements']['firewall']
         $cvmfs = $meta_info['host_requirements']['cvmfs']
         $firewall_rules.each |Integer $index, Hash $firewall_rule| {
-            firewall
+            firewall { 'Setting rule number $index':
+                        dport  => $firewall_rule[ports],
+                        action => $firewall_rule[action],
+                        proto  => $firewall_rule[protocol],
+                }
             notify{"Meta Info: ${firewall_rule}":}
         }
         #$repo_meta_info = loadyaml("/etc/simple_grid/repositories/meta-info.yaml")
