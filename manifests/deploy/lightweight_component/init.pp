@@ -27,10 +27,11 @@
                         proto  => "${firewall_rule[protocol]}",
                 }
             notify{"Meta Info: ${firewall_rule}":}
-        }
-        if $cvmfs == "true" {
+        # }
+        # if $cvmfs == "true" {
             
-        }
+        # }
+        #Class[simple_grid::components::cvmfs::install] -> Class[simple_grid::components::cvmfs::configure] 
     #}else {
     #    fail("The execution id ${execution_id} is either not supposed to be executed on the host or has already been deployed during this deployment cycle.")
     #}
