@@ -3,3 +3,5 @@
 simple_grid::components::site_level_config_file: "%{hiera('simple_grid::site_config_dir')}/site_level_config_file.yaml"
 #samples
 simple_grid::components::site_level_config_file::install::cream_torque_sample_file: "%{hiera('simple_grid::site_config_dir')}/cream_torque_sample_site_level_config_file.yaml"
+
+simple_grid::components::site_level_config_file::objects:meta_info_prefix: meta_info_

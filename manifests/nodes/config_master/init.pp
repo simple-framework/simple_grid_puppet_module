@@ -24,7 +24,7 @@ class simple_grid::nodes::config_master::init{
       }
     }
     class {"simple_grid::components::execution_stage_manager::set_stage":
-     simple_stage => lookup('simple_grid::stage::deploy')
+    simple_stage => lookup('simple_grid::stage::deploy')
     }
   }
   elsif $simple_stage == lookup('simple_grid::stage::deploy'){

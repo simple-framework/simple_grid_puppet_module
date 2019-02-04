@@ -9,19 +9,7 @@ hierarchy:
 
   - name: "common"
     path: "common.yaml"
-
-  - name: "pre_config::config_master"
-    path: "pre_config/config_master.yaml"
-
-  - name: "pre_config::lightweight_component"
-    path: "pre_config/lightweight_component.yaml"
   
-  - name: "config::config_master"
-    path: "config/config_master.yaml"
-
-  - name: "config::lightweight_component"
-    path: "config/lightweight_component.yaml"
-
   - name: "components::enc"
     path: "components/enc.yaml"
 
