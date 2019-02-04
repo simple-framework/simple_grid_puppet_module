@@ -23,7 +23,7 @@ class Deploy < TaskHelper
         return ip
         end
         # Init Swarm on CE and create WN simple
-        def swarm_init(ce_ip, modulepath)
+        def swarm_init(ce_ip, network, subnet, modulepath)
                 puts ce_ip.class
                 ce_ip.each_with_index do |ip, index|
                         puts ip
@@ -33,7 +33,7 @@ class Deploy < TaskHelper
                         system init_cmd
                         if index == 0
                                 puts  "** Creating SIMPLE Network on #{ip} **"
-                                nw_cmd = "bolt command run "+"'"+"docker network create --attachable --driver=overlay --subnet=10.0.1.0/24 simple"+ "'" + " --nodes  #{ip}"
+                                nw_cmd = "bolt command run "+"'"+"docker network create --attachable --driver=overlay --subnet=#{subnet} #{network}"+ "'" + " --nodes  #{ip}"
                                 puts  "***"
                                 system nw_cmd
                         end
@@ -64,10 +64,10 @@ class Deploy < TaskHelper
                         end
                 end
         end
-        def task(augmented_site_level_config_file:nil, modulepath:nil, **kwargs)
+        def task(augmented_site_level_config_file:nil, network:nil, subnet:nil, modulepath:nil, **kwargs)
                 ce_ip = get_element_ip(augmented_site_level_config_file,"compute_element")
                 wn_ip = get_element_ip(augmented_site_level_config_file,"worker_node")
-                swarm_init(ce_ip, modulepath)
+                swarm_init(ce_ip, network, subnet, modulepath)
                 swarm_token(ce_ip,wn_ip, modulepath) 
                 {status: 'success'}
         end

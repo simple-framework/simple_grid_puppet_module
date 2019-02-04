@@ -3,11 +3,11 @@ vars:
   - &lightweight_component01_ip_address 192.168.0.4
   - &lightweight_component02_ip_address 192.168.0.5
 
-cream_runtime_vars:
+cream_runtime_variables:
   - &cream_runtime_var_ce_host lightweight_component01.cern.ch
   - &cream_runtime_var_queues alice
 
-pbs_runtime_vars:
+pbs_runtime_variables:
   - &pbs_runtime_var_ce_host lightweight_component02.cern.ch
   - &pbs_runtime_var_queues alice
 

@@ -3,8 +3,7 @@ class simple_grid::nodes::lightweight_component::init(
 )
 {
   if $simple_stage == lookup('simple_grid::stage::install'){
-    class{"simple_grid::install::lightweight_component::init":}    
-    #class{"simple_grid::config::lightweight_component::init":} #not in specification, added to do puppet specific configuration
+    class{"simple_grid::install::lightweight_component::init":}
     class {"simple_grid::components::execution_stage_manager::set_stage":
       simple_stage => lookup('simple_grid::stage::pre_deploy::step_1') #handled by tasks executed by CM
     }
@@ -12,31 +11,27 @@ class simple_grid::nodes::lightweight_component::init(
     if $mode == lookup('simple_grid::mode::release') {
       include docker
     }
-    #TODO firewall
-    # firewall{'open port ':
-    #   dport => 2376
-    # }
+
   }
   elsif $simple_stage == lookup('simple_grid::stage::pre_deploy::step_1') {
     # Docker Swarm responsibilities delegated to tasks that are executed directly by CM. 
-    # Rest happens here
-    class{"simple_grid::pre_deploy::lightweight_component::copy_augmented_site_level_config":}
     class {"simple_grid::components::execution_stage_manager::set_stage":
-       simple_stage => lookup('simple_grid::stage::pre_deploy::step_2') #handled by tasks executed by CM
-     }
+       simple_stage => lookup('simple_grid::stage::pre_deploy::step_2') 
+    }
   }
   elsif $simple_stage == lookup('simple_grid::stage::pre_deploy::step_2'){
+    class{"simple_grid::pre_deploy::lightweight_component::copy_augmented_site_level_config":}
     class{"simple_grid::pre_deploy::lightweight_component::copy_lifecycle_callbacks":}
     class {"simple_grid::components::execution_stage_manager::set_stage":
-       simple_stage => lookup('simple_grid::stage::pre_deploy::step_3') #handled by tasks executed by CM
+       simple_stage => lookup('simple_grid::stage::pre_deploy::step_3')
      }
   }
   elsif $simple_stage == lookup('simple_grid::stage::pre_deploy::step_3') {
     include 'git'
     class{"simple_grid::pre_deploy::lightweight_component::download_component_repository":}
     class {"simple_grid::components::execution_stage_manager::set_stage":
-       simple_stage => lookup('simple_grid::stage::deploy') #handled by tasks executed by CM
-     }
+      simple_stage => lookup('simple_grid::stage::deploy') #handled by tasks executed by CM
+    }
   }
   elsif $simple_stage == lookup('simple_grid::stage::deploy') {
     #handled by tasks from puppet master, which do a puppet apply simple_grid::deploy::lightweight_component::init($execution_id)
