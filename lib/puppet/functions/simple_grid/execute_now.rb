@@ -11,7 +11,7 @@ Puppet::Functions.create_function(:'simple_grid::execute_now') do
         deploy_statuses = data['deploy_status']
         execution_pending = []
         deploy_statuses.each do |deploy_status|
-            if deploy_status['status'].strip == initial_deploy_status
+            if deploy_status['status'] == initial_deploy_status
                 execution_pending << deploy_status['execution_id']
             end
         end
