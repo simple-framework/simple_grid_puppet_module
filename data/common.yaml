@@ -18,5 +18,6 @@ simple_grid::scripts_dir: "%{hiera('simple_grid::simple_config_dir')}/%{hiera('s
 
 # Deploy status
 simple_grid::stage::deploy::status::file: "%{hiera('simple_grid::nodes::lightweight_component::deploy_status_file')"
-simple_grid::stage::deploy::status::success: 'success'
-simple_grid::stage::deploy::status::failure: 'error'
+simple_grid::stage::deploy::status::success: pending
+simple_grid::stage::deploy::status::failure: error
+simple_grid::stage::deploy::status::initial: pending

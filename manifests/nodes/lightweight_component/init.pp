@@ -7,24 +7,24 @@ class simple_grid::nodes::lightweight_component::init(
     class {"simple_grid::components::execution_stage_manager::set_stage":
       simple_stage => lookup('simple_grid::stage::pre_deploy::step_1') #handled by tasks executed by CM
     }
+  }
+  elsif $simple_stage == lookup('simple_grid::stage::pre_deploy::step_1') {
+    # Docker Swarm responsibilities delegated to tasks that are executed directly by CM. 
     #TODO should this be in release mode? Check
     if $mode == lookup('simple_grid::mode::release') {
       include docker
     }
-
-  }
-  elsif $simple_stage == lookup('simple_grid::stage::pre_deploy::step_1') {
-    # Docker Swarm responsibilities delegated to tasks that are executed directly by CM. 
     class {"simple_grid::components::execution_stage_manager::set_stage":
        simple_stage => lookup('simple_grid::stage::pre_deploy::step_2') 
     }
   }
   elsif $simple_stage == lookup('simple_grid::stage::pre_deploy::step_2'){
+    class{"simple_grid::pre_deploy::lightweight_component::generate_deploy_status_file":}
     class{"simple_grid::pre_deploy::lightweight_component::copy_augmented_site_level_config":}
     class{"simple_grid::pre_deploy::lightweight_component::copy_lifecycle_callbacks":}
     class {"simple_grid::components::execution_stage_manager::set_stage":
-       simple_stage => lookup('simple_grid::stage::pre_deploy::step_3')
-     }
+      simple_stage => lookup('simple_grid::stage::pre_deploy::step_3')
+    }
   }
   elsif $simple_stage == lookup('simple_grid::stage::pre_deploy::step_3') {
     include 'git'
