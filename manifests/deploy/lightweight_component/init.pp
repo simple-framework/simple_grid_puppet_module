@@ -1,30 +1,17 @@
  class simple_grid::deploy::lightweight_component::init(
-  $execution_id
+  $execution_id,
+  $deploy_status_file = lookup('simple_grid::nodes::lightweight_component::deploy_status_file'),
+  $intial_deploy_status = lookup('simple_grid::stage::deploy::status::initial')
 ){
     #execution happens using puppet apply through the deploy task during the deploy stage   
-    notify{"Incoming request for exeuction id ${execution_id}":} 
-    $int_execution_id = 0 + $execution_id
-    simple_grid::update_execution_request_history('/etc/simple_grid/.deploy_status.yaml', $int_execution_id)
-    $execute_now = simple_grid::execute_now('/etc/simple_grid/.deploy_status.yaml', $int_execution_id)
+    notify{"Incoming request for execution id ${execution_id}":} 
+    simple_grid::update_execution_request_history($deploy_status_file, $execution_id)
+    $execute_now = simple_grid::execute_now($deploy_status_file, $execution_id, $intial_deploy_status)
+    notify{"Execute Now? ${execute_now}":}
     if $execute_now {
-        #simple_grid::set_execution_status('/etc/simple_grid/.deploy_status.yaml', $execution_id, "deploying")
-        notify{"Deploying execution_id ${execution_id} now!!!!":}
-        $repo_meta_info = loadyaml("meta-info.yaml")
-        #file {'/etc/simple_grid/.deploy_status.yaml':
-        #    content => to_yaml($post_execution_deploy_status)
-        #}
-    }else {
-        fail("The execution id ${execution_id} is either not suppoed to be executed on the host or has already been deployed during this deployment cycle.")
-    }
-    # $execution_ids = simple_grid::get_execution_ids($augmented_site_level_config_file, $fqdn)
-    # $execution_ids.each |execution_id| {
-    # file{"Copying lifecycle callback scripts for execution_id's corresponding to ${fqdn}":
-    #   source => "puppet:///simple_grid/${site_config_dir_name}/${augmented_site_level_config_file_name}",
-    #   path   => "${augmented_site_level_config_file}",
-    #   mode   => "744"
-    # }
-  #}
-    file{"/Chala":
-        content => "BCBCBCBC"
-    }
+        simple_grid::set_execution_status('/etc/simple_grid/.deploy_status.yaml', $execution_id, "deploying")
+        class {"simple_grid::components::component_repository::deploy":
+            execution_id => $execution_id
+        }
+    }   
 }

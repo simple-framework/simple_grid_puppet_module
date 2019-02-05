@@ -1,2 +1,11 @@
 ---
 simple_grid::components::component_repository::default_revision: master
+simple_grid::components::component_repository::meta_info_file: meta-info.yaml
+
+#Lifecycle Events and Hooks
+simple_grid::components::component_repository::lifecycle::hook::pre_config: "repo_hook_pre_config"
+simple_grid::components::component_repository::lifecycle::event::pre_config: "repo_event_pre_config"
+simple_grid::components::component_repository::lifecycle::hook::pre_init: "repo_hook_pre_init"
+simple_grid::components::component_repository::lifecycle::event::boot: "repo_event_boot"
+simple_grid::components::component_repository::lifecycle::event::init: "repo_event_init"
+simple_grid::components::component_repository::lifecycle::hook::post_init: "repo_hook_post_init"
