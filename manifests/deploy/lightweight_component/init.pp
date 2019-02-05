@@ -3,7 +3,6 @@
   $deploy_status_file = lookup('simple_grid::nodes::lightweight_component::deploy_status_file'),
   $intial_deploy_status = lookup('simple_grid::stage::deploy::status::initial')
 ){
-
     #execution happens using puppet apply through the deploy task during the deploy stage   
     notify{"Incoming request for execution id ${execution_id}":} 
     simple_grid::update_execution_request_history($deploy_status_file, $execution_id)
