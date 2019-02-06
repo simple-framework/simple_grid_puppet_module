@@ -28,8 +28,11 @@ class simple_grid::components::component_repository::deploy(
 class simple_grid::component::component_repository::lifecycle::hook::pre_config(
   $scripts,
   $mode = lookup('simple_grid::mode'),
+  
 ){
   $scripts.each |$script|{
+    $file = split($script, '/')
+    $real_script_path = "${}"
     #TODO extract script path assigned by framework
     if $mode == lookup('simple_grid::mode::docker') or $mode == lookup('simple_grid::mode::dev') {
       exec{"Executing Pre-Config Script $script":
