@@ -30,13 +30,11 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_config(
   $mode = lookup('simple_grid::mode'),
   
 ){
-  $scripts.each |$script|{
-    $file = split($script, '/')
-    $real_script_path = "${}"
-    #TODO extract script path assigned by framework
+  $scripts.each |Hash $script|{
+    $actual_script = $script['actual_script']
     if $mode == lookup('simple_grid::mode::docker') or $mode == lookup('simple_grid::mode::dev') {
       exec{"Executing Pre-Config Script $script":
-        command => "${script}",
+        command => "${actual_script}",
         path => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
         user => 'root',
         logoutput => true,
@@ -45,10 +43,10 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_config(
     }
     elsif $mode == lookup('simple_grid::mode::release') {
       exec{"Executing Pre-Config Script $script":
-        command => "${script}",
-        path => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
+        command => "${actual_script}",
+        path => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
         user => 'root',
-        logoutput => true,
+        logoutput => true
       }
     }
   }

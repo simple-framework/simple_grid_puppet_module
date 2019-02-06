@@ -14,7 +14,7 @@ Puppet::Functions.create_function(:'simple_grid::generate_lifecycle_script_direc
                         all_original_scripts.each do |lifecycle_hook, original_scripts|
                                 modified_hook = Array.new
                                 original_scripts.each do |original_script|
-                                        actual_script = "#{scripts_dir}/#{lightweight_component['execution_id']}/#{original_script.split('/')[-1]}"
+                                        actual_script = "#{scripts_dir}/#{lightweight_component['execution_id']}/#{lifecycle_hook}/#{original_script.split('/')[-1]}"
                                         modified_hook << {"original_script" => original_script, "actual_script" => actual_script}
                                 end
                                 modified_hooks.store(lifecycle_hook, modified_hook)
