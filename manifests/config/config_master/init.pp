@@ -18,6 +18,4 @@ class simple_grid::config::config_master::init(
   class{"simple_grid::components::yaml_compiler::execute":}
   #notify{"Aggregate lifecycle callback scripts":}
   #class{"simple_grid::ccm_function::aggregate_repository_lifecycle_scripts":}
-
-  
 }

@@ -24,6 +24,12 @@ class simple_grid::components::component_repository::deploy(
     execution_id => $execution_id
   }
 
+  class{"simple_grid::ccm_function::exec_lifecycle_event":
+    event => lookup('simple_grid::components::component_repository::lifecycle::event::pre_config'),
+    current_lightweight_component => $current_lightweight_component,
+    execution_id => $execution_id
+  }
+
 }
 class simple_grid::component::component_repository::lifecycle::hook::pre_config(
   $scripts,
