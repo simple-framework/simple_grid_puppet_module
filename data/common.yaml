@@ -8,7 +8,8 @@ simple_grid::mode::docker: dev-docker
 simple_grid::mode::release: production
 
 # Configuration Directories
-simple_grid::simple_config_dir: '/etc/simple_grid'
+simple_grid::simple_grid_dir_name: 'simple_grid'
+simple_grid::simple_config_dir: "/etc/%{hiera('simple_grid::simple_grid_dir_name')}"
 simple_grid::site_config_dir_name: site_config
 simple_grid::site_config_dir: "%{hiera('simple_grid::simple_config_dir')}/%{hiera('simple_grid::site_config_dir_name')}"
 
@@ -16,6 +17,9 @@ simple_grid::site_config_dir: "%{hiera('simple_grid::simple_config_dir')}/%{hier
 simple_grid::scripts_dir_name: "scripts"
 simple_grid::scripts_dir: "%{hiera('simple_grid::simple_config_dir')}/%{hiera('simple_grid::scripts_dir_name')}"
 
+# host certificates
+simple_grid::host_certificates_dir_name: "host_certificates"
+simple_grid::host_certificates_dir: "%{hiera('simple_grid::simple_config_dir')}/%{hiera('simple_grid::host_certificates_dir_name')}"
 # Deploy status
 simple_grid::stage::deploy::status::file: "%{hiera('simple_grid::nodes::lightweight_component::deploy_status_file')"
 simple_grid::stage::deploy::status::success: pending

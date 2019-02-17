@@ -1,5 +1,5 @@
 # Run command 
-#puppet apply --modulepath /etc/puppetlabs/code/environments/production/modules -e "class {'simple_grid::install::lightweight_component::simple_installer':puppet_master => 'basic_config_master.cern.ch'}"
+# puppet apply --modulepath /etc/puppetlabs/code/environments/production/modules -e "class {'simple_grid::install::lightweight_component::simple_installer':puppet_master => 'basic_config_master.cern.ch'}"
 
 class simple_grid::install::lightweight_component::simple_installer(  
   $puppet_master,
