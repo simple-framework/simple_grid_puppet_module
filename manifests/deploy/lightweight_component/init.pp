@@ -9,7 +9,7 @@
     $execute_now = simple_grid::execute_now($deploy_status_file, $execution_id, $intial_deploy_status)
     notify{"Execute Now? ${execute_now}":}
     if $execute_now {
-        simple_grid::set_execution_status('/etc/simple_grid/.deploy_status.yaml', $execution_id, "deploying")
+        # simple_grid::set_execution_status('/etc/simple_grid/.deploy_status.yaml', $execution_id, "deploying")
         class {"simple_grid::components::component_repository::deploy":
             execution_id => $execution_id
         }
