@@ -28,9 +28,9 @@ class simple_grid::nodes::lightweight_component::init(
   elsif $simple_stage == lookup('simple_grid::stage::pre_deploy::step_3') {
     include 'git'
     class{"simple_grid::pre_deploy::lightweight_component::download_component_repository":}
-    # class {"simple_grid::components::execution_stage_manager::set_stage":
-    #   simple_stage => lookup('simple_grid::stage::deploy') #handled by tasks executed by CM
-    # }
+    class {"simple_grid::components::execution_stage_manager::set_stage":
+      simple_stage => lookup('simple_grid::stage::deploy') #handled by tasks executed by CM
+    }
   }
   elsif $simple_stage == lookup('simple_grid::stage::deploy') {
     #handled by tasks from puppet master, which do a puppet apply simple_grid::deploy::lightweight_component::init($execution_id)
