@@ -27,7 +27,7 @@ site:
 
 preferred_tech_stack:
   level_1_configuration: puppet
-  level_2_configuration: puppet
+  level_2_configuration: yaim
   container_orchestration: docker-swarm
   container: docker
 

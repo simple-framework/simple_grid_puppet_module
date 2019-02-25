@@ -15,11 +15,20 @@ class simple_grid::ccm_function::exec_repository_lifecycle_hook(
           scripts => $scripts
         }
       }
-      elsif $hook == lookup('simple_grid::components::component_repository::lifecycle::hook::pre_init') {          class{"simple_grid::component::component_repository::lifecycle::hook::pre_init":}
+      elsif $hook == lookup('simple_grid::components::component_repository::lifecycle::hook::pre_init') {          
+        class{"simple_grid::component::component_repository::lifecycle::hook::pre_init":
+          scripts => $scripts,
+          current_lightweight_component => $current_lightweight_component,
+          execution_id => $execution_id
+        }
         
       }
       elsif $hook == lookup('simple_grid::components::component_repository::lifecycle::hook::post_init') {
-        class{"simple_grid::component::component_repository::lifecycle::hook::post_init":}
+        class{"simple_grid::component::component_repository::lifecycle::hook::post_init":
+          scripts => $scripts,
+          current_lightweight_component => $current_lightweight_component,
+          execution_id => $execution_id
+        }
       }
     }
   }

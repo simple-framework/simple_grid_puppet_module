@@ -23,9 +23,9 @@ class simple_grid::nodes::config_master::init{
         ensure => "present"
       }
     }
-    class {"simple_grid::components::execution_stage_manager::set_stage":
-    simple_stage => lookup('simple_grid::stage::deploy')
-    }
+    # class {"simple_grid::components::execution_stage_manager::set_stage":
+    # simple_stage => lookup('simple_grid::stage::deploy')
+    # }
   }
   elsif $simple_stage == lookup('simple_grid::stage::deploy'){
     #deployment for CM, run 'THE LOOP' here

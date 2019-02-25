@@ -5,14 +5,18 @@ Puppet::Functions.create_function(:'simple_grid::generate_dns_file_content') do
         param 'String', :augmented_site_level_config_file
         param 'String', :subnet
         param 'String', :meta_info_prefix
+        param 'String', :dns_key
     end
-    def generate_dns_file_content(augmented_site_level_config_file, subnet, meta_info_prefix)
+    def generate_dns_file_content(augmented_site_level_config_file, subnet, meta_info_prefix, dns_key)
         dns_content = Array.new
         net = IPAddr.new subnet
         ip_range = net.to_range.to_a
         ip_offset = 1
         ip_index = 1
         data = YAML.load_file(augmented_site_level_config_file)
+        if data.key?('dns')
+            return ''
+        end
         lightweight_components = data['lightweight_components']
         lightweight_components.each do |lightweight_component|
             name = lightweight_component['name']

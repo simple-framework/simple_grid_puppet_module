@@ -24,7 +24,7 @@ class simple_grid::components::component_repository::deploy(
     execution_id => $execution_id
   }
 
-  class{"simple_grid::ccm_function::exec_lifecycle_event":
+  class{"simple_grid::ccm_function::exec_repository_lifecycle_event":
     event => lookup('simple_grid::components::component_repository::lifecycle::event::pre_config'),
     current_lightweight_component => $current_lightweight_component,
     execution_id => $execution_id
@@ -57,13 +57,64 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_config(
     }
   }
 }
-class simple_grid::component::component_repository::lifecycle::hook::pre_init(
+
+class simple_grid::component::component_repository::lifecycle::event::pre_config(
+  $current_lightweight_component,
+  $execution_id,
+  $component_repository_dir = lookup('simple_grid::nodes::lightweight_component::component_repository_dir'),
+  $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
+  $mode = lookup("simple_grid::mode"),
+  $pre_config_image_tag = lookup('simple_grid::components::component_repository::pre_config_image_tag')
+)
+{
+  $augmented_site_level_config = loadyaml("${augmented_site_level_config_file}")
+  $repository_name = $current_lightweight_component['name']
+  $repository_path = "${component_repository_dir}/${repository_name}"
+  $level_2_configurator = simple_grid::get_level_2_configurator($augmented_site_level_config, $current_lightweight_component)
+  $pre_config_container_path = "${repository_path}/${level_2_configurator}/pre_config"
+  $config_dir = "${repository_path}/config"
+  $repository_name_lowercase = downcase($repository_name)
+  $pre_config_image_name = "${repository_name_lowercase}_${pre_config_image_tag}"
+  notify{"Building Dockerfile at: ${pre_config_container_path}":}
+  class {'docker':}
+    docker::image {"${pre_config_image_name}":
+      docker_file => "${pre_config_container_path}/Dockerfile"
+  }
   
+  file{"$config_dir":
+    ensure => directory,
+    mode   => "0766",
+  }
+
+  docker::run {"Run pre_config container":
+    image => $pre_config_image_name,
+    env   => "EXECUTION_ID=${execution_id}",
+    extra_parameters => "-i -v ${repository_path}/:/${component_repository}",
+  }
+}
+class simple_grid::component::component_repository::lifecycle::event::boot(
+  $current_lightweight_component,
+  $execution_id
+){
+  
+}
+class simple_grid::component::component_repository::lifecycle::hook::pre_init(
+  $current_lightweight_component,
+  $execution_id,
+  $scripts,
+){
+  
+}
+class simple_grid::component::component_repository::lifecycle::event::init(
+  $current_lightweight_component,
+  $execution_id
 ){
   
 }
 class simple_grid::component::component_repository::lifecycle::hook::post_init(
-  
+  $current_lightweight_component,
+  $execution_id,
+  $scripts,
 ){
   
 }

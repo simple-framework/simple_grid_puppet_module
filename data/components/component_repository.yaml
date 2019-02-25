@@ -13,3 +13,6 @@ simple_grid::components::component_repository::lifecycle::hook::post_init: "post
 #Directory structure
 simple_grid::components::component_repository::pre_config_dir: "/pre_config/pre_config.sh"
 simple_grid::components::component_repository::pre_config_script: "/pre_config"
+
+# Docker
+simple_grid::components::component_repository::pre_config_image_tag: "pre_config"
