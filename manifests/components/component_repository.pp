@@ -72,7 +72,7 @@ class simple_grid::component::component_repository::lifecycle::event::pre_config
   $repository_path = "${component_repository_dir}/${repository_name}"
   $level_2_configurator = simple_grid::get_level_2_configurator($augmented_site_level_config, $current_lightweight_component)
   $pre_config_container_path = "${repository_path}/${level_2_configurator}/pre_config"
-  $config_dir = "${repository_path}/config"
+  $config_dir = "${repository_path}/${level_2_configurator}/config"
   $repository_name_lowercase = downcase($repository_name)
   $pre_config_image_name = "${repository_name_lowercase}_${pre_config_image_tag}"
   notify{"Building Dockerfile at: ${pre_config_container_path}":}
@@ -86,15 +86,18 @@ class simple_grid::component::component_repository::lifecycle::event::pre_config
     mode   => "0766",
   }
 
-  docker::run {"Run pre_config container":
-    image => $pre_config_image_name,
-    env   => "EXECUTION_ID=${execution_id}",
-    extra_parameters => "-i -v ${repository_path}/:/${component_repository}",
+  exec{"Generate Level-2 configuration files":
+    command => "docker run -i -v ${repository_path}:/component_repository -e 'EXECUTION_ID=${execution_id}' ${pre_config_image_name}",
+    path => "/usr/local/bin:/usr/bin/:/bin/:/opt/puppetlabs/bin/:/usr/sue/sbin",
+    user => 'root',
+    logoutput => true,
+    environment => ["HOME=/root"]
   }
+  
 }
 class simple_grid::component::component_repository::lifecycle::event::boot(
   $current_lightweight_component,
-  $execution_id
+  $execution_id,
 ){
   
 }
