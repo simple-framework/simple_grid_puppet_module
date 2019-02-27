@@ -29,6 +29,11 @@ class simple_grid::components::component_repository::deploy(
     current_lightweight_component => $current_lightweight_component,
     execution_id => $execution_id
   }
+  class{"simple_grid::ccm_functoin::exec_repository::lifecycle_event":
+    event => lookup('simple_grid::components::component_repository::lifecycle::event::boot'),
+    current_lightweight_component => $current_lightweight_component,
+    execution_id => $execution_id
+  }
 
 }
 class simple_grid::component::component_repository::lifecycle::hook::pre_config(
@@ -99,7 +104,15 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
   $current_lightweight_component,
   $execution_id,
 ){
-  
+  $augmented_site_level_config = loadyaml($augmented_site_level_config_file)
+  $docker_run_command = simple_grid::docker_run($augmented_site_level_config, $current_lightweight_component)
+  exec{"Booting container for ${current_lightweight_component['name']}":
+    command => $docker_run_command,
+    path => "/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin",
+    user => "root",
+    logoutput => true,
+    environment => ["HOME=/root"]
+  }
 }
 class simple_grid::component::component_repository::lifecycle::hook::pre_init(
   $current_lightweight_component,
