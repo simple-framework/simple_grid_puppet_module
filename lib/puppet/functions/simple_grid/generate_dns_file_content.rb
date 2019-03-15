@@ -23,27 +23,37 @@ Puppet::Functions.create_function(:'simple_grid::generate_dns_file_content') do
             meta_info_parent = generate_meta_info_parent_name(meta_info_prefix,name)
             meta_info = data[meta_info_parent]
             container_type = meta_info['type']
-            container_name = Array.new
+            container_fqdn = Array.new
+            host_fqdn = lightweight_component['deploy']['node']
+            host_ip =  get_host_ip(data['site_infrastructure'],host_fqdn)
             if meta_info['docker_run_parameters'].key?("hostname")
-                container_name = meta_info['docker_run_parameters']['hostname'] 
+                container_fqdn = meta_info['docker_run_parameters']['hostname'] 
                 ip_address = ip_range[ip_index]
                 ip_index=ip_index+1
-                dns_content << {"hostname" => "#{container_name}", 'ip' => ip_address.to_s, 'type' => container_type}
+                dns_content << {"container_fqdn" => "#{container_fqdn}", "host_fqdn" => host_fqdn, "host_ip" => host_ip,'container_ip' => ip_address.to_s, 'type' => container_type}
             else
                 execution_id = lightweight_component['execution_id']
-                fqdn = lightweight_component['deploy']['node'].split('.')
+                fqdn = host_fqdn.split('.')
                 hostname = fqdn[0]
                 domain = fqdn[1, fqdn.length].join('.')
                 container_count = lightweight_component['deploy']['container_count'].to_i
                 for index in 0..container_count
-                    container_name = [name, index, hostname, execution_id].join("_") + ".#{domain}"
+                    container_fqdn = [name, hostname, execution_id].join("_") + ".#{domain}"
                     ip_address = ip_range[ip_index]
                     ip_index=ip_index+1
-                    dns_content << {"hostname" => "#{container_name}", 'ip' => ip_address.to_s, 'type' => container_type}
+                    dns_content << {"container_fqdn" => "#{container_fqdn}", "host_ip" => host_ip ,'container_ip' => ip_address.to_s, 'host_fqdn' => host_fqdn, 'type' => container_type}
                 end
             end
         end
         dns_content.to_yaml.lines.to_a[1..-1].join
+    end
+
+    def get_host_ip(site_infrastructure, host_fqdn)
+        site_infrastructure.each do |node|
+            if node['fqdn'] == host_fqdn
+                return node['ip_address']
+            end
+        end
     end
 
     def generate_meta_info_parent_name(meta_info_prefix, component_name)
