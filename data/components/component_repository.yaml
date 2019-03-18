@@ -16,3 +16,4 @@ simple_grid::components::component_repository::pre_config_script: "/pre_config"
 
 # Docker
 simple_grid::components::component_repository::pre_config_image_tag: "pre_config"
+simple_grid::components::component_repository::component_image_tag: "boot"

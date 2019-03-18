@@ -108,13 +108,25 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
   $execution_id,
   $meta_info,
+  $network = lookup('simple_grid::components::ccm::container_orchestrator::swarm::network'),
+  $component_image_tag = lookup('simple_grid::components::component_repository::component_image_tag')
 ){
   $augmented_site_level_config = loadyaml($augmented_site_level_config_file)
   $level_2_configurator = simple_grid::get_level_2_configurator($augmented_site_level_config, $current_lightweight_component)
   $repository_name = $current_lightweight_component['name']
   $repository_path = "${component_repository_dir}/${repository_name}"
   $config_dir = "${repository_path}/config"
-  $docker_run_command = simple_grid::docker_run($augmented_site_level_config, $current_lightweight_component, $meta_info, $config_dir)
+  if length($meta_info['docker_hub_tag'])> 0 {
+    $image_name = $meta_info['docker_hub_tag']
+  }else {
+    $repository_name_lowercase = downcase($repository_name)
+    $image_name = "${repository_name_lowercase}_${component_image_tag}"
+    notify{"Building image: ${image_name}":}
+    docker::image{"${image_name}":
+      docker_file => "${repository_path}/${level_2_configurator}/Dockerfile"
+    }
+  }
+  $docker_run_command = simple_grid::docker_run($augmented_site_level_config, $current_lightweight_component, $meta_info, $config_dir, $network, $image_name)
   notify{"Docker run command":}
   notify{"${docker_run_command}":}
   # exec{"Booting container for ${current_lightweight_component['name']}":
