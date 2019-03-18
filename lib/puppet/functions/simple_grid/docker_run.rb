@@ -9,12 +9,24 @@ Puppet::Functions.create_function(:'simple_grid::docker_run') do
         docker_run_parameters = meta_info['docker_run_parameters']
         
         #name
-        # volume mounts
+        ############### 
+        # Volume Mounts
+        ###############
+        
+        # Config Dir
         docker_run = "docker run" << " "
         docker_run << "-v #{config_dir}:/config" << " "
         
-        #cvmfs
-        #if meta_info.key?("cvmfs") and meta_info['cvmfs'] == true
+        #CVMFS
+        if meta_info.key?("host_requirements") and meta_info['host_requirements'].key?("cvmfs") and meta_info['host_requirements']['cvmfs'] == true
+            docker_run << "--mount type=bind,source=/cvmfs,target=/cvmfs,bind-propogation=shared" << " "
+        end
+
+        ##############
+        # Network
+        ##############
+        
         docker_run
+        
     end
 end
