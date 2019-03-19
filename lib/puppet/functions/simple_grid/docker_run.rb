@@ -6,11 +6,13 @@ Puppet::Functions.create_function(:'simple_grid::docker_run') do
         param 'String', :config_dir
         param 'String', :network
         param 'String', :image_name
+        param 'String', :scripts_dir
+        param 'String', :container_scripts_dir
     end
-    def docker_run(augmented_site_level_config, current_lightweight_component, meta_info, config_dir, network, image_name)
+    def docker_run(augmented_site_level_config, current_lightweight_component, meta_info, config_dir, network, image_name, scripts_dir, container_scripts_dir)
         docker_run_parameters = meta_info['docker_run_parameters']
         
-        #name
+        
         ############### 
         # Volume Mounts
         ###############
@@ -23,6 +25,10 @@ Puppet::Functions.create_function(:'simple_grid::docker_run') do
         if meta_info.key?("host_requirements") and meta_info['host_requirements'].key?("cvmfs") and meta_info['host_requirements']['cvmfs'] == true
             docker_run << "--mount type=bind,source=/cvmfs,target=/cvmfs,bind-propagation=shared" << " "
         end
+
+        # Lifecycle Hooks
+        execution_id = current_lightweight_component['execution_id']
+        docker_run << "-v #{scripts_dir}/#{execution_id}/:#{container_scripts_dir}" << " "
 
         ##############
         # Network

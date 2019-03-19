@@ -10,10 +10,10 @@ simple_grid::components::component_repository::lifecycle::event::boot: "repo_eve
 simple_grid::components::component_repository::lifecycle::event::init: "repo_event_init"
 simple_grid::components::component_repository::lifecycle::hook::post_init: "post_init"
 
-#Directory structure
+#Directory structure Host+Container
 simple_grid::components::component_repository::pre_config_dir: "/pre_config/pre_config.sh"
 simple_grid::components::component_repository::pre_config_script: "/pre_config"
-
+simple_grid::components::component_repository::container::scripts_dir: "/scripts"
 # Docker
 simple_grid::components::component_repository::pre_config_image_tag: "pre_config"
 simple_grid::components::component_repository::component_image_tag: "boot"

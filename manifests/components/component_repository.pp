@@ -13,28 +13,33 @@ class simple_grid::components::component_repository::deploy(
   $repository_path = "${component_repository_dir}/${repository_name}"
   
   notify{"Deploying execution_id ${execution_id} with name ${repository_name} now!!!!":}      
-  class{"simple_grid::ccm_function::prep_host":
-    current_lightweight_component => $current_lightweight_component,
-    meta_info                     => $meta_info
-  }
+  # class{"simple_grid::ccm_function::prep_host":
+  #   current_lightweight_component => $current_lightweight_component,
+  #   meta_info                     => $meta_info
+  # }
 
-  class{"simple_grid::ccm_function::exec_repository_lifecycle_hook":
-    hook => lookup('simple_grid::components::component_repository::lifecycle::hook::pre_config'),
+  # simple_grid::ccm_function::exec_repository_lifecycle_hook{'Pre_Config Hooks':
+  #   hook => lookup('simple_grid::components::component_repository::lifecycle::hook::pre_config'),
+  #   current_lightweight_component => $current_lightweight_component,
+  #   execution_id => $execution_id
+  # }
+
+  # simple_grid::ccm_function::exec_repository_lifecycle_event{'Pre_config Event':#class{"simple_grid::ccm_function::exec_repository_lifecycle_event":
+  #   event => lookup('simple_grid::components::component_repository::lifecycle::event::pre_config'),
+  #   current_lightweight_component => $current_lightweight_component,
+  #   execution_id => $execution_id,
+  #   meta_info => $meta_info
+  # }
+  # simple_grid::ccm_function::exec_repository_lifecycle_event{'Boot Event':#class{"simple_grid::ccm_function::exec_repository_lifecycle_event":
+  #   event => lookup('simple_grid::components::component_repository::lifecycle::event::boot'),
+  #   current_lightweight_component => $current_lightweight_component,
+  #   execution_id => $execution_id,
+  #   meta_info => $meta_info
+  # }
+  simple_grid::ccm_function::exec_repository_lifecycle_hook{"Pre_Init hook":
+    hook => lookup('simple_grid::components::component_repository::lifecycle::hook::pre_init'),
     current_lightweight_component => $current_lightweight_component,
     execution_id => $execution_id
-  }
-
-  simple_grid::ccm_function::exec_repository_lifecycle_event{'Pre_config Event':#class{"simple_grid::ccm_function::exec_repository_lifecycle_event":
-    event => lookup('simple_grid::components::component_repository::lifecycle::event::pre_config'),
-    current_lightweight_component => $current_lightweight_component,
-    execution_id => $execution_id,
-    meta_info => $meta_info
-  }
-  simple_grid::ccm_function::exec_repository_lifecycle_event{'Boot Event':#class{"simple_grid::ccm_function::exec_repository_lifecycle_event":
-    event => lookup('simple_grid::components::component_repository::lifecycle::event::boot'),
-    current_lightweight_component => $current_lightweight_component,
-    execution_id => $execution_id,
-    meta_info => $meta_info
   }
 
 }
@@ -109,7 +114,9 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
   $execution_id,
   $meta_info,
   $network = lookup('simple_grid::components::ccm::container_orchestrator::swarm::network'),
-  $component_image_tag = lookup('simple_grid::components::component_repository::component_image_tag')
+  $component_image_tag = lookup('simple_grid::components::component_repository::component_image_tag'),
+  $scripts_dir = lookup('simple_grid::scripts_dir'),
+  $container_scripts_dir = lookup('simple_grid::components::component_repository::container::scripts_dir'),
 ){
   $augmented_site_level_config = loadyaml($augmented_site_level_config_file)
   $level_2_configurator = simple_grid::get_level_2_configurator($augmented_site_level_config, $current_lightweight_component)
@@ -126,7 +133,7 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
       docker_file => "${repository_path}/${level_2_configurator}/Dockerfile"
     }
   }
-  $docker_run_command = simple_grid::docker_run($augmented_site_level_config, $current_lightweight_component, $meta_info, $config_dir, $network, $image_name)
+  $docker_run_command = simple_grid::docker_run($augmented_site_level_config, $current_lightweight_component, $meta_info, $config_dir, $network, $image_name, $scripts_dir, $container_scripts_dir)
   notify{"Docker run command":}
   notify{"${docker_run_command}":}
   exec{"Booting container for ${current_lightweight_component['name']}":
@@ -141,12 +148,27 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_init(
   $current_lightweight_component,
   $execution_id,
   $scripts,
+  $container_name,
+  $pre_init_hook = lookup('simple_grid::components::component_repository::lifecycle::hook::pre_init'),
+  $container_scripts_dir = lookup("simple_grid::components::component_repository::container::scripts_dir"),
 ){
-  
+  $scripts.each |Hash $script|{
+    $script_name = split($script['actual_script'], '/')[-1]
+    $script_path = "${container_scripts_dir}/${pre_init_hook}/${script_name}"
+    $command = "docker exec -t ${container_name} ${script_path}"
+    notify{"We about to execute ${command}":}
+    exec{"Running pre_init hook for Execution ID ${execution_id}":
+      command => $command,
+      path    => "/usr/local/bin:/usr/bin/:/bin:/opt/puppetlabs/bin",
+      user    => "root",
+      logoutput => true,
+      environment => ["HOME=/root"]
+    }
+  }
 }
 class simple_grid::component::component_repository::lifecycle::event::init(
   $current_lightweight_component,
-  $execution_id
+  $execution_id,
 ){
   
 }
@@ -154,7 +176,22 @@ class simple_grid::component::component_repository::lifecycle::hook::post_init(
   $current_lightweight_component,
   $execution_id,
   $scripts,
+  $container_name,
+  $post_init_hook = lookup('simple_grid::components::component_repository::lifecycle::hook::post_init'),
+  $container_scripts_dir = lookup("simple_grid::components::component_repository::container::scripts_dir"),
 ){
-  
+  $scripts.each |Hash $script|{
+    $script_name = split($script['actual_script'], '/')[-1]
+    $script_path = "${container_scripts_dir}/${post_init_hook}/${script_name}"
+    $command = "docker exec -t ${container_name} ${script_path}"
+    notify{"We about to execute ${command}":}
+    exec{"Running pre_init hook for Execution ID ${execution_id}":
+      command => $command,
+      path    => "/usr/local/bin:/usr/bin/:/bin:/opt/puppetlabs/bin",
+      user    => "root",
+      logoutput => true,
+      environment => ["HOME=/root"]
+    }
+  }
 }
 

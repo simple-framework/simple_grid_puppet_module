@@ -6,7 +6,8 @@ class simple_grid::ccm_function::prep_host(
   $firewall_rules = $meta_info['host_requirements']['firewall']
   class{"simple_grid::ccm_function::prep_host::firewall::config":
     firewall_rules  => $firewall_rules,
-    repository_name => $current_lightweight_component['name']
+    repository_name => $current_lightweight_component['name'],
+    execution_id    => $current_lightweight_component['execution_id']
   }
 
   $cvmfs = strip("${meta_info['host_requirements']['cvmfs']}")
@@ -28,6 +29,7 @@ class simple_grid::ccm_function::prep_host(
 class simple_grid::ccm_function::prep_host::firewall::config(
   $firewall_rules,
   $repository_name,
+  $execution_id,
 ){
   notify{"Configuring Firewall Rules":}
   $firewall_rules.each |Integer $index, Hash $firewall_rule| {
