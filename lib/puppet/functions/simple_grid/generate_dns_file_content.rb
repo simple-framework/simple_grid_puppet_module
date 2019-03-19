@@ -12,7 +12,7 @@ Puppet::Functions.create_function(:'simple_grid::generate_dns_file_content') do
         net = IPAddr.new subnet
         ip_range = net.to_range.to_a
         ip_offset = 1
-        ip_index = 1
+        ip_index = 10
         data = YAML.load_file(augmented_site_level_config_file)
         if data.key?('dns')
             return ''

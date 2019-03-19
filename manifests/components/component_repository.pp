@@ -18,24 +18,24 @@ class simple_grid::components::component_repository::deploy(
     meta_info                     => $meta_info
   }
 
-  # class{"simple_grid::ccm_function::exec_repository_lifecycle_hook":
-  #   hook => lookup('simple_grid::components::component_repository::lifecycle::hook::pre_config'),
-  #   current_lightweight_component => $current_lightweight_component,
-  #   execution_id => $execution_id
-  # }
+  class{"simple_grid::ccm_function::exec_repository_lifecycle_hook":
+    hook => lookup('simple_grid::components::component_repository::lifecycle::hook::pre_config'),
+    current_lightweight_component => $current_lightweight_component,
+    execution_id => $execution_id
+  }
 
-  # simple_grid::ccm_function::exec_repository_lifecycle_event{'Pre_config Event':#class{"simple_grid::ccm_function::exec_repository_lifecycle_event":
-  #   event => lookup('simple_grid::components::component_repository::lifecycle::event::pre_config'),
-  #   current_lightweight_component => $current_lightweight_component,
-  #   execution_id => $execution_id,
-  #   meta_info => $meta_info
-  # }
-  # simple_grid::ccm_function::exec_repository_lifecycle_event{'Boot Event':#class{"simple_grid::ccm_function::exec_repository_lifecycle_event":
-  #   event => lookup('simple_grid::components::component_repository::lifecycle::event::boot'),
-  #   current_lightweight_component => $current_lightweight_component,
-  #   execution_id => $execution_id,
-  #   meta_info => $meta_info
-  # }
+  simple_grid::ccm_function::exec_repository_lifecycle_event{'Pre_config Event':#class{"simple_grid::ccm_function::exec_repository_lifecycle_event":
+    event => lookup('simple_grid::components::component_repository::lifecycle::event::pre_config'),
+    current_lightweight_component => $current_lightweight_component,
+    execution_id => $execution_id,
+    meta_info => $meta_info
+  }
+  simple_grid::ccm_function::exec_repository_lifecycle_event{'Boot Event':#class{"simple_grid::ccm_function::exec_repository_lifecycle_event":
+    event => lookup('simple_grid::components::component_repository::lifecycle::event::boot'),
+    current_lightweight_component => $current_lightweight_component,
+    execution_id => $execution_id,
+    meta_info => $meta_info
+  }
 
 }
 class simple_grid::component::component_repository::lifecycle::hook::pre_config(
@@ -92,7 +92,7 @@ class simple_grid::component::component_repository::lifecycle::event::pre_config
     ensure => directory,
     mode   => "0766",
   }
-
+  notify{"docker run -i -v ${repository_path}:/component_repository -e 'EXECUTION_ID=${execution_id}' ${pre_config_image_name}":}
   exec{"Generate Level-2 configuration files":
     command => "docker run -i -v ${repository_path}:/component_repository -e 'EXECUTION_ID=${execution_id}' ${pre_config_image_name}",
     path => "/usr/local/bin:/usr/bin/:/bin/:/opt/puppetlabs/bin/:/usr/sue/sbin",
@@ -129,13 +129,13 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
   $docker_run_command = simple_grid::docker_run($augmented_site_level_config, $current_lightweight_component, $meta_info, $config_dir, $network, $image_name)
   notify{"Docker run command":}
   notify{"${docker_run_command}":}
-  # exec{"Booting container for ${current_lightweight_component['name']}":
-  #   command => $docker_run_command,
-  #   path => "/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin",
-  #   user => "root",
-  #   logoutput => true,
-  #   environment => ["HOME=/root"]
-  # }
+  exec{"Booting container for ${current_lightweight_component['name']}":
+    command => $docker_run_command,
+    path => "/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin",
+    user => "root",
+    logoutput => true,
+    environment => ["HOME=/root"]
+  }
 }
 class simple_grid::component::component_repository::lifecycle::hook::pre_init(
   $current_lightweight_component,

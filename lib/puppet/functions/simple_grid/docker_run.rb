@@ -21,7 +21,7 @@ Puppet::Functions.create_function(:'simple_grid::docker_run') do
         
         #CVMFS
         if meta_info.key?("host_requirements") and meta_info['host_requirements'].key?("cvmfs") and meta_info['host_requirements']['cvmfs'] == true
-            docker_run << "--mount type=bind,source=/cvmfs,target=/cvmfs,bind-propogation=shared" << " "
+            docker_run << "--mount type=bind,source=/cvmfs,target=/cvmfs,bind-propagation=shared" << " "
         end
 
         ##############
