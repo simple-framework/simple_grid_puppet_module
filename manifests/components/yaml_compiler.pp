@@ -20,23 +20,14 @@ class simple_grid::components::yaml_compiler::install(
   python::virtualenv { "virtual environment for yaml compiler": 
     ensure       => present,
     version      => 'system',
-    systempkgs   => true,
+    systempkgs   => false,
     venv_dir     => "${virtual_env_dir}",
     cwd          => "${yaml_compiler_dir}",
-  }~>
-  #6. install required libs
-  python::pip {"pyyaml":
-    virtualenv => "${virtual_env_dir}",
-  }~>
-  #6. install required libs
-  python::pip {"ruamel.ordereddict": 
-    virtualenv => "${virtual_env_dir}",
-  }~>
-  #6. install required libs
-  python::pip {"ruamel.yaml":
-    virtualenv => "${virtual_env_dir}",
-  }~>
-  #7. create temp directory
+  }
+  python::requirements {'/etc/simple_grid/yaml_compiler/requirements.txt':
+    virtualenv => '/etc/simple_grid/yaml_compiler/.env',
+  }
+  # 7. create temp directory
   file {"create temp directory for compiler":
     ensure => directory,
     path   => "${temp_dir}",
