@@ -11,8 +11,9 @@ simple_grid::components::component_repository::lifecycle::event::init: "repo_eve
 simple_grid::components::component_repository::lifecycle::hook::post_init: "post_init"
 
 #Directory structure Host+Container
-simple_grid::components::component_repository::pre_config_dir: "/pre_config/pre_config.sh"
-simple_grid::components::component_repository::pre_config_script: "/pre_config"
+simple_grid::components::component_repository::pre_config_dir: "/pre_config"
+simple_grid::components::component_repository::pre_config_script: "%{hiera('simple_grid::components::component_repository::pre_config_dir')/pre_config.sh}"
+simple_grid::components::component_repository::config_dir_name: "config"
 simple_grid::components::component_repository::container::scripts_dir: "/scripts"
 # Docker
 simple_grid::components::component_repository::pre_config_image_tag: "pre_config"

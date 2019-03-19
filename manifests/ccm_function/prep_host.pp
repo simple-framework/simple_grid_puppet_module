@@ -1,6 +1,6 @@
 class simple_grid::ccm_function::prep_host(
   $current_lightweight_component,
-  $meta_info
+  $meta_info,
 ){
 
   $firewall_rules = $meta_info['host_requirements']['firewall']
@@ -23,6 +23,9 @@ class simple_grid::ccm_function::prep_host(
         }
       }
     }
+  }
+  class{"simple_grid::ccm_function::prep_host::augmented_site_level_config_file::copy_to_repository":
+    current_lightweight_component => $current_lightweight_component
   }
   
 }
@@ -73,16 +76,31 @@ class simple_grid::ccm_function::prep_host::host_certificates::copy_to_repositor
   $current_lightweight_component,
   $component_repository_dir = lookup('simple_grid::nodes::lightweight_component::component_repository_dir'),
   $host_certificates_dir_name = lookup('simple_grid::host_certificates_dir_name'),
-  $host_certificates_master_dir = lookup("simple_grid::host_certificates_dir")
+  $host_certificates_master_dir = lookup("simple_grid::host_certificates_dir"),
+  $config_dir_name = lookup('simple_grid::components::component_repository::config_dir_name')
   
 ){
   $repository_name = $current_lightweight_component['name']
   $repository_path = "${component_repository_dir}/${repository_name}"
-  $host_certificates_dir = "${repository_path}/${host_certificates_dir_name}"
+  $host_certificates_dir = "${repository_path}/${config_dir_name}/${host_certificates_dir_name}"
   file{"Copy host certificates from ${host_certificates_master_dir} to ${host_certificates_dir}":
     ensure => directory,
     path   => "${host_certificates_dir}",
     source => "${host_certificates_master_dir}",
     recurse => true
+  }
+}
+
+class simple_grid::ccm_function::prep_host::augmented_site_level_config_file::copy_to_repository(
+  $current_lightweight_component,
+  $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
+  $component_repository_dir = lookup('simple_grid::nodes::lightweight_component::component_repository_dir'),
+){
+  $repository_name = $current_lightweight_component['name']
+  $repository_path = "${component_repository_dir}/${repository_name}/"
+  file{"Copying augmented_site_level_config_file to repository root":
+    ensure => present,
+    source => $augmented_site_level_config_file,
+    path   => "${repository_path}/augmented_site_level_config_file.yaml",
   }
 }
