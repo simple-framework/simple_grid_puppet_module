@@ -9,9 +9,19 @@ class simple_grid::ccm_function::prep_host(
     repository_name => $current_lightweight_component['name']
   }
 
-  $cvmfs = strip("${meta_info['host_requirements']['cvmfs']}")
-  if $cvmfs == "true" {
-    class {"simple_grid::ccm_function::prep_host::cvmfs::configure":}
+  # $cvmfs = strip("${meta_info['host_requirements']['cvmfs']}")
+  # if $cvmfs == "true" {
+  #   class {"simple_grid::ccm_function::prep_host::cvmfs::configure":}
+  # }
+
+  if has_key($meta_info, 'host_requirements'){
+    if has_key($meta_info['host_requirements'], 'host_certificates'){
+      if $meta_info['host_requirements']['host_certificates'] == true {
+        class{"simple_grid::ccm_function::prep_host::host_certificates::copy_to_repository":
+          current_lightweight_component => $current_lightweight_component
+        }
+      }
+    }
   }
   
 }
@@ -52,4 +62,22 @@ class simple_grid::ccm_function::prep_host::cvmfs::configure
     cvmfs::mount{'lhcb-condb.cern.ch':
       cvmfs_server_url  => 'lhcb-condb.cern.ch',
     }
+}
+
+class simple_grid::ccm_function::prep_host::host_certificates::copy_to_repository(
+  $current_lightweight_component,
+  $component_repository_dir = lookup('simple_grid::nodes::lightweight_component::component_repository_dir'),
+  $host_certificates_dir_name = lookup('simple_grid::host_certificates_dir_name'),
+  $host_certificates_master_dir = lookup("simple_grid::host_certificates_dir")
+  
+){
+  $repository_name = $current_lightweight_component['name']
+  $repository_path = "${component_repository_dir}/${repository_name}"
+  $host_certificates_dir = "${repository_path}/${host_certificates_dir_name}"
+  file{"Copy host certificates from ${host_certificates_master_dir} to ${host_certificates_dir}":
+    ensure => directory,
+    path   => "${host_certificates_dir}",
+    source => "${host_certificates_master_dir}",
+    recurse => true
+  }
 }

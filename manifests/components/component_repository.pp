@@ -12,11 +12,11 @@ class simple_grid::components::component_repository::deploy(
   $meta_info = $data["${meta_info_parent}"]
   $repository_path = "${component_repository_dir}/${repository_name}"
   
-  # notify{"Deploying execution_id ${execution_id} with name ${repository_name} now!!!!":}      
-  # class{"simple_grid::ccm_function::prep_host":
-  #   current_lightweight_component => $current_lightweight_component,
-  #   meta_info                     => $meta_info
-  # }
+  notify{"Deploying execution_id ${execution_id} with name ${repository_name} now!!!!":}      
+  class{"simple_grid::ccm_function::prep_host":
+    current_lightweight_component => $current_lightweight_component,
+    meta_info                     => $meta_info
+  }
 
   # class{"simple_grid::ccm_function::exec_repository_lifecycle_hook":
   #   hook => lookup('simple_grid::components::component_repository::lifecycle::hook::pre_config'),
@@ -30,12 +30,12 @@ class simple_grid::components::component_repository::deploy(
   #   execution_id => $execution_id,
   #   meta_info => $meta_info
   # }
-  simple_grid::ccm_function::exec_repository_lifecycle_event{'Boot Event':#class{"simple_grid::ccm_function::exec_repository_lifecycle_event":
-    event => lookup('simple_grid::components::component_repository::lifecycle::event::boot'),
-    current_lightweight_component => $current_lightweight_component,
-    execution_id => $execution_id,
-    meta_info => $meta_info
-  }
+  # simple_grid::ccm_function::exec_repository_lifecycle_event{'Boot Event':#class{"simple_grid::ccm_function::exec_repository_lifecycle_event":
+  #   event => lookup('simple_grid::components::component_repository::lifecycle::event::boot'),
+  #   current_lightweight_component => $current_lightweight_component,
+  #   execution_id => $execution_id,
+  #   meta_info => $meta_info
+  # }
 
 }
 class simple_grid::component::component_repository::lifecycle::hook::pre_config(
