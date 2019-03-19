@@ -36,12 +36,17 @@ class simple_grid::components::component_repository::deploy(
   #   execution_id => $execution_id,
   #   meta_info => $meta_info
   # }
-  simple_grid::ccm_function::exec_repository_lifecycle_hook{"Pre_Init hook":
-    hook => lookup('simple_grid::components::component_repository::lifecycle::hook::pre_init'),
+  # simple_grid::ccm_function::exec_repository_lifecycle_hook{"Pre_Init hook":
+  #   hook => lookup('simple_grid::components::component_repository::lifecycle::hook::pre_init'),
+  #   current_lightweight_component => $current_lightweight_component,
+  #   execution_id => $execution_id
+  # }
+  simple_grid::ccm_function::exec_repository_lifecycle_event{"Init event":
+    event => lookup('simple_grid::components::component_repository::lifecycle::event::init'),
     current_lightweight_component => $current_lightweight_component,
-    execution_id => $execution_id
+    execution_id => $execution_id,
+    meta_info => $meta_info
   }
-
 }
 class simple_grid::component::component_repository::lifecycle::hook::pre_config(
   $scripts,
@@ -122,7 +127,7 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
   $level_2_configurator = simple_grid::get_level_2_configurator($augmented_site_level_config, $current_lightweight_component)
   $repository_name = $current_lightweight_component['name']
   $repository_path = "${component_repository_dir}/${repository_name}"
-  $config_dir = "${repository_path}/config"
+  $config_dir = "${repository_path}/${level_2_configurator}/config"
   if length($meta_info['docker_hub_tag'])> 0 {
     $image_name = $meta_info['docker_hub_tag']
   }else {
@@ -169,8 +174,17 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_init(
 class simple_grid::component::component_repository::lifecycle::event::init(
   $current_lightweight_component,
   $execution_id,
+  $container_name,
 ){
-  
+  $command = "docker exec -t ${container_name} /config/init.sh"
+  exec{"Running init event for Execution ID ${execution_id}":
+      command => $command,
+      path    => "/usr/local/bin:/usr/bin/:/bin:/opt/puppetlabs/bin",
+      user    => "root",
+      logoutput => true,
+      environment => ["HOME=/root"]
+  }
+
 }
 class simple_grid::component::component_repository::lifecycle::hook::post_init(
   $current_lightweight_component,
