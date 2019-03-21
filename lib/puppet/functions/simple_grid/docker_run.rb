@@ -3,15 +3,22 @@ Puppet::Functions.create_function(:'simple_grid::docker_run') do
         param 'Hash', :augmented_site_level_config
         param 'Hash', :current_lightweight_component
         param 'Hash', :meta_info
-        param 'String', :config_dir
-        param 'String', :network
         param 'String', :image_name
+        param 'String', :augmented_site_level_config_file
+        param 'String', :container_augmented_site_level_config_file
+        param 'String', :config_dir
+        param 'String', :container_config_dir
         param 'String', :scripts_dir
         param 'String', :container_scripts_dir
-    end
-    def docker_run(augmented_site_level_config, current_lightweight_component, meta_info, config_dir, network, image_name, scripts_dir, container_scripts_dir)
-        docker_run_parameters = meta_info['docker_run_parameters']
+        param 'String', :host_certificates_dir
+        param 'String', :container_host_certificates_dir
         
+        param 'String', :network
+
+    end
+    def docker_run(augmented_site_level_config, current_lightweight_component, meta_info, image_name, augmented_site_level_config_file, container_augmented_site_level_config_file, config_dir, container_config_dir,  scripts_dir, container_scripts_dir, host_certificates_dir, container_host_certificates_dir, network)
+        docker_run_parameters = meta_info['docker_run_parameters']
+        execution_id = current_lightweight_component['execution_id']
         
         ############### 
         # Volume Mounts
@@ -19,7 +26,7 @@ Puppet::Functions.create_function(:'simple_grid::docker_run') do
         
         # Config Dir
         docker_run = "docker run" << " "
-        docker_run << "-v #{config_dir}:/config" << " "
+        docker_run << "-v #{config_dir}:#{container_config_dir}" << " "
         
         #CVMFS
         if meta_info.key?("host_requirements") and meta_info['host_requirements'].key?("cvmfs") and meta_info['host_requirements']['cvmfs'] == true
@@ -27,13 +34,21 @@ Puppet::Functions.create_function(:'simple_grid::docker_run') do
         end
 
         # Lifecycle Hooks
-        execution_id = current_lightweight_component['execution_id']
+        
         docker_run << "-v #{scripts_dir}/#{execution_id}/:#{container_scripts_dir}" << " "
+
+        # Augmented Site Level Config File
+        docker_run << "-v #{augmented_site_level_config_file}:#{container_augmented_site_level_config_file}" << " "
+
+        #
+        if meta_info.key?('host_requirements') and meta_info['host_requirements'].key?('host_certificates') and meta_info['host_requirements']['host_certificates'] == true
+            docker_run << "-v #{host_certificates_dir}:#{container_host_certificates_dir}" << " "
+        end
 
         ##############
         # Network
         ##############
-        dns = find_dns_info(augmented_site_level_config, current_lightweight_component['execution_id'])
+        dns = find_dns_info(augmented_site_level_config, execution_id)
         docker_run << "--hostname #{dns['container_fqdn']} --ip #{dns['container_ip']} --net #{network}" << " "
         # Ports
         if docker_run_parameters.key?('ports') 
