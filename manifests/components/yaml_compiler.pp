@@ -23,10 +23,14 @@ class simple_grid::components::yaml_compiler::install(
     systempkgs   => false,
     venv_dir     => "${virtual_env_dir}",
     cwd          => "${yaml_compiler_dir}",
-  }
-  python::requirements {'/etc/simple_grid/yaml_compiler/requirements.txt':
-    virtualenv => '/etc/simple_grid/yaml_compiler/.env',
-  }
+  } ->
+  exec {"Install requirements using exec becuase puppet module is dumb":
+    command => "bash -c 'source ${virtual_env_dir}/bin/activate && pip install -r requirements.txt'",
+    path => '/usr/local/bin:/usr/bin:/bin/',
+    cwd  => "${yaml_compiler_dir}"
+
+  } ->
+
   # 7. create temp directory
   file {"create temp directory for compiler":
     ensure => directory,
