@@ -4,7 +4,7 @@ Puppet::Functions.create_function(:'simple_grid::post_execution_deploy_status') 
         param 'String', :deploy_status_file
         param 'Integer', :execution_id
     end
-    def post_execution_deploy_status(deploy_status_file, exeuction_id)
+    def post_execution_deploy_status(deploy_status_file, execution_id)
         new_deploy_status = {}
         data = YAML.load(File.read(deploy_status_file)) 
         data['execution_request_history'] << execution_id

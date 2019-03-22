@@ -20,8 +20,8 @@ class simple_grid::pre_deploy::lightweight_component::download_component_reposit
         if length($revision) < 1 {
           $revision = $component_repository_default_revision
         }
-        notify{"Downloading ${repository_url}":}
-        vcsrepo {"${component_repository_dir}/${component_name}":
+        notify{"Downloading ${repository_url} for execution_id ${execution_id}":}
+        vcsrepo {"${component_repository_dir}/${component_name}_${execution_id}":
           ensure   => present,
           provider => git,
           revision => $revision,

@@ -17,7 +17,7 @@ define simple_grid::ccm_function::exec_repository_lifecycle_event(
     class{"simple_grid::component::component_repository::lifecycle::event::boot":
       current_lightweight_component => $current_lightweight_component,
       execution_id => $execution_id, 
-      meta_info => $meta_info
+      meta_info => $meta_info,
     }
   }elsif $event == lookup('simple_grid::components::component_repository::lifecycle::event::init') {
     $all_dns_info.each |Hash $dns_info| {
@@ -25,7 +25,7 @@ define simple_grid::ccm_function::exec_repository_lifecycle_event(
         class{"simple_grid::component::component_repository::lifecycle::event::init":
           current_lightweight_component => $current_lightweight_component,
           execution_id => $execution_id, 
-          container_name => $dns_info['container_fqdn']
+          container_name => $dns_info['container_fqdn'],
         }
       }
     }
