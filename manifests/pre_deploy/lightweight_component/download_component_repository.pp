@@ -8,20 +8,20 @@ class simple_grid::pre_deploy::lightweight_component::download_component_reposit
     path => "${component_repository_dir}",
     
   }
-  $execution_ids = simple_grid::get_execution_ids($augmented_site_level_config_file, $fqdn)
+  $execution_id_id_pairs = simple_grid::get_execution_ids($augmented_site_level_config_file, $fqdn)
   $augmented_site_level_config = loadyaml("${augmented_site_level_config_file}")
-  $execution_ids.each |Integer $index, Integer $execution_id|{
+  $execution_id_id_pairs.each |Integer $index, Hash $execution_id_id_pair|{
     $lightweight_components = $augmented_site_level_config['lightweight_components']
     $lightweight_components.each |Integer $lightweight_index, Hash $lightweight_component|{
-      if $lightweight_component['execution_id'] == $execution_id{
+      if $lightweight_component['execution_id'] == $execution_id_id_pair['execution_id']{
         $repository_url = $lightweight_component["repository_url"]
         $revision = $lightweight_component["repository_revision"]
         $component_name = $lightweight_component["name"]
         if length($revision) < 1 {
           $revision = $component_repository_default_revision
         }
-        notify{"Downloading ${repository_url} for execution_id ${execution_id}":}
-        vcsrepo {"${component_repository_dir}/${component_name}_${execution_id}":
+        notify{"Downloading ${repository_url} for execution_id ${execution_id_id_pair['execution_id']}":}
+        vcsrepo {"${component_repository_dir}/${component_name}_${execution_id_id_pair['execution_id']}":
           ensure   => present,
           provider => git,
           revision => $revision,
