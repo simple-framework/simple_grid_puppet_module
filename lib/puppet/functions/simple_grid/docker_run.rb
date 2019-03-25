@@ -82,6 +82,12 @@ Puppet::Functions.create_function(:'simple_grid::docker_run') do
         end
 
         ###############
+        # privileged
+        ###############
+        if docker_run_parameters.key?('privileged') and docker_run_parameters['privileged'] == true
+            docker_run << " --privileged" << " "
+        end
+        ###############
         # Image name and command
         ###############
         docker_run << "#{image_name}" << " "
