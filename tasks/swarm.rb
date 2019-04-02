@@ -94,17 +94,47 @@ class Deploy < TaskHelper
                         end
                 end
         end
+        def get_managers_and_workers(augmented_site_level_config_file)
+                data = YAML::load_file(augmented_site_level_config_file)
+                lightweight_components = data['lightweight_components']
+                site_infrastructure = data['site_infrastructure']
+                swarm_manager_ip = String.new
+                swarm_worker_ip_array = Array.new
+                lightweight_components.each do |lightweight_component|
+                        node_fqdn = lightweight_component['deploy']['node']
+                        site_infrastructure.each do |infrastructure|
+                                if infrastructure['fqdn'] == node_fqdn
+                                        if lightweight_component['execution_id'] == 0
+                                                swarm_manager_ip = infrastructure['ip_address']
+                                        else
+                                                unless swarm_worker_ip_array.include? infrastructure['ip_address']
+                                                        swarm_worker_ip_array << infrastructure['ip_address']
+                                                end
+                                        end
+                                end
+                        end
+                end
+                return swarm_manager_ip, swarm_worker_ip_array   
+        end
         def task(augmented_site_level_config_file:nil, network:nil, subnet:nil, modulepath:nil, **kwargs)
-                ce_ip = get_element_ip(augmented_site_level_config_file,"compute_element")
-                main_manager = ce_ip[0]
-                managers = ce_ip.drop(1)
-                wn_ip = get_element_ip(augmented_site_level_config_file,"worker_node")
-                puts "+++++++++++++++++++++++++"
-                puts ce_ip, main_manager, managers.class
-                puts "&&&&&&&&&&&&&&&&&&&&&&&&&"
-                swarm_init(main_manager, network, subnet, modulepath)
-                swarm_join_managers(main_manager, managers,modulepath) 
-                swarm_join_workers(main_manager,wn_ip, modulepath) 
+                swarm_manager_ip, swarm_worker_ip_array = get_managers_and_workers(augmented_site_level_config_file)
+                swarm_init(swarm_manager_ip, network, subnet, modulepath)
+                swarm_join_workers(swarm_manager_ip, swarm_worker_ip_array, modulepath)
+                puts "#########################"
+                puts "Setting up swarm manager on #{swarm_manager_ip}"
+                puts "Setting up swarm workers on the following nodes:"
+                puts swarm_worker_ip_array
+                puts "#########################"
+                #ce_ip = get_element_ip(augmented_site_level_config_file,"compute_element")
+                #main_manager = ce_ip[0]
+                #managers = ce_ip.drop(1)
+                #wn_ip = get_element_ip(augmented_site_level_config_file,"worker_node")
+                #puts "+++++++++++++++++++++++++"
+                #puts ce_ip, main_manager, managers.class
+                #puts "&&&&&&&&&&&&&&&&&&&&&&&&&"
+                #swarm_init(main_manager, network, subnet, modulepath)
+                #swarm_join_managers(main_manager, managers,modulepath) 
+                #swarm_join_workers(main_manager,wn_ip, modulepath) 
                 {status: 'success'}
         end
 end
