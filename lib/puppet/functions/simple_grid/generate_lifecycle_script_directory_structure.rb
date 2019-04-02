@@ -10,6 +10,9 @@ Puppet::Functions.create_function(:'simple_grid::generate_lifecycle_script_direc
                 lightweight_components = data["lightweight_components"]
                 lightweight_components.each do |lightweight_component|
                         all_original_scripts = lightweight_component["lifecycle_hooks"]
+                        if all_original_scripts.nil?
+                                next
+                        end
                         modified_hooks = Hash.new
                         all_original_scripts.each do |lifecycle_hook, original_scripts|
                                 modified_hook = Array.new
