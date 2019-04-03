@@ -152,6 +152,7 @@ class simple_grid::component::component_repository::lifecycle::event::pre_config
   $repository_name_lowercase = downcase($repository_name)
   $pre_config_image_name = "${repository_name_lowercase}_${pre_config_image_tag}"
   notify{"Building Dockerfile at: ${pre_config_container_path}":}
+  Class['docker'] -> Docker::Image["${pre_config_image_name}"] -> Exec['Level-2']
   class {'docker':}
     docker::image {"${pre_config_image_name}":
       docker_file => "${pre_config_dir}/Dockerfile"
@@ -162,12 +163,13 @@ class simple_grid::component::component_repository::lifecycle::event::pre_config
     mode   => "0766",
   }
   notify{"docker run -i -v ${repository_path}:/component_repository -e 'EXECUTION_ID=${execution_id}' ${pre_config_image_name}":}
-  exec{"Generate Level-2 configuration files":
+  exec{"Level-2":
     command => "docker run --rm -i -v ${repository_path}:/component_repository -e 'EXECUTION_ID=${execution_id}' ${pre_config_image_name}",
     path => "/usr/local/bin:/usr/bin/:/bin/:/opt/puppetlabs/bin/:/usr/sue/sbin",
     user => 'root',
     logoutput => true,
-    environment => ["HOME=/root"]
+    environment => ["HOME=/root"],
+    require => Docker::Image["${pre_config_image_name}"]
   }
   
 }
@@ -257,7 +259,7 @@ class simple_grid::component::component_repository::lifecycle::event::init(
   $container_name,
   $config_dir = lookup('simple_grid::components::component_repository::container::config_dir')
 ){
-  $command = "docker exec -t ${container_name} /${config_dir}/init.sh"
+  $command = "docker exec -t ${container_name} ${config_dir}/init.sh"
   exec{"Running init event for Execution ID ${execution_id}":
       command => $command,
       path    => "/usr/local/bin:/usr/bin/:/bin:/opt/puppetlabs/bin",
