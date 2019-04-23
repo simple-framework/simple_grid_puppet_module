@@ -223,11 +223,11 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
   notify{"Docker run command":}
   notify{"${docker_run_command}":}
   exec{"Booting container for ${current_lightweight_component['name']}":
-    command => $docker_run_command,
+    command => "${docker_run_command}",
     path => "/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin",
     user => "root",
-    logoutput => true,
     environment => ["HOME=/root"],
+    logoutput => true,
   }
 
 }
@@ -259,13 +259,14 @@ class simple_grid::component::component_repository::lifecycle::event::init(
   $container_name,
   $config_dir = lookup('simple_grid::components::component_repository::container::config_dir')
 ){
-  $command = "docker exec -t ${container_name} ${config_dir}/init.sh"
+  $command = "docker exec -t  ${container_name} /bin/bash -c '${config_dir}/init.sh'"
+  notify{"${command}":}
   exec{"Running init event for Execution ID ${execution_id}":
       command => $command,
       path    => "/usr/local/bin:/usr/bin/:/bin:/opt/puppetlabs/bin",
       user    => "root",
-      logoutput => true,
-      environment => ["HOME=/root"]
+      environment => ["HOME=/root"],
+      provider => 'shell',
   }
 
 }
@@ -286,7 +287,6 @@ class simple_grid::component::component_repository::lifecycle::hook::post_init(
       command => $command,
       path    => "/usr/local/bin:/usr/bin/:/bin:/opt/puppetlabs/bin",
       user    => "root",
-      logoutput => true,
       environment => ["HOME=/root"]
     }
   }
