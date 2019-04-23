@@ -3,18 +3,18 @@ class simple_grid::pre_deploy::lightweight_component::copy_lifecycle_callbacks(
   $lifecycle_callbacks_dir_name = lookup('simple_grid::scripts_dir_name'),
   $simple_config_dir = lookup('simple_grid::simple_config_dir')
 ){
-  $execution_ids = simple_grid::get_execution_ids($augmented_site_level_config_file, $fqdn)
+  $execution_id_master_id_pairs = simple_grid::get_execution_ids($augmented_site_level_config_file, $fqdn)
   file{"Creating directory for lifecycle callback scripts":
    ensure => "directory",
    path => "${simple_config_dir}/${lifecycle_callbacks_dir_name}"
   }
-  notify{"Copying Lifecycle Callbacks for $execution_ids on $fqdn":}
-  $execution_ids.each |Integer $index, Integer $execution_id| {
-    file{"Copying lifecycle callback scripts for execution id ${execution_id}":
+  notify{"Copying Lifecycle Callbacks on $fqdn":}
+  $execution_id_master_id_pairs.each |Integer $index, Hash $execution_id_master_id_pair| {
+    file{"Copying lifecycle callback scripts for execution id ${execution_id_master_id_pair['execution_id']}":
       ensure => directory,
       recurse => 'remote',
-      source => "puppet:///simple_grid/${lifecycle_callbacks_dir_name}/${execution_id}",
-      path => "${simple_config_dir}/${lifecycle_callbacks_dir_name}/${execution_id}",
+      source => "puppet:///simple_grid/${lifecycle_callbacks_dir_name}/${execution_id_master_id_pair['id']}",
+      path => "${simple_config_dir}/${lifecycle_callbacks_dir_name}/${execution_id_master_id_pair['execution_id']}",
       mode => "0766"
     }
   }

@@ -10,7 +10,7 @@ Puppet::Functions.create_function(:'simple_grid::get_execution_ids') do
                 lightweight_components = data["lightweight_components"]
                 lightweight_components.each do |lightweight_component, index|
                     if lightweight_component["deploy"]["node"] == fqdn.strip
-                        exec_ids << lightweight_component["execution_id"]
+                        exec_ids << { "execution_id" =>lightweight_component["execution_id"], "id" => lightweight_component['id']}
                     end   
                 end
                 return exec_ids

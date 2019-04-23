@@ -4,16 +4,14 @@ class simple_grid::nodes::lightweight_component::init(
 {
   if $simple_stage == lookup('simple_grid::stage::install'){
     class{"simple_grid::install::lightweight_component::init":}
+    class{"docker":
+        version => '18.09.2'
+    }
     class {"simple_grid::components::execution_stage_manager::set_stage":
       simple_stage => lookup('simple_grid::stage::pre_deploy::step_1') #handled by tasks executed by CM
     }
   }
   elsif $simple_stage == lookup('simple_grid::stage::pre_deploy::step_1') {
-    # Docker Swarm responsibilities delegated to tasks that are executed directly by CM. 
-    #TODO should this be in release mode? Check
-    if $mode == lookup('simple_grid::mode::release') {
-      include docker
-    }
     class {"simple_grid::components::execution_stage_manager::set_stage":
        simple_stage => lookup('simple_grid::stage::pre_deploy::step_2') 
     }

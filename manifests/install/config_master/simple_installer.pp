@@ -11,6 +11,10 @@ class simple_grid::install::config_master::simple_installer{
   notify {"Installing Git":}
   include 'git'
   
+  notify{"Installing Docker":}
+  class{"docker":
+      version => '18.09.2'
+  }
   notify{"Installing Puppet CCM":}
   class {"simple_grid::components::ccm::install":}
   
