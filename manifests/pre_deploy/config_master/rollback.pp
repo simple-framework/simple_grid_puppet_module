@@ -28,4 +28,16 @@ class simple_grid::pre_deploy::config_master::rollback(
       logoutput => true,
     }
   }
+  $augmented_site_level_config_content = simple_grid::rollback_dns_in_augmented_site_level_config($augmented_site_level_config_file, $dns_parent_name)
+  notify{"Removing dns file at ${dns_file}":}
+  file{"Removing DNS data file":
+      ensure => absent,
+      force  => true,
+      path => "${dns_file}",
+    }
+    notify{"Removing DNS data from ${augmented_site_level_config_file}":}
+    file{"${augmented_site_level_config_file}":
+      ensure => present,
+      content => $augmented_site_level_config_content,
+    }
 }

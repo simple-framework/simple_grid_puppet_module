@@ -14,7 +14,7 @@ Puppet::Functions.create_function(:'simple_grid::generate_dns_file_content') do
         ip_offset = 1
         ip_index = 10
         data = YAML.load_file(augmented_site_level_config_file)
-        if data.key?('dns')
+        if data.key?(dns_key)
             return ''
         end
         lightweight_components = data['lightweight_components']
