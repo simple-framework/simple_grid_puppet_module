@@ -22,7 +22,7 @@ class simple_grid::pre_deploy::config_master::init(
   }
   elsif $mode == lookup('simple_grid::mode::release') {
     exec{"Set up docker swarm on the entire cluster":
-      command => "bolt task run simple_grid::swarm augmented_site_level_config_file='/etc/simple_grid/site_config/augmented_site_level_config_file.yaml' modulepath='/etc/puppetlabs/code/environments/simple/modules' --nodes localhost",
+      command => "bolt task run simple_grid::swarm augmented_site_level_config_file=${augmented_site_level_config_file} network=${network} subnet=${subnet} modulepath=/etc/puppetlabs/code/environments/simple/modules:/etc/puppetlabs/code/environments/simple/site --modulepath /etc/puppetlabs/code/environments/simple/site/ --nodes localhost > /etc/simple_grid/.swarm_status",
       path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
       user    => 'root',
       logoutput => true,
