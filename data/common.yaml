@@ -4,7 +4,7 @@ simple_grid::mode: "%{hiera('simple_grid::mode::docker')}"
 
 # Types of Modes
 simple_grid::mode::dev: dev
-simple_grid::mode::docker: dev-docker
+simple_grid::mode::docker: dev-docker 
 simple_grid::mode::release: production
 
 # Configuration Directories
