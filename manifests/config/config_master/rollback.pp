@@ -5,4 +5,5 @@ class simple_grid::config::config_master::rollback(){
   simple_grid::components::execution_stage_manager::set_stage { 'Setting stage to config':
     simple_stage => lookup('simple_grid::stage::config')
   }
+  notify{"NOTE:: Run simple_installer again to proceed with deployment":}
 }
