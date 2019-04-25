@@ -6,6 +6,7 @@ class simple_grid::pre_deploy::config_master::rollback(
   $subnet = lookup('simple_grid::components::ccm::container_orchestrator::swarm::subnet'),
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
   $network = lookup('simple_grid::components::ccm::container_orchestrator::swarm::network'),
+  $modulepath = "/etc/puppetlabs/code/environments/production/modules",
 ){
   notify{"Rolling back lifecycle callback scripts for all lightweight components":}
   include simple_grid::ccm_function::rollback_aggregate_repository_lifecycle_scripts
@@ -34,10 +35,23 @@ class simple_grid::pre_deploy::config_master::rollback(
       ensure => absent,
       force  => true,
       path => "${dns_file}",
-    }
-    notify{"Removing DNS data from ${augmented_site_level_config_file}":}
-    file{"${augmented_site_level_config_file}":
+  }
+  notify{"Removing DNS data from ${augmented_site_level_config_file}":}
+  file{"${augmented_site_level_config_file}":
       ensure => present,
       content => $augmented_site_level_config_content,
+  }
+
+  $augmented_site_level_config = loadyaml($augmented_site_level_config_file)
+  $lightweight_components = $augmented_site_level_config['lightweight_components']
+  $lightweight_components.each |Integer $index, Hash $lightweight_component| {
+    $node_fqdn = $lightweight_component['deploy']['node']
+    exec{"Rolling back pre_deploy stage on ${node_fqdn}":
+      command => "bolt task run simple_grid::rollback_pre_deploy --modulepath ${modulepath} --nodes ${node_fqdn}",
+      path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
+      user    => 'root',
+      logoutput => true,
+      environment => ["HOME=/root"]
     }
+  }
 }
