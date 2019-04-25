@@ -36,4 +36,8 @@ class simple_grid::pre_deploy::lightweight_component::rollback(
   }
 
   #### TODO: Remove deploy status file?? ####
+
+  simple_grid::components::execution_stage_manager::set_stage {"Setting stage to pre_deploy_step_1":
+    simple_stage => lookup('simple_grid::stage::pre_deploy::step_1')
+  }
 }

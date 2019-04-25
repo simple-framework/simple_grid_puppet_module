@@ -29,7 +29,7 @@ class simple_grid::install::config_master::simple_installer{
   class{"simple_grid::config::config_master::init":}
   
   notify{"Configuration Stage has ended":}
-  class {"simple_grid::components::execution_stage_manager::set_stage":
+  simple_grid::components::execution_stage_manager::set_stage {"Setting stage to config":
     simple_stage => lookup('simple_grid::stage::config') #deliberately set to config, so that the following stages are triggered by puppet agent -t
   }
 }

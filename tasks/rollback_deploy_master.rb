@@ -66,9 +66,8 @@ class RollbackDeployMaster < TaskHelper
             }
             _output << _current_output
         end
-        File.open(_overall_deployment_status_file_name,"w") { |file|
-            file.write _output.to_yaml
-        }
+        #delete overall deployment file
+        File.delete(_overall_deployment_status_file_name) if File.exists?(_overall_deployment_status_file_name)
         _output.to_yaml
     end
 end

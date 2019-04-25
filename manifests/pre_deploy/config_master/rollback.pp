@@ -41,7 +41,7 @@ class simple_grid::pre_deploy::config_master::rollback(
       ensure => present,
       content => $augmented_site_level_config_content,
   }
-
+  
   $augmented_site_level_config = loadyaml($augmented_site_level_config_file)
   $lightweight_components = $augmented_site_level_config['lightweight_components']
   $lightweight_components.each |Integer $index, Hash $lightweight_component| {
@@ -53,5 +53,10 @@ class simple_grid::pre_deploy::config_master::rollback(
       logoutput => true,
       environment => ["HOME=/root"]
     }
+  }
+
+  ## Set stage
+  simple_grid::components::execution_stage_manager::set_stage { 'Setting stage to pre_deploy':
+    simple_stage => lookup('simple_grid::stage::pre_deploy')
   }
 }

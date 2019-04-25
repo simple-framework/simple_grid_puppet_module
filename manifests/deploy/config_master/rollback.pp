@@ -22,5 +22,5 @@ class simple_grid::deploy::config_master::rollback(
       user    => 'root',
       logoutput => true,
       environment => ["HOME=/root"]
-      }  
+    }  
 }

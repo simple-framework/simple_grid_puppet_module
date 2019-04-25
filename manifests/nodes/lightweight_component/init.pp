@@ -7,12 +7,12 @@ class simple_grid::nodes::lightweight_component::init(
     class{"docker":
         version => '18.09.2'
     }
-    class {"simple_grid::components::execution_stage_manager::set_stage":
+    simple_grid::components::execution_stage_manager::set_stage { "Setting stage to pre_deploy_step_1":
       simple_stage => lookup('simple_grid::stage::pre_deploy::step_1') #handled by tasks executed by CM
     }
   }
   elsif $simple_stage == lookup('simple_grid::stage::pre_deploy::step_1') {
-    class {"simple_grid::components::execution_stage_manager::set_stage":
+    simple_grid::components::execution_stage_manager::set_stage {"Setting stage to pre_deploy_step_2":
        simple_stage => lookup('simple_grid::stage::pre_deploy::step_2') 
     }
   }
@@ -21,14 +21,14 @@ class simple_grid::nodes::lightweight_component::init(
     class{"simple_grid::pre_deploy::lightweight_component::copy_augmented_site_level_config":}
     class{"simple_grid::pre_deploy::lightweight_component::copy_lifecycle_callbacks":}
     class{"simple_grid::pre_deploy::lightweight_component::copy_host_certificates":}
-    class {"simple_grid::components::execution_stage_manager::set_stage":
+    simple_grid::components::execution_stage_manager::set_stage {"Setting stage to pre_deploy_step_3":
       simple_stage => lookup('simple_grid::stage::pre_deploy::step_3')
     }
   }
   elsif $simple_stage == lookup('simple_grid::stage::pre_deploy::step_3') {
     include 'git'
     class{"simple_grid::pre_deploy::lightweight_component::download_component_repository":}
-    class {"simple_grid::components::execution_stage_manager::set_stage":
+    simple_grid::components::execution_stage_manager::set_stage {"Setting stage to deploy":
       simple_stage => lookup('simple_grid::stage::deploy') #handled by tasks executed by CM
     }
   }

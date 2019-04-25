@@ -41,7 +41,7 @@ class simple_grid::components::yaml_compiler::install(
 }
 
 class simple_grid::components::yaml_compiler::execute(
-  $yaml_compiler_dir = "/etc/simple_grid/yaml_compiler",
+  $yaml_compiler_dir = lookup('simple_grid::components::yaml_compiler::download::dir'),
   $virtual_env_dir = lookup('simple_grid::components::yaml_compiler::install::virtual_env_dir'),
   $site_level_config_file = lookup('simple_grid::components::site_level_config_file'),
   $output_file = lookup('simple_grid::components::yaml_compiler::output'),
@@ -52,5 +52,21 @@ class simple_grid::components::yaml_compiler::execute(
     path    => "/usr/local/bin/:/usr/bin/:/bin/",
     cwd     => "${yaml_compiler_dir}",
     }
+}
+
+class simple_grid::components::yaml_compiler::rollback(
+  $yaml_compiler_dir = lookup('simple_grid::components::yaml_compiler::download::dir'),
+  $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output')
+){
+  file{'Removing yaml compiler':
+    path   => "${yaml_compiler_dir}",
+    ensure => absent,
+    force  => true
+  }
+  file{'Removing augmented site level config file':
+    path   => "${augmented_site_level_config_file}",
+    ensure => absent,
+    force  => true,
+  }
 }
 
