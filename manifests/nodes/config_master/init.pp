@@ -1,6 +1,6 @@
 class simple_grid::nodes::config_master::init{
   if $simple_stage == lookup('simple_grid::stage::config'){
-     class {"simple_grid::components::execution_stage_manager::set_stage":
+    simple_grid::components::execution_stage_manager::set_stage { 'Setting stage to pre_deploy':
      simple_stage => lookup('simple_grid::stage::pre_deploy')
     }
   }
@@ -23,7 +23,7 @@ class simple_grid::nodes::config_master::init{
         ensure => "present"
       }
     }
-    class {"simple_grid::components::execution_stage_manager::set_stage":
+    simple_grid::components::execution_stage_manager::set_stage {'Setting stage to deploy':
     simple_stage => lookup('simple_grid::stage::deploy')
     }
   }

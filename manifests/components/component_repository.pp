@@ -105,6 +105,26 @@ class simple_grid::components::component_repository::deploy(
   #   execution_id => $execution_id
   # }
 }
+
+class simple_grid::components::component_repository::rollback(
+  $execution_id,
+  $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
+  $deploy_status_file = lookup('simple_grid::nodes::lightweight_component::deploy_status_file'),
+  $pending_deploy_status = lookup('simple_grid::stage::deploy::status::initial')
+){
+  $augmented_site_level_config = loadyaml($augmented_site_level_config_file)
+  $dns = simple_grid::get_dns_info($augmented_site_level_config, $execution_id)
+  $container_name = $dns['container_fqdn']
+  $docker_stop_rm_command = "docker stop ${container_name} && docker rm ${container_name}"
+  exec{"Cleanup container ${container_fqdn}":
+    command     => $docker_stop_rm_command,
+    user        => root,
+    logoutput   => true,
+    path        => '/usr/sue/sbin:/usr/sue/bin:/use/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/sbin:/bin:/opt/puppetlabs/bin',
+    environment => ["HOME=/root"]
+  }
+  simple_grid::set_execution_status($deploy_status_file, $execution_id, $pending_deploy_status)
+}
 class simple_grid::component::component_repository::lifecycle::hook::pre_config(
   $scripts,
   $mode = lookup('simple_grid::mode'),
@@ -123,9 +143,9 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_config(
     }
     elsif $mode == lookup('simple_grid::mode::release') {
       exec{"Executing Pre-Config Script $script":
-        command => "${actual_script}",
-        path => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
-        user => 'root',
+        command   => "${actual_script}",
+        path      => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
+        user      => 'root',
         logoutput => true
       }
     }

@@ -11,7 +11,7 @@ class simple_grid::install::lightweight_component::simple_installer(
   class{"simple_grid::components::ccm::installation_helper::init_agent":
     puppet_master => "${puppet_master}",
   }
-  class {"simple_grid::components::execution_stage_manager::set_stage":
+  simple_grid::components::execution_stage_manager::set_stage {"Setting stage to install":
       simple_stage => lookup('simple_grid::stage::install')
   }
   
