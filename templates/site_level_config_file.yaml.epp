@@ -1,7 +1,9 @@
 ### Variable declaration:
-vars:
+global_variables:
   - &lightweight_component01_ip_address 192.168.0.4
+  - &lightweight_component01_fqdn lightweight_component01.cern.ch
   - &lightweight_component02_ip_address 192.168.0.5
+  - &lightweight_component02_fqdn lightweight_component02.cern.ch
 
 cream_runtime_variables:
   - &cream_runtime_var_ce_host lightweight_component01.cern.ch
@@ -32,9 +34,9 @@ preferred_tech_stack:
   container: docker
 
 site_infrastructure:
-  - fqdn: lightweight_component01.cern.ch
+  - fqdn: *lightweight_component01_fqdn
     ip_address: *lightweight_component01_ip_address
-  - fqdn: lightweight_component02.cern.ch
+  - fqdn: *lightweight_component02_fqdn
     ip_address: *lightweight_component02_ip_address
 
 lightweight_components:
@@ -51,7 +53,7 @@ lightweight_components:
       post_init:
         - /etc/simple_grid/lifecycle/ce_post_inst1.sh
     deploy:
-      - node: lightweight_component01.cern.ch
+      - node: *lightweight_component01_fqdn
         container_count: 1
     preferred_tech_stack:
       level_2_configuration: yaim
@@ -93,7 +95,7 @@ lightweight_components:
       post_init:
         - /etc/simple_grid/lifecycle/wn_post_inst1.sh
     deploy:
-      - node: lightweight_component02.cern.ch
+      - node: *lightweight_component02_fqdn
         container_count: 1
     preferred_tech_stack:
       level_2_configuration: yaim
