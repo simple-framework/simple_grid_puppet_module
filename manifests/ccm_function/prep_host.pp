@@ -17,7 +17,8 @@ class simple_grid::ccm_function::prep_host(
     if has_key($meta_info['host_requirements'], 'cvmfs'){
       $cvmfs = strip("${meta_info['host_requirements']['cvmfs']}")
       if $cvmfs == "true" {
-        class {"simple_grid::ccm_function::prep_host::cvmfs::configure":}
+        class {"simple_grid::components::cvmfs::install":}
+        class {"simple_grid::components::cvmfs::configure":}
       }
     }
   }
