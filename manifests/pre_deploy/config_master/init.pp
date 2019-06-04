@@ -10,7 +10,7 @@ class simple_grid::pre_deploy::config_master::init(
   notify{"Aggregating lifecycle callback scripts for all lightweight components":}
   include simple_grid::ccm_function::aggregate_repository_lifecycle_scripts
 
-  notify{"Aggregating lifecycle callback scripts for all lightweight components":}
+  notify{"Setting up Docker Swarm as the container orchestrator for the entire cluster":}
   include simple_grid::components::swarm::configure
   
   # notify{"Setting up Docker Swarm as the container orchestrator for the entire cluster":}
