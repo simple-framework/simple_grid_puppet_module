@@ -49,8 +49,8 @@ class simple_grid::components::ccm::install(
     elsif $mode == lookup('simple_grid::mode::release'){
       notify {"Installing CCM in Release MODE. The value for simple_grid::mode is : ${mode}":}
       exec {'Installing Simple Grid Puppet Module from Puppet Forge':
-        command => "puppet module install --version ${forge_module_version} --target-dir ${env_dir}/modules ${forge_module_name}",
-        path    => "/usr/local/bin/:/usr/bin/:/bin/::/opt/puppetlabs/bin/",
+        command => "puppet module install --version ${forge_module_version} --environment ${env_name} --target-dir ${env_dir}/modules ${forge_module_name}",
+        path    => "/usr/local/bin/:/usr/bin/:/bin/::/opt/puppetlabs/bin/"
       }
     } 
 }
@@ -91,10 +91,11 @@ class simple_grid::components::ccm::installation_helper::simple_env_modules(
   $module_dependencies.each |Integer $index, Hash $dependency| {
     $module_name = $dependency["name"]
     $version = $dependency["version_requirement"]
+    notify {"puppet module install --version ${version} --environment ${env_name} ${module_name}":}
     exec {"Installing ${module_name} ${version}":
-        command => "puppet module install --version ${version} --target-dir ${env_dir}/modules ${module_name}",
-        path    => "/usr/local/bin/:/usr/bin/:/bin/::/opt/puppetlabs/bin/",
-    }
+      command => "puppet module install --version ${version} --environment ${env_name} --target-dir ${env_dir}/modules ${module_name}",
+      path    => "/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin",    
+    } 
   }
 }
 ## Deprecated in #80
