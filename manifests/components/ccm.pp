@@ -21,9 +21,9 @@ class simple_grid::components::ccm::install(
     notify{"Mode is $mode $module_dir":}
     if $mode == lookup('simple_grid::mode::dev') {
       notify {"Installing CCM in DEV MODE. The value for simple_grid::mode is : ${mode}":}
-      
-      class {"simple_grid::components::ccm::installation_helper::r10k::install":}
-  
+      # class {"simple_grid::components::ccm::installation_helper::r10k::install":} ## Deprecated in #80
+      class {"simple_grid::components::ccm::installation_helper::simple_env_modules":}
+
       notify {"Installing SIMPLE Grid Puppet Module from Github at $module_dir":}
       vcsrepo {"${module_dir}":
         ensure   => present,
@@ -34,7 +34,9 @@ class simple_grid::components::ccm::install(
     }
     elsif $mode == lookup('simple_grid::mode::docker') {
       notify {"Installing CCM in Docker Dev MODE. The value for simple_grid::mode is : ${mode}":}
-      class {"simple_grid::components::ccm::installation_helper::r10k::install":}
+      # class {"simple_grid::components::ccm::installation_helper::r10k::install":} # Deprecated in #80
+      class {"simple_grid::components::ccm::installation_helper::simple_env_modules":}
+
       file{'Creating a directory for simple grid puppet module in $env_dir':
         ensure => directory,
         path   => "${module_dir}",
@@ -47,7 +49,7 @@ class simple_grid::components::ccm::install(
     elsif $mode == lookup('simple_grid::mode::release'){
       notify {"Installing CCM in Release MODE. The value for simple_grid::mode is : ${mode}":}
       exec {'Installing Simple Grid Puppet Module from Puppet Forge':
-        command => "puppet module install ${forge_module_name} --version ${forge_module_version} --environment ${env_name}",
+        command => "puppet module install --version ${forge_module_version} --target-dir ${env_dir}/modules ${forge_module_name}",
         path    => "/usr/local/bin/:/usr/bin/:/bin/::/opt/puppetlabs/bin/",
       }
     } 
@@ -80,6 +82,22 @@ class simple_grid::components::ccm::installation_helper::generate_site_manifest(
     content => epp("simple_grid/site.pp")
   }
 }
+class simple_grid::components::ccm::installation_helper::simple_env_modules(
+  $env_name = lookup('simple_grid::components::ccm::install::env_name'),
+  $env_dir = lookup('simple_grid::components::ccm::install::env_dir')
+){
+  $module_dependencies = simple_grid::list_module_dependencies()
+  notify{"Installation dependencies for simple module in ${env_dir}":}
+  $module_dependencies.each |Integer $index, Hash $dependency| {
+    $module_name = $dependency["name"]
+    $version = $dependency["version_requirement"]
+    exec {"Installing ${module_name} ${version}":
+        command => "puppet module install --version ${version} --target-dir ${env_dir}/modules ${module_name}",
+        path    => "/usr/local/bin/:/usr/bin/:/bin/::/opt/puppetlabs/bin/",
+    }
+  }
+}
+## Deprecated in #80
 class simple_grid::components::ccm::installation_helper::r10k::install(
   $env_dir = lookup('simple_grid::components::ccm::install::env_dir')
 ){
@@ -92,8 +110,8 @@ class simple_grid::components::ccm::installation_helper::r10k::install(
     cwd     => "$env_dir",
     path    => "/usr/local/bin/:/usr/bin/:/bin/",
   }
-  
 }
+
 class simple_grid::components::ccm::installation_helper::puppet_agent(
   $puppet_conf = lookup("simple_grid::config_master::puppet_conf"),
   $env_name = lookup("simple_grid::components::ccm::install::env_name"),
