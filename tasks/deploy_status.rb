@@ -6,6 +6,11 @@ require_relative "../../ruby_task_helper/files/task_helper.rb"
 # This task runs on CM node
 class DeployStatus <TaskHelper
 
+    def get_container_id(container_name)
+        container_id = "/bin/docker docker ps -a --no-trunc --filter name=#{container_name} --format {{.ID}}"
+        return container_id
+    end
+
     def task(deploy_status_file:nil, execution_id:nil, **kwargs)
         deploy_status_file_hash = YAML.load(File.read(deploy_status_file))
         deploy_statuses = deploy_status_file_hash['deploy_status']
@@ -16,6 +21,8 @@ class DeployStatus <TaskHelper
                 break
             end
         end
+        
+
         current_deploy_status.to_yaml
     end
 end
