@@ -28,6 +28,9 @@ hierarchy:
   - name: "components::component_repository"
     path: "components/component_repository.yaml"
 
+  - name: "components::bolt"
+    path: "components/bolt.yaml"
+
   - name: "nodes::config_master"
     path: "nodes/config_master.yaml"
 

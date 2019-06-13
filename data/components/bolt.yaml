@@ -1,0 +1,3 @@
+---
+
+simple_grid::components::bolt::bolt_dir: "/root/.puppetlabs/bolt"
