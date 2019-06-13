@@ -7,7 +7,7 @@ require_relative "../../ruby_task_helper/files/task_helper.rb"
 class DeployStatus <TaskHelper
 
     def get_container_id(container_name)
-        container_id = "/bin/docker docker ps -a --no-trunc --filter name=#{container_name} --format {{.ID}}"
+        container_id = `/bin/docker docker ps -a --no-trunc --filter name=#{container_name} --format {{.ID}}`
         return container_id
     end
 
