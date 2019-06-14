@@ -34,13 +34,15 @@ class DeployMaster < TaskHelper
             _name = _lightweight_component['name']
             _node_fqdn = _lightweight_component['deploy']['node']
             _deploy_status_output_file = "#{deploy_status_output_dir}/.#{_execution_id}.status" 
+            container_info=Hash.new
             deploy_command = "bolt task run simple_grid::deploy "\
             " execution_id=#{_execution_id}"\
             " deploy_status_file=#{deploy_status_file}"\
             " deploy_status_success=#{deploy_status_success}"\
             " deploy_status_failure=#{deploy_status_failure}"\
+            "simple_config_dir=#{simple_config_dir}"
             " --modulepath #{modulepath}"\
-            " --nodes #{_node_fqdn}"
+            " --nodes #{_node_fqdn}" 
             
             deploy_status_command = "bolt task run simple_grid::deploy_status \
                 deploy_status_file=#{deploy_status_file} \
@@ -65,6 +67,8 @@ class DeployMaster < TaskHelper
                 "component" => _name,
                 "node" => _node_fqdn,
                 "status" => deploy_status['status'],
+                "container_id"=>container_info['container_id'],
+                "container_status"=>container_info['container_status'],
                 "log_file" => _deploy_status_output_file
             }
             _output << _current_output
