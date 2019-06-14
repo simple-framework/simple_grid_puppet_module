@@ -24,6 +24,24 @@ class Deploy < TaskHelper
                 break
             end
         end
+        
+        # Find container name corresponding to this execution id
+        def get_container_info(execution_id, simple_config_dir)
+            dns_file = "#{simple_config_dir}/.dns.yaml"
+            dns_file_hash = YAML.load(File.read(dns_file))
+
+            all_dns_info.each do |dns_info|
+                if dns_info['execution_id'] == execution_id
+                    host_fqdn = dns_file_hash['host_fqdn:']
+                    end
+            command="/usr/bin/docker inspect --format='{{.ID}}' #{host_fqdn}"
+            stdout, stderr, status =Open3.capture3(command)
+            container_id = stdout
+            command="/usr/bin/docker inspect --format='{{.State.Status}}' #{host_fqdn}"
+            stdout, stderr, status =Open3.capture3(command)
+            container_status = stdout
+            # return container_id container_status
+           end
 
         # update current_deploy_status and return values
         if status.success?
@@ -43,8 +61,8 @@ class Deploy < TaskHelper
         
     end
     def task(execution_id:nil, deploy_status_file:nil, deploy_status_success:nil, deploy_status_failure:nil, **kwargs)
-        status, output = init_deploy(execution_id, deploy_status_file, deploy_status_success, deploy_status_failure)
-        {status: status, output: output}
+        status, output = init_deploy(execution_id, deploy_status_file, deploy_status_success, deploy_status_failure), container_info=get_container_info(container_idcontainer_id, container_status)
+        {status: status, output: output, container_info}
     end
 end
 
