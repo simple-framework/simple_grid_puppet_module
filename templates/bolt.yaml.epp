@@ -1,0 +1,13 @@
+modulepath: "/etc/puppetlabs/code/environments/simple/modules"
+concurrency: 10
+format: human
+ssh:
+  host-key-check: false
+  private-key: /etc/ssh/simple_host_key
+  user: root
+log:
+  console:
+    level: info
+  ~/.puppetlabs/bolt/debug.log:
+    level: debug
+    append: false  

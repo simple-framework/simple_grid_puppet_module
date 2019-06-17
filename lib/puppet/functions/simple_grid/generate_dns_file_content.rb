@@ -1,5 +1,7 @@
 require 'yaml'
 require 'ipaddr'
+require_relative 'get_level_2_configurator.rb'
+
 Puppet::Functions.create_function(:'simple_grid::generate_dns_file_content') do
     dispatch :generate_dns_file_content do
         param 'String', :augmented_site_level_config_file
@@ -25,14 +27,15 @@ Puppet::Functions.create_function(:'simple_grid::generate_dns_file_content') do
             container_type = meta_info['type']
             host_fqdn = lightweight_component['deploy']['node']
             host_ip =  get_host_ip(data['site_infrastructure'],host_fqdn)
+            level_2_configurator = simple_get_level_2_configurator(augmented_site_level_config_file, lightweight_component)
             ip_address = ip_range[ip_index]
             ip_index=ip_index+1
             execution_id = lightweight_component['execution_id']
             fqdn = host_fqdn.split('.')
             hostname = fqdn[0]
             domain = fqdn[1, fqdn.length].join('.')
-            if meta_info['docker_run_parameters'].key?("hostname")
-                container_fqdn = meta_info['docker_run_parameters']['hostname'] 
+            if meta_info['level_2_configurators']["#{level_2_configurator}"]['docker_run_parameters'].key?("hostname")
+                container_fqdn = meta_info['level_2_configurators']["#{level_2_configurator}"]['docker_run_parameters']['hostname'] 
             else
                 container_fqdn = [name, hostname, execution_id].join("_") + ".#{domain}"
             end    

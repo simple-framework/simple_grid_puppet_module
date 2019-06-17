@@ -32,6 +32,10 @@ class simple_grid::install::config_master::simple_installer(
   notify{"Configuring CCM on Config Master":}
   class{"simple_grid::components::ccm::config":
     node_type => "CM"
+
+  notify{"Installing Bolt on Config Master":}
+  class{"simple_grid::components::bolt::install":
+
   }
   
   # Config stage
