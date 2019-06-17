@@ -1,1 +1,7 @@
-simple_grid::components::swarm::status_file: "%{hiera('simple_grid::simple_config_dir')}/.swarm_status"
+simple_grid::components::swarm::status_file_name: ".swarm_status"
+simple_grid::components::swarm::status_file: "%{hiera('simple_grid::simple_config_dir')}/%{hiera('simple_grid::components::swarm::status_file_name')}"
+# container orchestrator
+simple_grid::components::swarm::dns: "%{hiera('simple_grid::simple_config_dir')}/.dns.yaml"
+simple_grid::components::swarm::subnet: "10.0.0.0/16"
+simple_grid::components::swarm::network: "simple"
+simple_grid::components::swarm::swarm_log: "%{hiera('simple_grid::simple_config_dir')}/.swarm"

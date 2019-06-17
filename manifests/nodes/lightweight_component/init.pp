@@ -1,6 +1,6 @@
 class simple_grid::nodes::lightweight_component::init(
   $mode = lookup('simple_grid::mode'),
-  $augmented_site_level_config_file = lookup('simple_grid::component::yaml_compiler::output')
+  $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
   $preferred_tech_stack_key = lookup("simple_grid::components::site_level_config_file::objects::preferred_tech_stack"),
   $container_orchestration_key = lookup("simple_grid::components::site_level_config_file::objects::preferred_tech_stack::container_orchestration"),
   $swarm_key = lookup("simple_grid::components::site_level_config_file::objects::preferred_tech_stack::container_orchestration::swarm"),
@@ -15,23 +15,6 @@ class simple_grid::nodes::lightweight_component::init(
     class{"docker":
         version => '18.09.2'
     }
-    notify{"Preparing node for pre_deploy stage":}
-    # swarm firewall rules need to be set before swarm.rb task tries to connect all nodes in a cluster
-    $container_orchestrator = ""
-    if has_key($augmented_site_level_config_file, $preferred_tech_stack_key){
-      $preferred_tech_stack = $augmented_site_level_config_file[$preferred_tech_stack_key]
-      if has_key($preferred_tech_stack, $container_orchestration_key){
-        $container_orchestrator = $preferred_tech_stack[$container_orchestrator]
-      }
-    }
-    if length($container_orchestrator) <1 {
-      $container_orchestrator  = $default_orchestrator
-    }
-    if $container_orchestrator == $swarm_key {
-      notify{"Preparing container orchestrator":}
-      class{"simple_grid::components::swarm::configure::firewall":}
-    }
-
     simple_grid::components::execution_stage_manager::set_stage { "Setting stage to pre_deploy_step_1":
       simple_stage => lookup('simple_grid::stage::pre_deploy::step_1') #handled by tasks executed by CM
     }
@@ -44,11 +27,12 @@ class simple_grid::nodes::lightweight_component::init(
   elsif $simple_stage == lookup('simple_grid::stage::pre_deploy::step_2'){
     class{"simple_grid::pre_deploy::lightweight_component::generate_deploy_status_file":}
     class{"simple_grid::pre_deploy::lightweight_component::copy_augmented_site_level_config":}
+    class{"simple_grid::pre_deploy::lightweight_component::copy_additional_files":}
     class{"simple_grid::pre_deploy::lightweight_component::copy_lifecycle_callbacks":}
     class{"simple_grid::pre_deploy::lightweight_component::copy_host_certificates":}
-    simple_grid::components::execution_stage_manager::set_stage {"Setting stage to pre_deploy_step_3":
-      simple_stage => lookup('simple_grid::stage::pre_deploy::step_3')
-    }
+    # simple_grid::components::execution_stage_manager::set_stage {"Setting stage to pre_deploy_step_3":
+    #   simple_stage => lookup('simple_grid::stage::pre_deploy::step_3')
+    # }
   }
   elsif $simple_stage == lookup('simple_grid::stage::pre_deploy::step_3') {
     include 'git'

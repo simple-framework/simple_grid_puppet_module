@@ -2,6 +2,10 @@
     "description": "Create tokens for joining swarm as manager/worker and save them to a file",
     "input_method": "stdin",
     "parameters": {
+      "main_manager": {
+        "description": "The fqdn of the lightweight component node hosting execution id 0 container",
+        "type": "String[1]"
+      },
       "swarm_status_file": {
         "description": "The absolute path of the file to which the tokens should be saved",
         "type": "String[1]"
