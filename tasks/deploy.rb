@@ -6,7 +6,6 @@ require 'puppet'
 require 'yaml'
 require_relative "../../ruby_task_helper/files/task_helper.rb"
 
-# This task is run on the LC node. It stored output on /etc/simple_grid/.deploy.log
 class Deploy < TaskHelper
     def init_deploy(execution_id, deploy_status_file, deploy_status_success, deploy_status_error)
         current_deploy_status = Hash.new
@@ -42,25 +41,10 @@ class Deploy < TaskHelper
         return status.success?, output
         
     end
-    # Find container name corresponding to this execution id
-    def get_container_info(execution_id, simple_config_dir)
-         dns_file = "#{simple_config_dir}/.dns.yaml"
-         dns_file_array = YAML.load(File.read(dns_file))
-         dns_file_array.each do |dns_info|
-                if dns_info['execution_id'] == execution_id
-                    host_fqdn = dns_file_hash['host_fqdn:']
-                end
-        command="/usr/bin/docker inspect --format='{{.ID}}' #{host_fqdn}"
-        stdout, stderr, status =Open3.capture3(command)
-        container_id = stdout
-        command="/usr/bin/docker inspect --format='{{.State.Status}}' #{host_fqdn}"
-        stdout, stderr, status =Open3.capture3(command)
-        container_status = stdout
-        end
 
     def task(execution_id:nil, deploy_status_file:nil, deploy_status_success:nil, deploy_status_failure:nil, simple_config_dir:nil,**kwargs)
-        status, output = init_deploy(execution_id, deploy_status_file, deploy_status_success, deploy_status_failure), container_info=get_container_info(container_id, container_status)
-        {status: status, output: output, container_info: container_info}
+        status, output = init_deploy(execution_id, deploy_status_file, deploy_status_success, deploy_status_failure) 
+        {status: status, output: output }
     end
 end
 
