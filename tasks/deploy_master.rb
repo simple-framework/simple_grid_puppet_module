@@ -40,12 +40,12 @@ class DeployMaster < TaskHelper
             " deploy_status_file=#{deploy_status_file}"\
             " deploy_status_success=#{deploy_status_success}"\
             " deploy_status_failure=#{deploy_status_failure}"\
-            "simple_config_dir=#{simple_config_dir}"
             " --modulepath #{modulepath}"\
-            " --nodes #{_node_fqdn}" 
+            " --nodes #{_node_fqdn}"\
             
             deploy_status_command = "bolt task run simple_grid::deploy_status \
                 deploy_status_file=#{deploy_status_file} \
+                simple_config_dir=#{simple_config_dir} \
                 execution_id=#{_execution_id} \
                 --modulepath #{modulepath} \
                 --nodes #{_node_fqdn} \
@@ -67,8 +67,8 @@ class DeployMaster < TaskHelper
                 "component" => _name,
                 "node" => _node_fqdn,
                 "status" => deploy_status['status'],
-                "container_id"=>container_info['container_id'],
-                "container_status"=>container_info['container_status'],
+                # "container_id"=>deploy_status['container_id'],
+                # "container_status"=>deploy_status['container_status'],
                 "log_file" => _deploy_status_output_file
             }
             _output << _current_output
