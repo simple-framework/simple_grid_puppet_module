@@ -25,6 +25,9 @@ hierarchy:
   - name: "components::ccm"
     path: "components/ccm.yaml"
 
+  - name: "components::swarm"
+    path: "components/swarm.yaml"
+
   - name: "components::component_repository"
     path: "components/component_repository.yaml"
 

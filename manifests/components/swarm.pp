@@ -1,6 +1,7 @@
 class simple_grid::components::swarm::configure(
 ){}
-class simple_grid::components::swarm::configure::network($dns_file = lookup('simple_grid::components::ccm::container_orchestrator::swarm::dns'),
+class simple_grid::components::swarm::configure::network(
+  $dns_file = lookup('simple_grid::components::ccm::container_orchestrator::swarm::dns'),
   $dns_parent_name = lookup('simple_grid::components::site_level_config_file::objects:dns_parent'),
   $meta_info_prefix = lookup('simple_grid::components::site_level_config_file::objects:meta_info_prefix'),
   $mode = lookup('simple_grid::mode'),
@@ -56,5 +57,57 @@ class simple_grid::components::swarm::configure::firewall{
       dport  => [7946, 4789],
       action => accept,
       proto  => udp,
-    }  
+    }
 }
+
+class simple_grid::components::swarm::init(
+  $main_manager,
+  $modulepath,
+  $swarm_status_file = lookup("simple_grid::components::swarm::status_file")
+){
+  $bolt_cmd = "bolt task run docker::swarm_init --node ${main_manager} --modulepath ${modulepath}"
+  exec { 'Initialize Docker Swarm':
+    command   => $bolt_cmd,
+    user      => 'root',
+    logoutput => true,
+    path      => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
+  }
+  $bolt_token_cmd = "bolt task run simple_grid::swarm_prep_tokens swarm_status_file=${swarm_status_file} --node ${main_manager} --modulepath ${modulepath}"
+  exec { 'Save tokens for Docker Swarm':
+    command   => $bolt_cmd,
+    user      => 'root',
+    logoutput => true,
+    path      => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
+  }
+}
+
+class simple_grid::components::swarm::join(
+  $role,
+  $main_manager,
+  $swarm_status_file = lookup("simple_grid::components::swarm::status_file"),
+  $modulepath
+){
+  $swarm_status = loadyaml("${swarm_status_file}")
+  $token = $swarm_status["tokens"][$role]
+  $join_cmd = "bolt task run simple_grid::swarm_join token=${token}  manager_ip=${main_manager}:2377 --nodes localhost --modulepath ${modulepath}"
+  exec { "Join swarm cluster as ${role}":
+    command   => $join_cmd,
+    user      => 'root',
+    logoutput => true,
+    path      => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
+  }
+}
+class simple_grid::components::swarm::create_network(
+  $main_manager,
+  $network,
+  $subnet
+){
+  $network_cmd = "docker network create --attachable --driver=overlay --subnet=${subnet} ${network}"
+  exec { 'Initialize Docker Swarm':
+    command   => $network_cmd,
+    user      => 'root',
+    logoutput => true,
+    path      => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
+  }
+}
+## TODO DNS info
