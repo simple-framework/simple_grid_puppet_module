@@ -30,9 +30,9 @@ class simple_grid::nodes::lightweight_component::init(
     class{"simple_grid::pre_deploy::lightweight_component::download_component_repository":}
     class{"simple_grid::pre_deploy::lightweight_component::config_firewall_swarm":}
     class{'simple_grid::components::swarm::configure::network':}
-    simple_grid::components::execution_stage_manager::set_stage {"Setting stage to deploy":
-      simple_stage => lookup('simple_grid::stage::deploy') #handled by tasks executed by CM
-    }
+    # simple_grid::components::execution_stage_manager::set_stage {"Setting stage to deploy":
+    #   simple_stage => lookup('simple_grid::stage::deploy') #handled by tasks executed by CM
+    # }
   }
   elsif $simple_stage == lookup('simple_grid::stage::deploy') {
     #handled by tasks from puppet master, which do a puppet apply simple_grid::deploy::lightweight_component::init($execution_id)

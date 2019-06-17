@@ -1,10 +1,19 @@
 # Execution command
 # puppet apply --modulepath /etc/puppetlabs/code/environments/production/modules -e 'class{"simple_grid::install::config_master::simple_installer":}'
 
-class simple_grid::install::config_master::simple_installer{
+class simple_grid::install::config_master::simple_installer(
+  $simple_node_type_file = lookup('simple_grid::node_type:file'),
+  $node_type = lookup("simple_grid::node_type:config_master"),
+){
   
   notify{"Creating simple config directory":}
   include 'simple_grid::ccm_function::create_config_dir'
+  
+  notify{"Setting node type via file ${simple_node_type_file}":}
+  file{"${simple_node_type_file}":
+    ensure  => present,
+    content => "${node_type}"
+  }
 
   notify{"***** Stage:Install; Node: CM *****":}
 
