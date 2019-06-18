@@ -36,8 +36,6 @@ class DeployStatus <TaskHelper
                 break
             end
         end
-        
-
         current_deploy_status.to_yaml
     end
 end
