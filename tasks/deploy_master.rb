@@ -45,8 +45,8 @@ class DeployMaster < TaskHelper
             
             deploy_status_command = "bolt task run simple_grid::deploy_status \
                 deploy_status_file=#{deploy_status_file} \
-                simple_config_dir=#{simple_config_dir} \
                 execution_id=#{_execution_id} \
+                simple_config_dir=#{simple_config_dir} \
                 --modulepath #{modulepath} \
                 --nodes #{_node_fqdn} \
                 > #{_deploy_status_output_file}"
