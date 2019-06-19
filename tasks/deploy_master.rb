@@ -22,9 +22,9 @@ class DeployMaster < TaskHelper
         end
         deploy_status = YAML.load_file(execution_status_file + ".yaml")
         return deploy_status
-    end
+     end
 
-    def task(simple_config_dir:nil, augmented_site_level_config_file:nil, deploy_status_file:nil, deploy_status_output_dir:nil, deploy_status_success:nil, deploy_status_failure:nil, modulepath:nil, **kwargs )
+    def task(simple_config_dir:nil, augmented_site_level_config_file:nil, dns_key:nil, deploy_status_file:nil, deploy_status_output_dir:nil, deploy_status_success:nil, deploy_status_failure:nil, modulepath:nil, **kwargs )
         _overall_deployment_status_file_name = simple_config_dir + "/deployment_output.yaml"
         _data = YAML.load_file(augmented_site_level_config_file)
         _lightweight_components = _data['lightweight_components']
@@ -34,7 +34,6 @@ class DeployMaster < TaskHelper
             _name = _lightweight_component['name']
             _node_fqdn = _lightweight_component['deploy']['node']
             _deploy_status_output_file = "#{deploy_status_output_dir}/.#{_execution_id}.status" 
-            container_info=Hash.new
             deploy_command = "bolt task run simple_grid::deploy "\
             " execution_id=#{_execution_id}"\
             " deploy_status_file=#{deploy_status_file}"\
@@ -46,11 +45,12 @@ class DeployMaster < TaskHelper
             deploy_status_command = "bolt task run simple_grid::deploy_status \
                 deploy_status_file=#{deploy_status_file} \
                 execution_id=#{_execution_id} \
-                simple_config_dir=#{simple_config_dir} \
+                augmented_site_level_config_file=#{augmented_site_level_config_file}\
+                dns_key=#{dns_key}\
                 --modulepath #{modulepath} \
                 --nodes #{_node_fqdn} \
                 > #{_deploy_status_output_file}"
-            
+            puts deploy_status_command
             puts "Executing deployment of #{_name} on #{_node_fqdn} with execution_id = #{_execution_id}"
             deploy_stdout, deploy_stderr, deploy_status = Open3.capture3(deploy_command)  
             
@@ -67,8 +67,8 @@ class DeployMaster < TaskHelper
                 "component" => _name,
                 "node" => _node_fqdn,
                 "status" => deploy_status['status'],
-                # "container_id"=>deploy_status['container_id'],
-                # "container_status"=>deploy_status['container_status'],
+                "container_id" => deploy_status['container_id'],
+                "container_status"=>  deploy_status['container_status'],
                 "log_file" => _deploy_status_output_file
             }
             _output << _current_output
