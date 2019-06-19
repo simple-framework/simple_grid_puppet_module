@@ -31,19 +31,35 @@ class simple_grid::ccm_function::config_orchestrator(
           class{'simple_grid::components::swarm::init':
             main_manager => $main_manager
           }
+          class{'simple_grid::components::swarm::configure::firewall':}
+          class{'simple_grid::components::swarm::create_network':
+            main_manager => $main_manager,
+          }
           break()
         }
       }
     }
     elsif $facts['simple_node_type'] == $lc_node_type{
-      # notify{'Setting FW rules for all Swarm nodes':}
-      # class{'simple_grid::components::swarm::configure::firewall':}
-      # $swarm_status = loadyaml($swarm_status_file)
-      # $main_manager = $swarm_status['main_manager']
-      # $managers = $swarm_status['managers']
-      # class{'simple_grid::components::swarm::create_network':}
-      # class{'simple_grid::components::swarm::init':}
-      # class{'simple_grid::components::swarm::join':}
+      $swarm_status = loadyaml("${swarm_status_file}")
+      $main_manager = $swarm_status["main_manager"]
+      $managers = $swarm_status["managers"]
+      $manager_token = $swarm_status["tokens"]["manager"]
+      $worker_token = $swarm_status["tokens"]["worker"]
+      if $fqdn in $managers {
+        class{'simple_grid::components::swarm::configure::firewall':}
+        class {'simple_grid::components::swarm::join':
+          token        => $manager_token,
+          main_manager => $main_manager
+        }
+      } elsif $fqdn == $main_manager{
+          notify{'Not executing docker swarm join command as the node is the main swarm manager':}
+      }else {
+        class{'simple_grid::components::swarm::configure::firewall':}
+        class {'simple_grid::components::swarm::join':
+          token        => $worker_token,
+          main_manager => $main_manager
+        }
+      }
     }
   }
   elsif $container_orchestrator == $kuberentes_key {
