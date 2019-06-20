@@ -41,7 +41,9 @@ Puppet::Functions.create_function(:'simple_grid::generate_dns_file_content') do
             end    
             dns_content << {"container_fqdn" => "#{container_fqdn}", "host_fqdn" => host_fqdn, "host_ip" => host_ip,'container_ip' => ip_address.to_s, 'type' => container_type, 'execution_id' => execution_id}
         end
-        dns_content.to_yaml.lines.to_a[1..-1].join
+        { "string" => dns_content.to_yaml.lines.to_a[1..-1].join, 
+          "hash"   => dns_content 
+        }
     end
 
     def get_host_ip(site_infrastructure, host_fqdn)

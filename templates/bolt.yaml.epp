@@ -1,4 +1,4 @@
-modulepath: "/etc/puppetlabs/code/environments/simple/modules"
+modulepath: "/etc/puppetlabs/code/environments/simple/modules:/etc/puppetlabs/code/environments/production/modules"
 concurrency: 10
 format: human
 ssh:
