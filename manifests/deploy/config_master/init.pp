@@ -5,7 +5,7 @@ class simple_grid::deploy::config_master::init(
   $deploy_status_success = lookup("simple_grid::stage::deploy::status::success"),
   $deploy_status_failure = lookup("simple_grid::stage::deploy::status::failure"),
   $unit_deployment_timeout = lookup("simple_grid::components::component_repository::unit_deployment_timeout"),
-  $dns_key = lookup('simple_grid::components::site_level_config_file::objects:dns_parent:')
+  $dns_key = lookup('simple_grid::components::site_level_config_file::objects:dns_parent')
  ){
     $modulepath = "/etc/puppetlabs/code/environments/production/modules"
     $augmented_site_level_config = loadyaml($augmented_site_level_config_file)

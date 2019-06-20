@@ -26,19 +26,19 @@ class DeployStatus <TaskHelper
                 command="docker inspect --format='{{.ID}}' #{container_fqdn}"
                 stdout, stderr, status =Open3.capture3(command)
                 if status.success?
-                    current_deploy_status["container_id"] = stdout
+                    current_deploy_status["container_id"] = stdout.split.join ' '
                 else 
-                    current_deploy_status["container_id"] = stderr
+                    current_deploy_status["container_id"] = stderr.split.join ' '
                 end
                 command="docker inspect --format='{{.State.Status}}' #{container_fqdn}"
                 stdout, stderr, status =Open3.capture3(command)
                 if status.success?
-                    current_deploy_status["container_status"] = stdout
+                    current_deploy_status["container_status"] = stdout.split.join ' '
                 else
                     if stderr.include? "Template"
                         current_deploy_status["container_status"] = "The container is not up. The container_id is related to Docker Swarm and not to a SIMPLE lightweight component."
                     else
-                        current_deploy_status["container_status"] = stderr
+                        current_deploy_status["container_status"] = stderr.split.join ' '
                     end
                 end
                 break
