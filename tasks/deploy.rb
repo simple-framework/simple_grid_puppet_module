@@ -6,7 +6,6 @@ require 'puppet'
 require 'yaml'
 require_relative "../../ruby_task_helper/files/task_helper.rb"
 
-# This task is run on the LC node. It stored output on /etc/simple_grid/.deploy.log
 class Deploy < TaskHelper
     def init_deploy(execution_id, deploy_status_file, deploy_status_success, deploy_status_error)
         current_deploy_status = Hash.new
@@ -24,7 +23,7 @@ class Deploy < TaskHelper
                 break
             end
         end
-
+    
         # update current_deploy_status and return values
         if status.success?
             output = stdout
@@ -42,9 +41,10 @@ class Deploy < TaskHelper
         return status.success?, output
         
     end
+
     def task(execution_id:nil, deploy_status_file:nil, deploy_status_success:nil, deploy_status_failure:nil, **kwargs)
-        status, output = init_deploy(execution_id, deploy_status_file, deploy_status_success, deploy_status_failure)
-        {status: status, output: output}
+        status, output = init_deploy(execution_id, deploy_status_file, deploy_status_success, deploy_status_failure) 
+        {status: status, output: output }
     end
 end
 
