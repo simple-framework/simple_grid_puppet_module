@@ -22,8 +22,7 @@ class simple_grid::ccm_function::config_orchestrator(
 
   if $container_orchestrator == $swarm_key {
     if $facts['simple_node_type'] == $cm_node_type {
-      class{'simple_grid::components::swarm::install::generate_dns_info':}
-      class{'simple_grid::components::swarm::generate_swarm_status':}
+      class{'simple_grid::components::swarm::install::generate_dns_info_and_swarm_status':}
       $lightweight_components = $augmented_site_level_config['lightweight_components']
       $lightweight_components.each |Integer $index, Hash $lightweight_component| {
         if $lightweight_component['execution_id'] == 0 {

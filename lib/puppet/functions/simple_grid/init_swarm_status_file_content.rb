@@ -1,11 +1,9 @@
 require 'yaml'
 Puppet::Functions.create_function(:'simple_grid::init_swarm_status_file_content') do 
     dispatch :init_swarm_status_file_content do
-        param 'Hash'  , :augmented_site_level_config
-        param 'String', :dns_key
+        param 'Array'  , :dns
     end
-    def init_swarm_status_file_content(augmented_site_level_config, dns_key)
-        dns = augmented_site_level_config[dns_key]
+    def init_swarm_status_file_content(dns)
         no_of_managers = (0.3 * dns.size).ceil
         main_manager = String.new
         managers = Array.new

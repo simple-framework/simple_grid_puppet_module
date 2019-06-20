@@ -35,7 +35,7 @@ class Deploy < TaskHelper
         def swarm_leave_workers(wn_ip, modulepath)
                 wn_ip.each do |wip|
                         puts  "***"
-                        leave_cmd = "bolt task run simple_grid::swarm_leave --nodes #{wip} --modulepath #{modulepath}"
+                        leave_cmd = "bolt task run simple_grid::swarm_leave force=true --nodes #{wip} --modulepath #{modulepath}"
                         puts leave_cmd
                         puts  "***"
                         stdout, stderr, status = Open3.capture3(leave_cmd)

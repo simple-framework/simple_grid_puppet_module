@@ -1,66 +1,30 @@
-class simple_grid::components::swarm::configure(
-){}
-class simple_grid::components::swarm::configure::network(
-  $dns_file = lookup('simple_grid::components::ccm::container_orchestrator::swarm::dns'),
-  $dns_parent_name = lookup('simple_grid::components::site_level_config_file::objects:dns_parent'),
-  $meta_info_prefix = lookup('simple_grid::components::site_level_config_file::objects:meta_info_prefix'),
-  $mode = lookup('simple_grid::mode'),
-  $subnet = lookup('simple_grid::components::ccm::container_orchestrator::swarm::subnet'),
-  $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
-  $network = lookup('simple_grid::components::ccm::container_orchestrator::swarm::network'),
-){
-  if $mode == lookup('simple_grid::mode::docker') or $mode == lookup('simple_grid::mode::dev') {
-    exec{"Set up docker swarm on the entire cluster":
-      command => "bolt task run simple_grid::swarm augmented_site_level_config_file=${augmented_site_level_config_file} network=${network} subnet=${subnet} modulepath=/etc/puppetlabs/code/environments/simple/modules:/etc/puppetlabs/code/environments/simple/site --modulepath /etc/puppetlabs/code/environments/simple/site/ --nodes localhost > /etc/simple_grid/.swarm_status",
-      path    => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
-      user    => 'root',
-      logoutput => true,
-      environment => ["HOME=/root"]
-    }
-  }
-    elsif $mode == lookup('simple_grid::mode::release') {
-      exec{"Set up docker swarm on the entire cluster":
-        command => "bolt task run simple_grid::swarm augmented_site_level_config_file=${augmented_site_level_config_file} network=${network} subnet=${subnet} modulepath=/etc/puppetlabs/code/environments/simple/modules:/etc/puppetlabs/code/environments/simple/site --modulepath /etc/puppetlabs/code/environments/simple/site/ --nodes localhost > /etc/simple_grid/.swarm_status",
-        path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
-        user    => 'root',
-        logoutput => true,
-      }
-    }
-    $dns_file_content = simple_grid::generate_dns_file_content($augmented_site_level_config_file, $subnet, $meta_info_prefix, $dns_parent_name)
-    if length($dns_file_content) > 1 {
-      notify{"Writing DNS data to ${dns_file}":}
-      file{"Creating DNS data file":
-        ensure => present,
-        path => "${dns_file}",
-        content => "${dns_file_content}",
-      }
-      notify{"Appending DNS data to ${augmented_site_level_config_file}":}
-      file{"${augmented_site_level_config_file}":
-        ensure => present,
-        content => epp('simple_grid/dns_augmented_site_level_config_file.yaml', {'augmented_site_level_config' => file($augmented_site_level_config_file), 'dns_parent_name' => $dns_parent_name,'dns_file_content' => $dns_file_content})
-      }
-    }
-  }
-
-class simple_grid::components::swarm::install::generate_dns_info(
+class simple_grid::components::swarm::install::generate_dns_info_and_swarm_status(
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
   $subnet = lookup('simple_grid::components::swarm::subnet'),
   $meta_info_prefix = lookup('simple_grid::components::site_level_config_file::objects:meta_info_prefix'),
   $dns_file = lookup('simple_grid::components::swarm::dns'),
   $dns_parent_name = lookup('simple_grid::components::site_level_config_file::objects:dns_parent'),
+  $swarm_status_file = lookup('simple_grid::components::swarm::status_file')
 ){
   $dns_file_content = simple_grid::generate_dns_file_content($augmented_site_level_config_file, $subnet, $meta_info_prefix, $dns_parent_name)
-  if length($dns_file_content) > 1 {
+  if length($dns_file_content['string']) > 1 {
     notify{"Writing DNS data to ${dns_file}":}
     file{'Creating DNS data file':
       ensure  => present,
       path    => $dns_file,
-      content => $dns_file_content,
+      content => $dns_file_content['string'],
     }
     notify{"Appending DNS data to ${augmented_site_level_config_file}":}
     file{"${augmented_site_level_config_file}":
       ensure  => present,
-      content => epp('simple_grid/dns_augmented_site_level_config_file.yaml', {'augmented_site_level_config' => file($augmented_site_level_config_file), 'dns_parent_name' => $dns_parent_name,'dns_file_content' => $dns_file_content})
+      content => epp('simple_grid/dns_augmented_site_level_config_file.yaml', {'augmented_site_level_config' => file($augmented_site_level_config_file), 'dns_parent_name' => $dns_parent_name,'dns_file_content' => $dns_file_content['string']})
+    }
+    notify{"${dns_file_content}":}
+    $swarm_status_content = simple_grid::init_swarm_status_file_content($dns_file_content['hash'])
+    file{'Initializing swarm status file':
+      path    => $swarm_status_file,
+      ensure  => present,
+      content => $swarm_status_content
     }
   }
 }
@@ -83,20 +47,6 @@ class simple_grid::components::swarm::configure::firewall{
     }
 }
 
-class simple_grid::components::swarm::generate_swarm_status(
-  $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
-  $dns_parent_name = lookup('simple_grid::components::site_level_config_file::objects:dns_parent'),
-  $swarm_status_file = lookup('simple_grid::components::swarm::status_file')
-){
-  $augmented_site_level_config = loadyaml($augmented_site_level_config_file)
-  $swarm_status_content = simple_grid::init_swarm_status_file_content($augmented_site_level_config, $dns_parent_name)
-  notify{"${swarm_status_content}":}
-  file{'Initializing swarm status file':
-    path    => $swarm_status_file,
-    ensure  => present,
-    content => $swarm_status_content
-  }
-}
 #Executes on CM
 class simple_grid::components::swarm::init(
   $main_manager,
