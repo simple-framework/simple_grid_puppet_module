@@ -2,9 +2,9 @@
   "name": "maany-simple",
   "version": "0.1.0",
   "author": "Mayank Sharma",
-  "summary": "",
+  "summary": "SIMPLE GRID",
   "license": "Apache-2.0",
-  "source": "",
+  "source": "https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module",
   "dependencies": [
     { "name" : "puppetlabs-stdlib", "version_requirement": "5.1.0" },
     { "name" : "puppetlabs-git", "version_requirement": "0.5.0" },
