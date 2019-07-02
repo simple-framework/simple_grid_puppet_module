@@ -25,3 +25,8 @@ simple_grid::stage::deploy::status::file: "%{hiera('simple_grid::nodes::lightwei
 simple_grid::stage::deploy::status::success: success
 simple_grid::stage::deploy::status::failure: error
 simple_grid::stage::deploy::status::initial: pending
+
+#node_type
+simple_grid::node_type:file: "%{hiera('simple_grid::simple_config_dir')}/.node_type"
+simple_grid::node_type:config_master: "config_master"
+simple_grid::node_type:lightweight_component: "lightweight_component"

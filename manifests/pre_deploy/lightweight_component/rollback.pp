@@ -5,12 +5,19 @@ class simple_grid::pre_deploy::lightweight_component::rollback(
   $lifecycle_callbacks_dir_name = lookup('simple_grid::scripts_dir_name'),
   $simple_config_dir = lookup('simple_grid::simple_config_dir'),
   $component_repository_dir = lookup('simple_grid::nodes::lightweight_component::component_repository_dir'),
+  $swarm_status_file = lookup('simple_grid::components::swarm::status_file')
 ){
 
   file{"Removing augmented site level configuration file from LC":
     ensure => absent,
     force  => true,
     path   => "${augmented_site_level_config_file}",
+  }
+
+  file{'Removing swarm status file, if present':
+    ensure => absent,
+    force  => true,
+    path   => "${swarm_status_file}",
   }
   
   $copy_host_certificates = simple_grid::check_presence_host_certificates($host_certificates_dir, $fqdn)

@@ -6,3 +6,10 @@ simple_grid::components::site_level_config_file::install::cream_torque_sample_fi
 
 simple_grid::components::site_level_config_file::objects:meta_info_prefix: meta_info_
 simple_grid::components::site_level_config_file::objects:dns_parent: 'dns'
+
+#tech_stack
+simple_grid::components::site_level_config_file::objects::preferred_tech_stack: 'preferred_tech_stack'
+simple_grid::components::site_level_config_file::objects::preferred_tech_stack::container_orchestration: 'container_orchestration'
+simple_grid::components::site_level_config_file::objects::preferred_tech_stack::container_orchestration::swarm: 'docker-swarm'
+simple_grid::components::site_level_config_file::objects::preferred_tech_stack::container_orchestration::kubernetes: 'kuberentes'
+simple_grid::components::site_level_config_file::objects::preferred_tech_stack::container_orchestration::default: "%{hiera('simple_grid::components::site_level_config_file::objects::preferred_tech_stack::container_orchestration::swarm')}"
