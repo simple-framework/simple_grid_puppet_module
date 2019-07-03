@@ -4,7 +4,7 @@ class simple_grid::components::bolt::install (
 {
 
   notify {"Installing bolt package":}
-  package {"bolt":
+  package {"puppet-bolt":
     ensure => installed,
    }
 
