@@ -5,7 +5,8 @@ class simple_grid::deploy::config_master::init(
   $deploy_status_success = lookup("simple_grid::stage::deploy::status::success"),
   $deploy_status_failure = lookup("simple_grid::stage::deploy::status::failure"),
   $unit_deployment_timeout = lookup("simple_grid::components::component_repository::unit_deployment_timeout"),
-  $dns_key = lookup('simple_grid::components::site_level_config_file::objects:dns_parent')
+  $dns_key = lookup('simple_grid::components::site_level_config_file::objects:dns_parent'),
+  $env_name = lookup('simple_grid::components::ccm::install::env_name')
  ){
     $modulepath = "/etc/puppetlabs/code/environments/production/modules"
     $augmented_site_level_config = loadyaml($augmented_site_level_config_file)
@@ -23,7 +24,7 @@ class simple_grid::deploy::config_master::init(
         deploy_status_success=${deploy_status_success} \
         deploy_status_failure=${deploy_status_failure} \
         modulepath=${modulepath} \
-        --modulepath /etc/puppetlabs/code/environments/simple/site/ \
+        --modulepath ${puppet_environmentpath}/${env_name}/modules/"\
         --nodes localhost",
       path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
       user    => 'root',
