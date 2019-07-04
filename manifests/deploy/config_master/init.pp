@@ -24,7 +24,7 @@ class simple_grid::deploy::config_master::init(
         deploy_status_success=${deploy_status_success} \
         deploy_status_failure=${deploy_status_failure} \
         modulepath=${modulepath} \
-        --modulepath ${puppet_environmentpath}/${env_name}/modules/"\
+        --modulepath ${puppet_environmentpath}/${env_name}/modules/ \
         --nodes localhost",
       path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
       user    => 'root',
