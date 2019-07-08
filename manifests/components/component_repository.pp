@@ -227,7 +227,7 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
   $repository_name = $current_lightweight_component['name']
   $repository_path = "${component_repository_dir}/${repository_name}_${execution_id}"
   $config_dir = "${repository_path}/${level_2_configurator}/${l2_repository_relative_config_dir}"
-  if length($meta_info['docker_hub_tag'])> 0 {
+  if length($meta_info['level_2_configurators']["${level_2_configurator}"]['docker_hub_tag'])> 0 {
     $image_name = $meta_info['docker_hub_tag']
   }else {
     $repository_name_lowercase = downcase($repository_name)
