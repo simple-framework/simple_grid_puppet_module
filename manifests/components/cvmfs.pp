@@ -1,4 +1,6 @@
-class simple_grid::components::cvmfs::install
+class simple_grid::components::cvmfs::install(
+  $env_name = lookup('simple_grid::components::ccm::install::env_name')
+)
 {
   notify {"Installing CVMFS module":}
 
