@@ -171,7 +171,7 @@ class simple_grid::component::component_repository::lifecycle::event::pre_config
   $config_dir = "${repository_path}/${level_2_configurator}/${l2_relative_config_dir}/"
   $repository_name_lowercase = downcase($repository_name)
   $pre_config_image_name = "${repository_name_lowercase}_${pre_config_image_tag}"
-  notify{"Building Dockerfile at: ${pre_config_container_path}":}
+  notify{"Building Dockerfile at: ${pre_config_dir}":}
   Class['docker'] -> Docker::Image["${pre_config_image_name}"] -> Exec['Level-2']
   class {'docker':}
     docker::image {"${pre_config_image_name}":
@@ -211,7 +211,7 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
   $scripts_dir = lookup('simple_grid::scripts_dir'),
   ## params for Container Bootup ###
-  $network = lookup('simple_grid::components::ccm::container_orchestrator::swarm::network'),
+  $network = lookup('simple_grid::components::swarm::network'),
   $component_image_tag = lookup('simple_grid::components::component_repository::component_image_tag'),
   ## Component Repository Directory Structure ##
   $repository_relative_host_certificates_dir = lookup('simple_grid::components::component_repository::relative_host_certificates_dir'),
