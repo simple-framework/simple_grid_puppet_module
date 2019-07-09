@@ -12,12 +12,12 @@ Puppet::Functions.create_function(:'simple_grid::docker_run') do
         param 'String', :container_scripts_dir
         param 'String', :host_certificates_dir
         param 'String', :container_host_certificates_dir
-        
-        param 'String', :network
+        param 'String', :container_host_certificates_dir
+        param 'String', :level_2_configurator
 
     end
-    def docker_run(augmented_site_level_config, current_lightweight_component, meta_info, image_name, augmented_site_level_config_file, container_augmented_site_level_config_file, config_dir, container_config_dir,  scripts_dir, container_scripts_dir, host_certificates_dir, container_host_certificates_dir, network)
-        docker_run_parameters = meta_info['docker_run_parameters']
+    def docker_run(augmented_site_level_config, current_lightweight_component, meta_info, image_name, augmented_site_level_config_file, container_augmented_site_level_config_file, config_dir, container_config_dir,  scripts_dir, container_scripts_dir, host_certificates_dir, container_host_certificates_dir, network, level_2_configurator)
+        docker_run_parameters = meta_info['level_2_configurators'][level_2_configurator]['docker_run_parameters']
         execution_id = current_lightweight_component['execution_id']
         
         ############### 
