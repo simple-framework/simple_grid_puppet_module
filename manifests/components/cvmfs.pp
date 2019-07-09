@@ -2,12 +2,7 @@ class simple_grid::components::cvmfs::install(
   $env_name = lookup('simple_grid::components::ccm::install::env_name')
 )
 {
-  notify {"Installing CVMFS module":}
-
-    exec {'Installing Simple Grid Puppet Module from Puppet Forge ':
-      command => "puppet module install CERNOps-cvmfs --version '6.1.0' --environment ${env_name}",
-      path    => "/usr/local/bin/:/usr/bin/:/bin/::/opt/puppetlabs/bin/",
-    }
+  notify {" CVMFS module should have been installed during installation of SIMPLE. Doing nothing":}
 
 }
 class simple_grid::components::cvmfs::configure
