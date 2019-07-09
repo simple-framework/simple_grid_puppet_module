@@ -1,0 +1,7 @@
+---
+simple_grid::config_master::puppet_conf: "/etc/puppetlabs/puppet/puppet.conf"
+simple_grid::config_master::puppet_code_environments_dir: "/etc/puppetlabs/code/environments"
+simple_grid::config_master::environments::simple::modulepath: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/"
+#ssh
+simple_grid::nodes::config_master::installation_helper::ssh_config::ssh_dir: '/etc/ssh'
+simple_grid::nodes::config_master::installation_helper::ssh_config::ssh_host_key: 'simple_host_key'

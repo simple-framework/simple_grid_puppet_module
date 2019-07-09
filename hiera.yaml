@@ -1,0 +1,41 @@
+---
+version: 5
+defaults:
+  datadir: data
+  data_hash: yaml_data
+hierarchy:
+  - name: "OS family"
+    path: "os/%{facts.os.family}.yaml"
+
+  - name: "common"
+    path: "common.yaml"
+  
+  - name: "components::enc"
+    path: "components/enc.yaml"
+
+  - name: "components::execution_stage_manager"
+    path: "components/execution_stage_manager.yaml"
+
+  - name: "components::site_level_config_file"
+    path: "components/site_level_config_file.yaml"
+
+  - name: "components::yaml_compiler"
+    path: "components/yaml_compiler.yaml"
+
+  - name: "components::ccm"
+    path: "components/ccm.yaml"
+
+  - name: "components::swarm"
+    path: "components/swarm.yaml"
+
+  - name: "components::component_repository"
+    path: "components/component_repository.yaml"
+
+  - name: "components::bolt"
+    path: "components/bolt.yaml"
+
+  - name: "nodes::config_master"
+    path: "nodes/config_master.yaml"
+
+  - name: "nodes::lightweight_component"
+    path: "nodes/lightweight_component.yaml"

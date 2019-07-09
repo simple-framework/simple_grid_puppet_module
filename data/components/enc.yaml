@@ -1,0 +1,10 @@
+---
+#install
+simple_grid::components::enc::install::repository_url: "https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_enc"
+simple_grid::components::enc::install::revision: "master"
+
+#configure
+
+#common
+simple_grid::components::enc::enc_dir: "%{hiera('simple_grid::simple_config_dir')}/enc"
+simple_grid::components::enc::enc_executable: "%{hiera('simple_grid::components::enc::enc_dir')}/enc.sh"

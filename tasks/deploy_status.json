@@ -1,0 +1,29 @@
+{
+    "description": "Checks status of the deployment status for given execution id on the node where the task is run",
+    "input_method": "stdin",
+    "files": ["ruby_task_helper/files/task_helper.rb"],
+    "implementation": [
+      { 
+          "name": "deploy_status.rb"
+      }
+    ],
+
+    "parameters": {
+        "deploy_status_file": {
+            "type": "String[1]",
+            "description": "The location of the deploy_status_file on the LC node where the probes are run."
+        },
+        "augmented_site_level_config_file": {
+          "type": "String[1]",
+          "description": "The location of the augmented_site_level_config_file.yaml on the LC node."
+      },
+      "dns_key": {
+        "type": "String[1]",
+        "description": "The name for the yaml object that contains dns info in the augmented_site_level_config_file."
+    },
+        "execution_id": {
+          "type": "String[1]",
+          "description": "The execution_id of the lightweight component whose deployment is to be monitored."
+        }
+    }
+}
