@@ -8,6 +8,6 @@ ssh:
 log:
   console:
     level: info
-  ~/.puppetlabs/bolt/debug.log:
+  /root/.puppetlabs/bolt/debug.log:
     level: debug
     append: false  

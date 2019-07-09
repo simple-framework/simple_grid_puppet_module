@@ -171,7 +171,7 @@ class simple_grid::component::component_repository::lifecycle::event::pre_config
   $config_dir = "${repository_path}/${level_2_configurator}/${l2_relative_config_dir}/"
   $repository_name_lowercase = downcase($repository_name)
   $pre_config_image_name = "${repository_name_lowercase}_${pre_config_image_tag}"
-  notify{"Building Dockerfile at: ${pre_config_container_path}":}
+  notify{"Building Dockerfile at: ${pre_config_dir}":}
   Class['docker'] -> Docker::Image["${pre_config_image_name}"] -> Exec['Level-2']
   class {'docker':}
     docker::image {"${pre_config_image_name}":
@@ -211,7 +211,7 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
   $scripts_dir = lookup('simple_grid::scripts_dir'),
   ## params for Container Bootup ###
-  $network = lookup('simple_grid::components::ccm::container_orchestrator::swarm::network'),
+  $network = lookup('simple_grid::components::swarm::network'),
   $component_image_tag = lookup('simple_grid::components::component_repository::component_image_tag'),
   ## Component Repository Directory Structure ##
   $repository_relative_host_certificates_dir = lookup('simple_grid::components::component_repository::relative_host_certificates_dir'),
@@ -227,8 +227,12 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
   $repository_name = $current_lightweight_component['name']
   $repository_path = "${component_repository_dir}/${repository_name}_${execution_id}"
   $config_dir = "${repository_path}/${level_2_configurator}/${l2_repository_relative_config_dir}"
-  if length($meta_info['docker_hub_tag'])> 0 {
-    $image_name = $meta_info['docker_hub_tag']
+  
+  $docker_hub_tag = $meta_info['level_2_configurators']["${level_2_configurator}"]['docker_hub_tag']
+  #notify{"AAAAAA  ${test}":}
+
+  if length($docker_hub_tag)> 0 {
+    $image_name = $docker_hub_tag
   }else {
     $repository_name_lowercase = downcase($repository_name)
     $image_name = "${repository_name_lowercase}_${component_image_tag}"
@@ -239,7 +243,8 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
     }
   }
   $host_certificates_dir = "${repository_path}/${repository_relative_host_certificates_dir}"
-  $docker_run_command = simple_grid::docker_run($augmented_site_level_config, $current_lightweight_component, $meta_info, $image_name, $augmented_site_level_config_file, $container_augmented_site_level_config_file, $config_dir, $container_config_dir, $scripts_dir, $container_scripts_dir, $host_certificates_dir, $container_host_certificates_dir, $network )
+  # notify{"AAAAAA  $augmented_site_level_config, $current_lightweight_component, $meta_info, $image_name, $augmented_site_level_config_file, $container_augmented_site_level_config_file, $config_dir, $container_config_dir, $scripts_dir, $container_scripts_dir, $host_certificates_dir, $container_host_certificates_dir, $network ":}
+  $docker_run_command = simple_grid::docker_run($augmented_site_level_config, $current_lightweight_component, $meta_info, $image_name, $augmented_site_level_config_file, $container_augmented_site_level_config_file, $config_dir, $container_config_dir, $scripts_dir, $container_scripts_dir, $host_certificates_dir, $container_host_certificates_dir, $network, $level_2_configurator )
   notify{"Docker run command":}
   notify{"${docker_run_command}":}
   exec{"Booting container for ${current_lightweight_component['name']}":

@@ -6,7 +6,8 @@ class simple_grid::pre_deploy::config_master::rollback(
   $subnet = lookup('simple_grid::components::swarm::subnet'),
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
   $network = lookup('simple_grid::components::swarm::network'),
-  $modulepath = "/etc/puppetlabs/code/environments/production/modules",
+  $env_name = lookup('simple_grid::components::ccm::install::env_name'),
+  $modulepath = "${puppet_environmentpath}/${env_name}/modules/",
   $swarm_status_file = lookup('simple_grid::components::swarm::status_file')
 ){
   notify{"Rolling back lifecycle callback scripts for all lightweight components":}
@@ -21,7 +22,7 @@ class simple_grid::pre_deploy::config_master::rollback(
   notify{"Rolling back Docker Swarm as the container orchestrator for the entire cluster":}
   if $mode == lookup('simple_grid::mode::docker') or $mode == lookup('simple_grid::mode::dev') {
     exec{"ROlling back docker swarm on the entire cluster":
-      command => "bolt task run simple_grid::rollback_swarm augmented_site_level_config_file=${augmented_site_level_config_file} network=${network} modulepath=/etc/puppetlabs/code/environments/simple/modules:/etc/puppetlabs/code/environments/simple/site --modulepath /etc/puppetlabs/code/environments/simple/site/ --nodes localhost > /etc/simple_grid/.swarm_status",
+      command => "bolt task run simple_grid::rollback_swarm augmented_site_level_config_file=${augmented_site_level_config_file} network=${network} modulepath= ${modulepath} --nodes localhost > /etc/simple_grid/.swarm_status",
       path    => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
       user    => 'root',
       logoutput => true,
@@ -30,7 +31,7 @@ class simple_grid::pre_deploy::config_master::rollback(
   }
   elsif $mode == lookup('simple_grid::mode::release') {
     exec{"Rolling back docker swarm on the entire cluster":
-      command => "bolt task run simple_grid::rollback_swarm augmented_site_level_config_file=${augmented_site_level_config_file} network=${network} modulepath=/etc/puppetlabs/code/environments/simple/modules:/etc/puppetlabs/code/environments/simple/site --modulepath /etc/puppetlabs/code/environments/simple/site/ --nodes localhost > /etc/simple_grid/.swarm_status",
+      command => "bolt task run simple_grid::rollback_swarm augmented_site_level_config_file=${augmented_site_level_config_file} network=${network} modulepath=${modulepath}  --modulepath ${modulepath} --nodes localhost > /etc/simple_grid/.swarm_status",
       path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
       user    => 'root',
       logoutput => true,

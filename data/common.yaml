@@ -1,6 +1,6 @@
 ---
 # Current Mode
-simple_grid::mode: "%{hiera('simple_grid::mode::docker')}" 
+simple_grid::mode: "%{hiera('simple_grid::mode::release')}" 
 
 # Types of Modes
 simple_grid::mode::dev: dev
