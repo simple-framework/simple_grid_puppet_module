@@ -29,12 +29,13 @@ class DeployMaster < TaskHelper
         _data = YAML.load_file(augmented_site_level_config_file)
         _lightweight_components = _data['lightweight_components']
         _output = Array.new
+        # Deploy Stage step 1
         _lightweight_components.each do |_lightweight_component, index|
             _execution_id = _lightweight_component['execution_id']
             _name = _lightweight_component['name']
             _node_fqdn = _lightweight_component['deploy']['node']
             _deploy_status_output_file = "#{deploy_status_output_dir}/.#{_execution_id}.status" 
-            deploy_command = "bolt task run simple_grid::deploy "\
+            deploy_command = "bolt task run simple_grid::deploy:deploy_step_1"\
             " execution_id=#{_execution_id}"\
             " deploy_status_file=#{deploy_status_file}"\
             " deploy_status_success=#{deploy_status_success}"\
@@ -78,6 +79,45 @@ class DeployMaster < TaskHelper
         }
         _output.to_yaml
     end
+    # Deploy Stage step 2
+    _lightweight_components.each do |_lightweight_component, index|
+        _execution_id = _lightweight_component['execution_id']
+        _name = _lightweight_component['name']
+        _node_fqdn = _lightweight_component['deploy']['node']
+        _deploy_status_output_file = "#{deploy_status_output_dir}/.#{_execution_id}.status" 
+        deploy_command = "bolt task run simple_grid::deploy:deploy_step_2"\
+        " execution_id=#{_execution_id}"\
+        " deploy_status_file=#{deploy_status_file}"\
+        " deploy_status_success=#{deploy_status_success}"\
+        " deploy_status_failure=#{deploy_status_failure}"\
+        " --modulepath #{modulepath}"\
+        " --nodes #{_node_fqdn}"\
+        
+        deploy_status_command = "bolt task run simple_grid::deploy_status \
+            deploy_status_file=#{deploy_status_file} \
+            execution_id=#{_execution_id} \
+            augmented_site_level_config_file=#{augmented_site_level_config_file}\
+            dns_key=#{dns_key}\
+            --modulepath #{modulepath} \
+            --nodes #{_node_fqdn} \
+            > #{_deploy_status_output_file}"
+        
+        _current_output = {
+            "execution_id" => _execution_id,
+            "component" => _name,
+            "node" => _node_fqdn,
+            "status" => deploy_status['status'],
+            "container_id" => deploy_status['container_id'],
+            "container_status"=>  deploy_status['container_status'],
+            "log_file" => _deploy_status_output_file
+        }
+        _output << _current_output
+    end
+    File.open(_overall_deployment_status_file_name,"w") { |file|
+        file.write _output.to_yaml
+    }
+    _output.to_yaml
+end
 end
 
 if __FILE__ == $0
