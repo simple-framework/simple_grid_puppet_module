@@ -36,8 +36,7 @@ class simple_grid::components::component_repository::deploy_step_1(
   $pre_config_scripts = simple_grid::get_scripts($scripts_dir_structure, $execution_id, 'pre_config')
   $pre_init_scripts = simple_grid::get_scripts($scripts_dir_structure, $execution_id, 'pre_init')
   $post_init_scripts = simple_grid::get_scripts($scripts_dir_structure, $execution_id, 'post_init')
-  notify{"Deploy Stage Step 1":}
-  notify{"Deploying execution_id ${execution_id} with name ${repository_name} now!!!!":}
+  notify{"Deploy Stage Step 1 -  execution_id ${execution_id} with name ${repository_name} now!!!!":}
   Class['simple_grid::ccm_function::prep_host'] ->
   Class['simple_grid::component::component_repository::lifecycle::hook::pre_config'] ->
   Class['simple_grid::component::component_repository::lifecycle::event::pre_config'] ->
@@ -63,8 +62,7 @@ class simple_grid::components::component_repository::deploy_step_2(
   $pre_config_scripts = simple_grid::get_scripts($scripts_dir_structure, $execution_id, 'pre_config')
   $pre_init_scripts = simple_grid::get_scripts($scripts_dir_structure, $execution_id, 'pre_init')
   $post_init_scripts = simple_grid::get_scripts($scripts_dir_structure, $execution_id, 'post_init')
-  notify{'Deploy Stage Step 2':}
-  notify{"Deploying execution_id ${execution_id} with name ${repository_name} now!!!!":}
+  notify{"Deploy Stage Step 2 -  execution_id ${execution_id} with name ${repository_name} now!!!!":}
   Class['simple_grid::component::component_repository::lifecycle::hook::pre_init'] ->
   Class['simple_grid::component::component_repository::lifecycle::event::init'] ->
   Class['simple_grid::component::component_repository::lifecycle::hook::post_init']
