@@ -38,12 +38,19 @@ class simple_grid::nodes::lightweight_component::init(
     include 'git'
     class{'simple_grid::ccm_function::config_orchestrator':}
     class{'simple_grid::pre_deploy::lightweight_component::download_component_repository':}
-    simple_grid::components::execution_stage_manager::set_stage {"Setting stage to deploy":
-      simple_stage => lookup('simple_grid::stage::deploy') #handled by tasks executed by CM
+    simple_grid::components::execution_stage_manager::set_stage {"Setting stage to deploy step 1":
+      simple_stage => lookup('simple_grid::stage::deploy::step_1') #handled by tasks executed by CM
     }
   }
-  elsif $simple_stage == lookup('simple_grid::stage::deploy') {
-    #handled by tasks from puppet master, which do a puppet apply simple_grid::deploy::lightweight_component::init($execution_id)
+  elsif $simple_stage == lookup('simple_grid::stage::deploy::step_1')  {
+    #handled by tasks from puppet master, which do a puppet apply simple_grid::deploy_step_1::lightweight_component::init($execution_id)
+    #start container here for the first entry in $facts['execution_pending']
+    # class {"simple_grid::components::execution_stage_manager::set_stage":
+    #    simple_stage => lookup('simple_grid::stage::final') #handled by tasks executed by CM
+    #  }
+  }
+  elsif $simple_stage == lookup('simple_grid::stage::deploy::step_2')  {
+    #handled by tasks from puppet master, which do a puppet apply simple_grid::deploy_step_2::lightweight_component::init($execution_id)
     #start container here for the first entry in $facts['execution_pending']
     # class {"simple_grid::components::execution_stage_manager::set_stage":
     #    simple_stage => lookup('simple_grid::stage::final') #handled by tasks executed by CM

@@ -13,6 +13,10 @@
           "type": "String[1]",
           "description": "The execution_id of the lightweight component that has to be deployed."
         },
+        "deploy_step": {
+          "type": "String[1]",
+          "description": "The hiera variable simple_grid::stage::deploy::step_1 or simple_grid::stage::deploy::step_2"
+        },
         "deploy_status_file": {
             "type": "String[1]",
             "description": "The deploy status file path presnet on Lightweight Component Node."

@@ -7,11 +7,13 @@ require 'yaml'
 require_relative "../../ruby_task_helper/files/task_helper.rb"
 
 class Deploy < TaskHelper
-    def init_deploy(execution_id, deploy_status_file, deploy_status_success, deploy_status_error)
+    def init_deploy(execution_id, deploy_step, deploy_status_file, deploy_status_success, deploy_status_error)
         current_deploy_status = Hash.new
         output = String.new
         timestamp = Time.now.strftime("%d/%m/%Y %H:%M")
-        puppet_apply = "puppet apply -e \"class{'simple_grid::deploy::lightweight_component::init':execution_id =>#{execution_id}}\""
+        puppet_apply = "puppet apply -e \"class{'simple_grid::deploy::lightweight_component::init':execution_id =>#{execution_id}, deploy_step=>#{deploy_step}}\""
+
+
         stdout, stderr, status = Open3.capture3(puppet_apply)
         
         # Find element in deploy_status file

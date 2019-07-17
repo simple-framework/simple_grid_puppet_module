@@ -1,22 +1,3 @@
-class simple_grid::components::component_repository::deploy(
-  $execution_id,
-  $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
-  $deploy_status_file = lookup('simple_grid::nodes::lightweight_component::deploy_status_file'),
-  $component_repository_dir = lookup('simple_grid::nodes::lightweight_component::component_repository_dir'),
-  $meta_info_prefix = lookup('simple_grid::components::site_level_config_file::objects:meta_info_prefix'),
-  $simple_grid_scripts_dir = lookup('simple_grid::scripts_dir')
-){
-
-class {"simple_grid::components::component_repository::deploy_step_1":
-            execution_id => $execution_id
-        }
-
-
-class {"simple_grid::components::component_repository::deploy_step_2":
-            execution_id => $execution_id
-        }
-}
-
 class simple_grid::components::component_repository::deploy_step_1(
   $execution_id,
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
@@ -41,23 +22,24 @@ class simple_grid::components::component_repository::deploy_step_1(
   Class['simple_grid::component::component_repository::lifecycle::hook::pre_config'] ->
   Class['simple_grid::component::component_repository::lifecycle::event::pre_config'] ->
   Class['simple_grid::component::component_repository::lifecycle::event::boot']
-  class{"simple_grid::ccm_function::prep_host":
+  
+  class{'simple_grid::ccm_function::prep_host':
     current_lightweight_component => $current_lightweight_component,
     meta_info                     => $meta_info,
   }
 
-  class{"simple_grid::component::component_repository::lifecycle::hook::pre_config":
+  class{'simple_grid::component::component_repository::lifecycle::hook::pre_config':
     scripts => $pre_config_scripts
   }
 
-  class{"simple_grid::component::component_repository::lifecycle::event::pre_config":
+  class{'simple_grid::component::component_repository::lifecycle::event::pre_config':
       current_lightweight_component => $current_lightweight_component,
-      execution_id => $execution_id, 
+      execution_id                  => $execution_id, 
   }
-  class{"simple_grid::component::component_repository::lifecycle::event::boot":
+  class{'simple_grid::component::component_repository::lifecycle::event::boot':
       current_lightweight_component => $current_lightweight_component,
       execution_id => $execution_id, 
-      meta_info => $meta_info,
+      meta_info    => $meta_info,
   }
 }
 
@@ -162,6 +144,9 @@ class simple_grid::components::component_repository::rollback(
     environment => ["HOME=/root"]
   }
   simple_grid::set_execution_status($deploy_status_file, $execution_id, $pending_deploy_status)
+  simple_grid::components::execution_stage_manager::set_stage {'Setting stage to deploy_step_1':
+    simple_stage => lookup('simple_grid::stage::deploy::step_1')
+    }
 }
 class simple_grid::component::component_repository::lifecycle::hook::pre_config(
   $scripts,
