@@ -41,6 +41,24 @@ class simple_grid::components::component_repository::deploy_step_1(
   Class['simple_grid::component::component_repository::lifecycle::hook::pre_config'] ->
   Class['simple_grid::component::component_repository::lifecycle::event::pre_config'] ->
   Class['simple_grid::component::component_repository::lifecycle::event::boot']
+  class{"simple_grid::ccm_function::prep_host":
+    current_lightweight_component => $current_lightweight_component,
+    meta_info                     => $meta_info,
+  }
+
+  class{"simple_grid::component::component_repository::lifecycle::hook::pre_config":
+    scripts => $pre_config_scripts
+  }
+
+  class{"simple_grid::component::component_repository::lifecycle::event::pre_config":
+      current_lightweight_component => $current_lightweight_component,
+      execution_id => $execution_id, 
+  }
+  class{"simple_grid::component::component_repository::lifecycle::event::boot":
+      current_lightweight_component => $current_lightweight_component,
+      execution_id => $execution_id, 
+      meta_info => $meta_info,
+  }
 }
 
 class simple_grid::components::component_repository::deploy_step_2(
@@ -66,25 +84,7 @@ class simple_grid::components::component_repository::deploy_step_2(
   Class['simple_grid::component::component_repository::lifecycle::hook::pre_init'] ->
   Class['simple_grid::component::component_repository::lifecycle::event::init'] ->
   Class['simple_grid::component::component_repository::lifecycle::hook::post_init']
-}
-  class{"simple_grid::ccm_function::prep_host":
-    current_lightweight_component => $current_lightweight_component,
-    meta_info                     => $meta_info,
-  }
 
-  class{"simple_grid::component::component_repository::lifecycle::hook::pre_config":
-    scripts => $pre_config_scripts
-  }
-
-  class{"simple_grid::component::component_repository::lifecycle::event::pre_config":
-      current_lightweight_component => $current_lightweight_component,
-      execution_id => $execution_id, 
-  }
-  class{"simple_grid::component::component_repository::lifecycle::event::boot":
-      current_lightweight_component => $current_lightweight_component,
-      execution_id => $execution_id, 
-      meta_info => $meta_info,
-  }
   class{"simple_grid::component::component_repository::lifecycle::hook::pre_init":
     scripts => $pre_init_scripts,
     current_lightweight_component => $current_lightweight_component,
@@ -102,6 +102,7 @@ class simple_grid::components::component_repository::deploy_step_2(
     execution_id => $execution_id,
     container_name => $dns_info['container_fqdn']
   }
+}
 
 
 
