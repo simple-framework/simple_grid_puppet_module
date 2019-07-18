@@ -44,8 +44,8 @@ class Deploy < TaskHelper
         
     end
 
-    def task(execution_id:nil, deploy_status_file:nil, deploy_status_success:nil, deploy_status_failure:nil, **kwargs)
-        status, output = init_deploy(execution_id, deploy_status_file, deploy_status_success, deploy_status_failure) 
+    def task(execution_id:nil, deploy_step:nil, deploy_status_file:nil, deploy_status_success:nil, deploy_status_failure:nil, **kwargs)
+        status, output = init_deploy(execution_id, deploy_step, deploy_status_file, deploy_status_success, deploy_status_failure) 
         {status: status, output: output }
     end
 end
