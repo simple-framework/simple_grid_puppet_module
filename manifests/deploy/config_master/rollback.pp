@@ -15,7 +15,7 @@ class simple_grid::deploy::config_master::rollback(
         deploy_status_pending=${deploy_status_pending} \
         deploy_status_file=${deploy_status_file} \
         modulepath=${modulepath} \
-        --modulepath ${puppet_environmentpath}/${env_name}/modules/ \
+        --modulepath ${puppet_environmentpath}/${env_name}/site/ \
         --nodes localhost"
     exec{"Executing deploy master":
       command => $command,
