@@ -41,6 +41,10 @@ class simple_grid::components::component_repository::deploy_step_1(
       execution_id => $execution_id, 
       meta_info    => $meta_info,
   }
+  simple_grid::set_execution_status($deploy_status_file, $execution_id, $pending_deploy_status)
+  simple_grid::components::execution_stage_manager::set_stage {'Setting stage to deploy_step_2':
+    simple_stage => lookup('simple_grid::stage::deploy::step_2')
+    }
 }
 
 class simple_grid::components::component_repository::deploy_step_2(
