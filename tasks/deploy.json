@@ -17,6 +17,14 @@
           "type": "String[1]",
           "description": "The hiera variable simple_grid::stage::deploy::step_1 or simple_grid::stage::deploy::step_2"
         },
+        "augmented_site_level_config_file": {
+          "type": "String[1]",
+          "description": "The location of augmented site level config file on the lightweight component node"
+        },
+        "dns_key": {
+          "type": "String[1]",
+          "description": "The name for the yaml object that contains dns info in the augmented_site_level_config_file."
+        },
         "deploy_status_file": {
             "type": "String[1]",
             "description": "The deploy status file path presnet on Lightweight Component Node."

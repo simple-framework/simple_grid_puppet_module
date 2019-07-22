@@ -30,7 +30,8 @@ class DeployMaster < TaskHelper
         _lightweight_components = _data['lightweight_components']
         puts _lightweight_components
         _output = Array.new
-    
+        _output << "****** DEPLOY STEP 1 ********"
+        _output << "*****************************"
         # Deploy Stage step 1
         _lightweight_components.each do |_lightweight_component, index|
             _execution_id = _lightweight_component['execution_id']
@@ -40,6 +41,8 @@ class DeployMaster < TaskHelper
             deploy_command = "bolt task run simple_grid::deploy"\
             " execution_id=#{_execution_id}"\
             " deploy_step=#{deploy_step_1}"\
+            " augmented_site_level_config_file=#{augmented_site_level_config_file}"\
+            " dns_key=#{dns_key}"\
             " deploy_status_file=#{deploy_status_file}"\
             " deploy_status_success=#{deploy_status_success}"\
             " deploy_status_failure=#{deploy_status_failure}"\
@@ -54,7 +57,8 @@ class DeployMaster < TaskHelper
                 --modulepath #{modulepath} \
                 --nodes #{_node_fqdn} \
                 > #{_deploy_status_output_file}"
-            puts deploy_status_command
+            puts deploy_command
+            puts "******************"
             puts "Executing Step 1 deployment of #{_name} on #{_node_fqdn} with execution_id = #{_execution_id}"
             deploy_stdout, deploy_stderr, deploy_status = Open3.capture3(deploy_command)  
             
@@ -62,7 +66,7 @@ class DeployMaster < TaskHelper
             deploy_status_stdout, deploy_status_stderr, deploy_status_status = Open3.capture3(deploy_status_command)
             deploy_status = process_deploy_status(_deploy_status_output_file)
             if deploy_status['status'] == deploy_status_failure
-                puts "Execution of Deployment Step 1 #{_execution_id} failed. Check output available at #{_deploy_status_output_file} for details."
+                puts "Execution of Deployment Step 1 for execution ID #{_execution_id} failed. Check output available at #{_deploy_status_output_file} for details."
                 puts "Latest log entry for Puppet Agent on #{_node_fqdn} was: #{deploy_status['logs'].last}"
                 break
             end
@@ -70,18 +74,22 @@ class DeployMaster < TaskHelper
                 "execution_id" => _execution_id,
                 "component" => _name,
                 "node" => _node_fqdn,
-                "status" => deploy_status['status'],
+                "deploy_step_1_status" => deploy_status['status'],
+                "deploy_step_1_puppet_status" => deploy_status['puppet_status'],
                 "container_id" => deploy_status['container_id'],
                 "container_status"=>  deploy_status['container_status'],
-                "log_file" => _deploy_status_output_file
+                "log_file" => _deploy_status_output_file,
+                "command" => deploy_command
             }
             _output << _current_output
+            if deploy_status['status'] != deploy_status_success
+                _output << "FAIL FAIL FAIL FAIL"
+            end
         end
-        File.open(_overall_deployment_status_file_name,"w") { |file|
-            file.write _output.to_yaml
-        }
-        _output.to_yaml
-    # Deploy Stage step 2
+        
+        # Deploy Stage step 2
+        _output << "****** DEPLOY STEP 2 ********"
+        _output << "*****************************"
         _lightweight_components.each do |_lightweight_component, index|
             _execution_id = _lightweight_component['execution_id']
             _name = _lightweight_component['name']
@@ -91,6 +99,7 @@ class DeployMaster < TaskHelper
             " execution_id=#{_execution_id}"\
             " deploy_step=#{deploy_step_2}"\
             " deploy_status_file=#{deploy_status_file}"\
+            " augmented_site_level_config_file=#{augmented_site_level_config_file}"\
             " deploy_status_success=#{deploy_status_success}"\
             " deploy_status_failure=#{deploy_status_failure}"\
             " --modulepath #{modulepath}"\
@@ -112,7 +121,7 @@ class DeployMaster < TaskHelper
             deploy_status_stdout, deploy_status_stderr, deploy_status_status = Open3.capture3(deploy_status_command)
             deploy_status = process_deploy_status(_deploy_status_output_file)
             if deploy_status['status'] == deploy_status_failure
-                puts "Execution of Deployment Step 2 #{_execution_id} failed. Check output available at #{_deploy_status_output_file} for details."
+                puts "Execution of Deployment Step 2 for execution ID #{_execution_id} failed. Check output available at #{_deploy_status_output_file} for details."
                 puts "Latest log entry for Puppet Agent on #{_node_fqdn} was: #{deploy_status['logs'].last}"
                 break
             end
@@ -120,9 +129,7 @@ class DeployMaster < TaskHelper
                 "execution_id" => _execution_id,
                 "component" => _name,
                 "node" => _node_fqdn,
-                "status" => deploy_status['status'],
-                "container_id" => deploy_status['container_id'],
-                "container_status"=>  deploy_status['container_status'],
+                "puppet_status" => deploy_status['puppet_status'],
                 "log_file" => _deploy_status_output_file
             }
             _output << _current_output
