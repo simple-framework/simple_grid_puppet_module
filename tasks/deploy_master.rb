@@ -89,7 +89,7 @@ class DeployMaster < TaskHelper
         end
         
         # Deploy Stage step 2
-        if _proceed_deploy_step_2 == True {
+        if _proceed_deploy_step_2 == True
             _output << "****** DEPLOY STEP 2 ********"
             _output << "*****************************"
             _lightweight_components.each do |_lightweight_component, index|
@@ -136,8 +136,8 @@ class DeployMaster < TaskHelper
                 }
                 _output << _current_output
             end
-        }
-        
+        end
+
         File.open(_overall_deployment_status_file_name,"w") { |file|
             file.write _output.to_yaml
         }
