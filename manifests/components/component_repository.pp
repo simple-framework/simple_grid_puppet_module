@@ -18,11 +18,15 @@ class simple_grid::components::component_repository::deploy_step_1(
   $pre_init_scripts = simple_grid::get_scripts($scripts_dir_structure, $execution_id, 'pre_init')
   $post_init_scripts = simple_grid::get_scripts($scripts_dir_structure, $execution_id, 'post_init')
   notify{"Deploy Stage Step 1 -  execution_id ${execution_id} with name ${repository_name} now!!!!":}
+  Class['simple_grid::component::component_repository::lifecycle::hook::wrapper'] ->
   Class['simple_grid::ccm_function::prep_host'] ->
   Class['simple_grid::component::component_repository::lifecycle::hook::pre_config'] ->
   Class['simple_grid::component::component_repository::lifecycle::event::pre_config'] ->
   Class['simple_grid::component::component_repository::lifecycle::event::boot']
-  
+
+class {'simple_grid::component::component_repository::lifecycle::hook::wrapper':
+}
+
   class{'simple_grid::ccm_function::prep_host':
     current_lightweight_component => $current_lightweight_component,
     meta_info                     => $meta_info,
@@ -151,6 +155,20 @@ class simple_grid::components::component_repository::rollback(
     simple_stage => lookup('simple_grid::stage::deploy::step_1')
     }
 }
+
+class simple_grid::component::component_repository::lifecycle::hook::wrapper(
+  $scripts_dir = lookup('simple_grid::scripts_dir'),
+  $wrapper = lookup('simple_grid::scripts::wrapper')
+){
+  notify{"Creating wrapper script":} 
+  file {'${scripts_dir}/${wrapper}':
+    ensure  => present,
+    path    => "${scripts_dir}/${wrapper}",
+    mode    => '555',
+    content => epp("simple_grid/${wrapper}")
+    }   
+}
+
 class simple_grid::component::component_repository::lifecycle::hook::pre_config(
   $scripts,
   $mode = lookup('simple_grid::mode')

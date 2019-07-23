@@ -14,6 +14,7 @@ simple_grid::site_config_dir_name: site_config
 simple_grid::site_config_dir: "%{hiera('simple_grid::simple_config_dir')}/%{hiera('simple_grid::site_config_dir_name')}"
 
 # Lifecycle Scripts 
+simple_grid::scripts::wrapper: "lifecyclehook.sh"
 simple_grid::scripts_dir_name: "scripts"
 simple_grid::scripts_dir: "%{hiera('simple_grid::simple_config_dir')}/%{hiera('simple_grid::scripts_dir_name')}"
 
