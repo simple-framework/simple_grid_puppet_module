@@ -1,0 +1,11 @@
+#!/bin/bash
+script_name=$1
+timestamp=`date +%s`
+logdir=/etc/simple_grid/scripts
+log_file="$logdir/$timestamp-`basename $script_name.log`"
+
+if [[ -n "$script_name" ]]; then
+    bash -c $script_name >> $log_file 
+else
+    echo "argument error"
+fi

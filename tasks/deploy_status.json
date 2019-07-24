@@ -16,11 +16,11 @@
         "augmented_site_level_config_file": {
           "type": "String[1]",
           "description": "The location of the augmented_site_level_config_file.yaml on the LC node."
-      },
-      "dns_key": {
-        "type": "String[1]",
-        "description": "The name for the yaml object that contains dns info in the augmented_site_level_config_file."
-    },
+        },
+        "dns_key": {
+          "type": "String[1]",
+          "description": "The name for the yaml object that contains dns info in the augmented_site_level_config_file."
+        },
         "execution_id": {
           "type": "String[1]",
           "description": "The execution_id of the lightweight component whose deployment is to be monitored."
