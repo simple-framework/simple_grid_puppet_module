@@ -5,7 +5,7 @@ class simple_grid::pre_deploy::lightweight_component::create_log_dirs(
   $execution_id_master_id_pairs.each |Integer $index, Hash $execution_id_master_id_pair| {
     file{"Create log_dir for execution id ${execution_id_master_id_pair['execution_id']}":
       ensure  => directory,
-      recurse => 'remote',
+      recurse => true,
       path    => "${simple_log_dir}/${execution_id_master_id_pair['execution_id']}",
       mode    => "0766"
     }
