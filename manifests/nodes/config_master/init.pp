@@ -18,7 +18,12 @@ class simple_grid::nodes::config_master::init{
     $site_level_config = loadyaml("${augmented_site_level_config_file}")
     $lightweight_components = $site_level_config["lightweight_components"]
     $lightweight_components.each |Hash $lightweight_component| {
-      $filename = "${simple_log_dir}/${lightweight_component['execution_id']}/deploy_status.yaml"
+      $dir = "${simple_log_dir}/${lightweight_component['execution_id']}"
+      $filename = lookup('simple_grid::nodes::lightweight_component::deploy_status_file_name')
+      file{"${dir}":
+        ensure  => "directory",
+        recurse => true
+      } ->
       file{"${filename}":
         ensure  => "present",
         recurse => true

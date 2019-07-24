@@ -7,7 +7,7 @@ class simple_grid::pre_deploy::config_master::rollback(
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
   $network = lookup('simple_grid::components::swarm::network'),
   $env_name = lookup('simple_grid::components::ccm::install::env_name'),
-  $modulepath = "${puppet_environmentpath}/${env_name}/modules/",
+  $modulepath = "${puppet_environmentpath}/${env_name}/modules:${puppet_environmentpath}/${env_name}/site",
   $swarm_status_file = lookup('simple_grid::components::swarm::status_file')
 ){
   notify{"Rolling back lifecycle callback scripts for all lightweight components":}
