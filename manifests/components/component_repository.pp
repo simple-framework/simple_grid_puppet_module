@@ -340,7 +340,7 @@ class simple_grid::component::component_repository::lifecycle::event::init(
   $config_dir = lookup('simple_grid::components::component_repository::container::config_dir'),
   $container_scripts_dir = lookup("simple_grid::components::component_repository::container::scripts_dir")
 ){
-  $command = "docker exec -t  ${container_name} /bin/bash -c '${container_scripts_dir}/${wrapper} ${config_dir}/init.sh' ${log_dir}"
+  $command = "docker exec -t  ${container_name} /bin/bash -c '${container_scripts_dir}/${wrapper} ${config_dir}/init.sh ${log_dir}'"
   notify{"${command}":}
   exec{"Running init event for Execution ID ${execution_id}":
       command => $command,
