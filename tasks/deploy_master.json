@@ -21,6 +21,14 @@
             "type": "String[1]",
             "description": "The name of the object that contains dns info in the augmented_site_level_config_file.yaml "
         },
+        "deploy_step_1":{
+            "type": "String[1]",
+            "description": "The hiera variable simple_grid::stage::deploy::step_1"
+        },
+        "deploy_step_2":{
+            "type": "String[1]",
+            "description": "The hiera variable simple_grid::stage::deploy::step_2 "
+        },
         "deploy_status_file": {
             "type": "String[1]",
             "description": "The location of the deploy_status_file on the LC node where the probes are run."
