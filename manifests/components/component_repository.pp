@@ -331,10 +331,12 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_init(
 class simple_grid::component::component_repository::lifecycle::event::init(
   $current_lightweight_component,
   $execution_id,
+  $wrapper = lookup('simple_grid::scripts::wrapper'),
   $container_name,
-  $config_dir = lookup('simple_grid::components::component_repository::container::config_dir')
+  $config_dir = lookup('simple_grid::components::component_repository::container::config_dir'),
+  $container_scripts_dir = lookup("simple_grid::components::component_repository::container::scripts_dir")
 ){
-  $command = "docker exec -t  ${container_name} /bin/bash -c '${config_dir}/init.sh'"
+  $command = "docker exec -t  ${container_name} /bin/bash -c '${container_scripts_dir}/${wrapper} ${config_dir}/init.sh'"
   notify{"${command}":}
   exec{"Running init event for Execution ID ${execution_id}":
       command => $command,
