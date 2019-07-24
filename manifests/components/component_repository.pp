@@ -175,6 +175,7 @@ class simple_grid::component::component_repository::lifecycle::hook::wrapper(
 class simple_grid::component::component_repository::lifecycle::hook::pre_config(
   $scripts,
   $scripts_dir = lookup('simple_grid::scripts_dir'),
+  $log_dir = lookup('simple_grid::simple_log_dir'),
   $wrapper = lookup('simple_grid::scripts::wrapper'),
   $mode = lookup('simple_grid::mode'),
   $execution_id
@@ -183,7 +184,7 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_config(
     $actual_script = $script['actual_script']
     if $mode == lookup('simple_grid::mode::docker') or $mode == lookup('simple_grid::mode::dev') {
       exec{"Executing Pre-Config Script $script":
-        command => "${scripts_dir}/${execution_id}/${wrapper} ${actual_script}",
+        command => "${scripts_dir}/${execution_id}/${wrapper} ${actual_script} ${log_dir}/${execution_id}",
         path => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
         user => 'root',
         logoutput => true,
@@ -278,7 +279,6 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
   $config_dir = "${repository_path}/${level_2_configurator}/${l2_repository_relative_config_dir}"
   
   $docker_hub_tag = $meta_info['level_2_configurators']["${level_2_configurator}"]['docker_hub_tag']
-  #notify{"AAAAAA  ${test}":}
 
   if length($docker_hub_tag)> 0 {
     $image_name = $docker_hub_tag
@@ -310,6 +310,7 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_init(
   $execution_id,
   $scripts,
   $wrapper = lookup('simple_grid::scripts::wrapper'),
+  $log_dir = lookup('simple_grid::simple_log_dir'),
   $container_name,
   $pre_init_hook = lookup('simple_grid::components::component_repository::lifecycle::hook::pre_init'),
   $container_scripts_dir = lookup("simple_grid::components::component_repository::container::scripts_dir"),
@@ -317,7 +318,7 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_init(
   $scripts.each |Hash $script|{
     $script_name = split($script['actual_script'], '/')[-1]
     $script_path = "${container_scripts_dir}/${pre_init_hook}/${script_name}"
-    $command = "docker exec -t ${container_name} ${container_scripts_dir}/${wrapper} ${script_path}"
+    $command = "docker exec -t ${container_name} ${container_scripts_dir}/${wrapper} ${script_path} ${log_dir}/${execution_id}"
     notify{"We about to execute ${command}":}
     exec{"Running pre_init hook ${script_path} for Execution ID ${execution_id}":
       command => $command,
@@ -332,11 +333,12 @@ class simple_grid::component::component_repository::lifecycle::event::init(
   $current_lightweight_component,
   $execution_id,
   $wrapper = lookup('simple_grid::scripts::wrapper'),
+  $log_dir = lookup('simple_grid::simple_log_dir'),
   $container_name,
   $config_dir = lookup('simple_grid::components::component_repository::container::config_dir'),
   $container_scripts_dir = lookup("simple_grid::components::component_repository::container::scripts_dir")
 ){
-  $command = "docker exec -t  ${container_name} /bin/bash -c '${container_scripts_dir}/${wrapper} ${config_dir}/init.sh'"
+  $command = "docker exec -t  ${container_name} /bin/bash -c '${container_scripts_dir}/${wrapper} ${config_dir}/init.sh' ${log_dir}/${execution_id}"
   notify{"${command}":}
   exec{"Running init event for Execution ID ${execution_id}":
       command => $command,
@@ -352,6 +354,7 @@ class simple_grid::component::component_repository::lifecycle::hook::post_init(
   $execution_id,
   $scripts,
   $wrapper = lookup('simple_grid::scripts::wrapper'),
+  $log_dir = lookup('simple_grid::simple_log_dir'),
   $container_name,
   $post_init_hook = lookup('simple_grid::components::component_repository::lifecycle::hook::post_init'),
   $container_scripts_dir = lookup("simple_grid::components::component_repository::container::scripts_dir"),
@@ -359,7 +362,7 @@ class simple_grid::component::component_repository::lifecycle::hook::post_init(
   $scripts.each |Hash $script|{
     $script_name = split($script['actual_script'], '/')[-1]
     $script_path = "${container_scripts_dir}/${post_init_hook}/${script_name}"
-    $command = "docker exec -t ${container_name} ${container_scripts_dir}/${wrapper} ${script_path}"
+    $command = "docker exec -t ${container_name} ${container_scripts_dir}/${wrapper} ${script_path} ${log_dir}/${execution_id}"
     notify{"We about to execute ${command}":}
     exec{"Running post_init hook ${script_path} for Execution ID ${execution_id} with script":
       command => $command,
