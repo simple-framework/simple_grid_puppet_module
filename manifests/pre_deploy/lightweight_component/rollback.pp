@@ -36,11 +36,17 @@ class simple_grid::pre_deploy::lightweight_component::rollback(
    force  => true,
    path => "${simple_config_dir}/${lifecycle_callbacks_dir_name}"
   }
-
-  file{"Removing log directories":
-   ensure => absent,
+  tidy {"Removing log dir":
+    rmdirs => true,
+    path   => "${simple_log_dir}",
+    recurse => true,
+    matches => "*"
+  }
+  
+  file{"Creating log directories":
+   ensure => directory,
    force  => true,
-   path => "${simple_log_dir}/*"
+   path => "${simple_log_dir}"
   }
 
   file{"Removing directory for component repositories":
