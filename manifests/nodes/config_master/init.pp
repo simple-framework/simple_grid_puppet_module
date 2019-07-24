@@ -21,10 +21,12 @@ class simple_grid::nodes::config_master::init{
       $dir = "${simple_log_dir}/${lightweight_component['execution_id']}"
       $filename = lookup('simple_grid::nodes::lightweight_component::deploy_status_file_name')
       file{"${dir}":
+        path    => "${dir}"
         ensure  => "directory",
         recurse => true
       } ->
-      file{"${filename}":
+      file{"${dir}/${filename}":
+        path    => "${dir}/${filename}"
         ensure  => "present",
         recurse => true
       }
