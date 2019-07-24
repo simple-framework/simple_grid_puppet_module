@@ -7,10 +7,9 @@ class simple_grid::ccm_function::create_config_dir(
     mode   => "0777",
     path   => "$simple_config_dir"
   }
-  file{"ccm_function_create_log_dir":
+  file{'ccm_function_create_config_dir: creating log directory':
     ensure => directory,
-    recurse => true,
-    mode   => "0777",
-    path   => "$simple_log_dir"
+    mode   => '0777',
+    path   => $simple_log_dir
   }
 }
