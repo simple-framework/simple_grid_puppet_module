@@ -9,7 +9,7 @@ simple_grid::nodes::lightweight_component::installation_helper::reset_agent::run
 
 # execution tracking
 simple_grid::nodes::lightweight_component::deploy_status_file_name: "deploy_status.yaml"
-simple_grid::nodes::lightweight_component::deploy_status_file: "%{hiera('simple_grid::simple_log_dir')}/${hiera('simple_grid::nodes::lightweight_component::deploy_status_file_name')}"
+simple_grid::nodes::lightweight_component::deploy_status_file: "%{hiera('simple_grid::simple_log_dir')}/%${hiera('simple_grid::nodes::lightweight_component::deploy_status_file_name')}"
 
 # component repositories location
 simple_grid::nodes::lightweight_component::component_repository_dir_name: repositories
