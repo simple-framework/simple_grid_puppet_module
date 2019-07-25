@@ -33,9 +33,9 @@
             "type": "String[1]",
             "description": "The location of the deploy_status_file on the LC node where the probes are run."
         },
-        "deploy_status_output_dir": {
+        "deploy_status_file_name": {
             "type": "String[1]",
-            "description": "The top level directory for storing deploy_status.yaml from LC node on CM node."
+            "description": "The name of the deploy_status_file on the LC node where the probes are run."
         },
         "deploy_status_success": {
             "type": "String[1]",

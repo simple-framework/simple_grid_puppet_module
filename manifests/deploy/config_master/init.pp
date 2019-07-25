@@ -2,6 +2,7 @@ class simple_grid::deploy::config_master::init(
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
   $simple_config_dir = lookup('simple_grid::simple_config_dir'),
   $deploy_status_file = lookup("simple_grid::nodes::lightweight_component::deploy_status_file"),
+  $deploy_status_file_name = lookup("simple_grid::nodes::lightweight_component::deploy_status_file_name"),
   $deploy_status_success = lookup("simple_grid::stage::deploy::status::success"),
   $deploy_status_failure = lookup("simple_grid::stage::deploy::status::failure"),
   $unit_deployment_timeout = lookup("simple_grid::components::component_repository::unit_deployment_timeout"),
@@ -26,7 +27,7 @@ class simple_grid::deploy::config_master::init(
         deploy_step_1=${deploy_step_1} \
         deploy_step_2=${deploy_step_2} \
         deploy_status_file=${deploy_status_file} \
-        deploy_status_output_dir=${simple_config_dir} \
+        deploy_status_file_name=${deploy_status_file_name} \
         deploy_status_success=${deploy_status_success} \
         deploy_status_failure=${deploy_status_failure} \
         modulepath=${modulepath} \
