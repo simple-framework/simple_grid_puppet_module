@@ -2,7 +2,7 @@
   $execution_id,
   $deploy_step,
   $timestamp,
-  $simple_log_dir = lookup('simple_grid::simple_log_dir').
+  $simple_log_dir = lookup('simple_grid::simple_log_dir'),
   $deploy_status_file = lookup('simple_grid::nodes::lightweight_component::deploy_status_file'),
   $intial_deploy_status = lookup('simple_grid::stage::deploy::status::initial')
 ){
