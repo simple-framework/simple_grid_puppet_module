@@ -45,13 +45,13 @@ class Deploy < TaskHelper
             current_deploy_status['puppet_status'] = deploy_status_error
         end
         
-        current_deploy_status['logs'] << timestamp + " : " + output
+        # current_deploy_status['logs'] << timestamp + " : " + output
 
         # run container id
         container_id_command="docker inspect --format='{{.ID}}' #{current_dns_info['container_fqdn']}"
         container_id_stdout, container_id_stderr, container_id_status =Open3.capture3(container_id_command)
         
-        #handle container id
+        # handle container id
         if container_id_status.success?
             current_deploy_status["container_id"] = container_id_stdout.split.join ' '
         else
@@ -77,6 +77,13 @@ class Deploy < TaskHelper
         
         deploy_status_file_hash[execution_id] = current_deploy_status
         File.open(deploy_status_file, "w") { |f| 
+            f.write(deploy_status_file_hash.to_yaml)
+        }
+        #backup deploy_status_file
+        deploy_status_dir = File.dirname(deploy_status_file)
+        deploy_status_file_name = File.basename(deploy_status_file)
+        
+        File.open("#{deploy_status_dir}/#{timestamp}_#{deploy_status_file_name}", "w") { |f| 
             f.write(deploy_status_file_hash.to_yaml)
         }
 

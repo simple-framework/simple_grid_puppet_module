@@ -16,7 +16,7 @@ class DeployStatus <TaskHelper
         pre_init_hook_logs = Hash.new
         init_event_logs = String.new
         post_init_hool_logs = Hash.new
-
+        log_files = String.new
         deploy_status_file_hash = YAML.load(File.read(deploy_status_file))
         deploy_statuses = deploy_status_file_hash['deploy_status']
 
@@ -28,7 +28,12 @@ class DeployStatus <TaskHelper
         end
         
         log_dir = "#{log_dir}/#{execution_id}/#{timestamp}"
-        { deploy_status: current_deploy_status.to_yaml, pre_config_logs: Hash.new}
+        Dir.glob("#{log_dir}/*.log") {|file|
+            log_files = "#{log_files} #{file}"
+            if file.include? "pre_config"
+        }
+        
+        { deploy_status: current_deploy_status, log_files: log_files, puppet_deploy_step_2_logs: puppet_deploy_step_2_logs}
     end
 end
 
