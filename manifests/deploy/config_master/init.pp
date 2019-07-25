@@ -9,6 +9,7 @@ class simple_grid::deploy::config_master::init(
   $env_name = lookup('simple_grid::components::ccm::install::env_name'),
   $deploy_step_1 = lookup('simple_grid::stage::deploy::step_1'),
   $deploy_step_2 = lookup('simple_grid::stage::deploy::step_2'),
+  log_dir = lookup('simple_grid::simple_log_dir')
  ){
     $modulepath = "/etc/puppetlabs/code/environments/production/modules"
     $augmented_site_level_config = loadyaml($augmented_site_level_config_file)
@@ -29,6 +30,7 @@ class simple_grid::deploy::config_master::init(
         deploy_status_success=${deploy_status_success} \
         deploy_status_failure=${deploy_status_failure} \
         modulepath=${modulepath} \
+        log_dir=${log_dir} \
         timestamp=${timestamp} \
         --modulepath ${puppet_environmentpath}/${env_name}/site/ \
         --nodes localhost",

@@ -24,7 +24,7 @@ class DeployMaster < TaskHelper
         return deploy_status
      end
 
-    def task(simple_config_dir:nil, augmented_site_level_config_file:nil, dns_key:nil, deploy_step_1:nil, deploy_step_2:nil, deploy_status_file:nil, deploy_status_output_dir:nil, deploy_status_success:nil, deploy_status_failure:nil, modulepath:nil, timestamp:nil, **kwargs )
+    def task(simple_config_dir:nil, augmented_site_level_config_file:nil, dns_key:nil, deploy_step_1:nil, deploy_step_2:nil, deploy_status_file:nil, deploy_status_output_dir:nil, deploy_status_success:nil, deploy_status_failure:nil, modulepath:nil, timestamp:nil, log_dir:nil, **kwargs )
         _overall_deployment_status_file_name = simple_config_dir + "/deployment_output.yaml"
         _data = YAML.load_file(augmented_site_level_config_file)
         _proceed_deploy_step_2 = true
@@ -50,6 +50,7 @@ class DeployMaster < TaskHelper
             " timestamp=#{timestamp}"\
             " deploy_step_1=#{deploy_step_1}"\
             " deploy_step_2=#{deploy_step_2}"\
+            " log_dir=#{log_dir}"\
             " --modulepath #{modulepath}"\
             " --nodes #{_node_fqdn}"\
             
@@ -107,6 +108,10 @@ class DeployMaster < TaskHelper
                 " dns_key=#{dns_key}"\
                 " deploy_status_success=#{deploy_status_success}"\
                 " deploy_status_failure=#{deploy_status_failure}"\
+                " timestamp=#{timestamp}"\
+                " deploy_step_1=#{deploy_step_1}"\
+                " deploy_step_2=#{deploy_step_2}"\
+                " log_dir=#{log_dir}"\
                 " --modulepath #{modulepath}"\
                 " --nodes #{_node_fqdn}"\
                 

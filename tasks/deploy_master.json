@@ -52,6 +52,10 @@
         "timestamp": {
           "type": "String[1]",
           "description": "The timestamp to be associated with the log files."
+        },
+        "log_dir": {
+            "type": "String[1]",
+            "description": "The log directory for simple_grid on LC node."
         }
     }
 }
