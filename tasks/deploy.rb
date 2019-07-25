@@ -32,7 +32,7 @@ class Deploy < TaskHelper
         end
 
         #run puppet
-        puppet_apply = "puppet apply -e \"class{'simple_grid::deploy::lightweight_component::init':execution_id =>#{execution_id}, deploy_step=>#{deploy_step}}, timestamp=>#{timestamp}\""
+        puppet_apply = "puppet apply -e \"class{'simple_grid::deploy::lightweight_component::init':execution_id =>#{execution_id}, deploy_step=>#{deploy_step}, timestamp=>\'#{timestamp}\'}\""
         puppet_stdout, puppet_stderr, puppet_status = Open3.capture3(puppet_apply)
         
         #handle puppet

@@ -47,7 +47,7 @@ class DeployMaster < TaskHelper
             " deploy_status_file=#{deploy_status_file}"\
             " deploy_status_success=#{deploy_status_success}"\
             " deploy_status_failure=#{deploy_status_failure}"\
-            " timestamp=#{timestamp}"\
+            " timestamp='#{timestamp}'"\
             " deploy_step_1=#{deploy_step_1}"\
             " deploy_step_2=#{deploy_step_2}"\
             " log_dir=#{log_dir}"\

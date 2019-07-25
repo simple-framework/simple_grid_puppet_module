@@ -21,12 +21,12 @@
         }
         class {'simple_grid::components::component_repository::deploy_step_1':
             execution_id => $execution_id,
-            timestamp    => $timestamp
+            timestamp    => "${timestamp}"
         }
     }elsif $deploy_step == lookup('simple_grid::stage::deploy::step_2') {
         class {'simple_grid::components::component_repository::deploy_step_2':
             execution_id => $execution_id,
-            timestamp    => $timestamp
+            timestamp    => "${timestamp}"
         }
     }
     # }

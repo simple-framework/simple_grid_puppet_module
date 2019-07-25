@@ -16,7 +16,7 @@ class simple_grid::deploy::config_master::init(
     $no_lightweight_components = length($augmented_site_level_config['lightweight_components'])
     $timeout = $no_lightweight_components * $unit_deployment_timeout
     $timeout_minutes = $timeout/60
-    $timestamp = strftime('%Y-%m-%dT%H:%M:%S-%Z')
+    $timestamp = "${strftime('%Y-%m-%dT%H:%M:%S-%Z')}"
     Notify{"Starting Deployment with identifier: ${timestamp}. This may take a while!. Setting timeout to: ${timeout_minutes} minutes. Don't worry you'll be done waayyy sooner. This is just a worst case condition.":}
     exec{"Executing deploy master":
       command => "bolt task run simple_grid::deploy_master \
