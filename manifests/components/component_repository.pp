@@ -81,7 +81,7 @@ class simple_grid::components::component_repository::deploy_step_2(
 
   class{"simple_grid::component::component_repository::lifecycle::hook::pre_init":
     scripts   => $pre_init_scripts,
-    timestamp => $timestamp
+    timestamp => $timestamp,
     current_lightweight_component => $current_lightweight_component,
     execution_id => $execution_id,
     container_name => $dns_info['container_fqdn']
@@ -200,9 +200,9 @@ class simple_grid::component::component_repository::lifecycle::event::pre_config
     ensure => directory,
     mode   => "0766",
   }
-  notify{"docker run -i -v ${repository_path}:/component_repository -e 'EXECUTION_ID=${execution_id}' ${pre_config_image_name}":}
+
   exec{"Level-2":
-    command => "docker run --rm -i -v ${repository_path}:/component_repository -e 'EXECUTION_ID=${execution_id}' ${pre_config_image_name} >",
+    command => "docker run --rm -i -v ${repository_path}:/component_repository -e 'EXECUTION_ID=${execution_id}' ${pre_config_image_name}",
     path => "/usr/local/bin:/usr/bin/:/bin/:/opt/puppetlabs/bin/:/usr/sue/sbin",
     user => 'root',
     logoutput => true,
@@ -262,7 +262,6 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
     }
   }
   $host_certificates_dir = "${repository_path}/${repository_relative_host_certificates_dir}"
-  # notify{"AAAAAA  $augmented_site_level_config, $current_lightweight_component, $meta_info, $image_name, $augmented_site_level_config_file, $container_augmented_site_level_config_file, $config_dir, $container_config_dir, $scripts_dir, $container_scripts_dir, $host_certificates_dir, $container_host_certificates_dir, $network ":}
   $docker_run_command = simple_grid::docker_run($augmented_site_level_config, $current_lightweight_component, $meta_info, $image_name, $augmented_site_level_config_file, $container_augmented_site_level_config_file, $config_dir, $container_config_dir, $scripts_dir, $container_scripts_dir, $logs_dir, $container_logs_dir , $host_certificates_dir, $container_host_certificates_dir, $network, $level_2_configurator )
   notify{"Docker run command":}
   notify{"${docker_run_command}":}
@@ -289,7 +288,7 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_init(
   $scripts.each |Hash $script|{
     $script_name = split($script['actual_script'], '/')[-1]
     $script_path = "${container_scripts_dir}/${pre_init_hook}/${script_name}"
-    $command = "docker exec -t ${container_name} ${container_scripts_dir}/${wrapper} ${script_path} ${log_dir}/${execution_id}/${timestamp}"
+    $command = "docker exec -t ${container_name} ${container_scripts_dir}/${wrapper} ${script_path} ${log_dir}/${timestamp}"
     notify{"Executing pre_init hook ${command}. The output is available at ${log_dir}/${execution_id}/${timestamp}":}
     exec{"Running pre_init hook ${script_path} for Execution ID ${execution_id}":
       command => $command,
@@ -310,7 +309,7 @@ class simple_grid::component::component_repository::lifecycle::event::init(
   $config_dir = lookup('simple_grid::components::component_repository::container::config_dir'),
   $container_scripts_dir = lookup("simple_grid::components::component_repository::container::scripts_dir")
 ){
-  $command = "docker exec -t  ${container_name} /bin/bash -c '${container_scripts_dir}/${wrapper} ${config_dir}/init.sh ${log_dir}/${execution_id}/${timestamp}'"
+  $command = "docker exec -t  ${container_name} /bin/bash -c '${container_scripts_dir}/${wrapper} ${config_dir}/init.sh ${log_dir}/${timestamp}'"
   notify{"Executing init event : ${command}. The logs will be available at: ${log_dir}/${execution_id}/${timestamp}":}
   exec{"Running init event for Execution ID ${execution_id}":
       command => $command,
@@ -325,7 +324,7 @@ class simple_grid::component::component_repository::lifecycle::hook::post_init(
   $current_lightweight_component,
   $execution_id,
   $scripts,
-  $timestamp
+  $timestamp,
   $wrapper = lookup('simple_grid::scripts::wrapper'),
   $log_dir = lookup('simple_grid::simple_log_dir'),
   $container_name,
@@ -335,7 +334,7 @@ class simple_grid::component::component_repository::lifecycle::hook::post_init(
   $scripts.each |Hash $script|{
     $script_name = split($script['actual_script'], '/')[-1]
     $script_path = "${container_scripts_dir}/${post_init_hook}/${script_name}"
-    $command = "docker exec -t ${container_name} ${container_scripts_dir}/${wrapper} ${script_path} ${log_dir}/${execution_id}/${timestamp}"
+    $command = "docker exec -t ${container_name} ${container_scripts_dir}/${wrapper} ${script_path} ${log_dir}/${timestamp}"
     notify{"Executing post_init hook ${command}. The logs will be available at ${log_dir}/${execution_id}/${timestamp}":}
     exec{"Running post_init hook ${script_path} for Execution ID ${execution_id} with script":
       command => $command,
