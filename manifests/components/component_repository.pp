@@ -152,7 +152,7 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_config(
     notify{"Running pre config script ${pre_config_script}. The output is available at ${logdir}/${execution_id}/${timestamp}":}
     if $mode == lookup('simple_grid::mode::docker') or $mode == lookup('simple_grid::mode::dev') {
       exec{"Executing Pre-Config Script $script":
-        command => "${scripts_dir}/${execution_id}/${wrapper} ${actual_script} ${log_dir}/${execution_id}/${timestamp}",
+        command => "${scripts_dir}/${execution_id}/${wrapper} ${actual_script} ${log_dir}/${execution_id}/${timestamp} pre_config",
         path => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
         user => 'root',
         logoutput => true,
@@ -288,7 +288,7 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_init(
   $scripts.each |Hash $script|{
     $script_name = split($script['actual_script'], '/')[-1]
     $script_path = "${container_scripts_dir}/${pre_init_hook}/${script_name}"
-    $command = "docker exec -t ${container_name} ${container_scripts_dir}/${wrapper} ${script_path} ${log_dir}/${timestamp}"
+    $command = "docker exec -t ${container_name} ${container_scripts_dir}/${wrapper} ${script_path} ${log_dir}/${timestamp} pre_init"
     notify{"Executing pre_init hook ${command}. The output is available at ${log_dir}/${execution_id}/${timestamp}":}
     exec{"Running pre_init hook ${script_path} for Execution ID ${execution_id}":
       command => $command,
@@ -309,7 +309,7 @@ class simple_grid::component::component_repository::lifecycle::event::init(
   $config_dir = lookup('simple_grid::components::component_repository::container::config_dir'),
   $container_scripts_dir = lookup("simple_grid::components::component_repository::container::scripts_dir")
 ){
-  $command = "docker exec -t  ${container_name} /bin/bash -c '${container_scripts_dir}/${wrapper} ${config_dir}/init.sh ${log_dir}/${timestamp}'"
+  $command = "docker exec -t  ${container_name} /bin/bash -c '${container_scripts_dir}/${wrapper} ${config_dir}/init.sh ${log_dir}/${timestamp} init'"
   notify{"Executing init event : ${command}. The logs will be available at: ${log_dir}/${execution_id}/${timestamp}":}
   exec{"Running init event for Execution ID ${execution_id}":
       command => $command,
@@ -334,7 +334,7 @@ class simple_grid::component::component_repository::lifecycle::hook::post_init(
   $scripts.each |Hash $script|{
     $script_name = split($script['actual_script'], '/')[-1]
     $script_path = "${container_scripts_dir}/${post_init_hook}/${script_name}"
-    $command = "docker exec -t ${container_name} ${container_scripts_dir}/${wrapper} ${script_path} ${log_dir}/${timestamp}"
+    $command = "docker exec -t ${container_name} ${container_scripts_dir}/${wrapper} ${script_path} ${log_dir}/${timestamp} post_init"
     notify{"Executing post_init hook ${command}. The logs will be available at ${log_dir}/${execution_id}/${timestamp}":}
     exec{"Running post_init hook ${script_path} for Execution ID ${execution_id} with script":
       command => $command,

@@ -1,9 +1,10 @@
 #!/bin/bash
 script_name=$1
 logdir=$2
+lifecycle_stage=$3
 timestamp=`date +%s`
 # logdir=/etc/simple_grid/scripts
-log_file="$logdir/$timestamp-`basename $script_name.log`"
+log_file="$logdir/$lifecycle_stage-$timestamp-`basename $script_name.log`"
 
 if [[ -n "$script_name" ]]; then
     bash -c $script_name >> $log_file 
