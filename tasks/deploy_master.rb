@@ -63,6 +63,8 @@ class DeployMaster < TaskHelper
                 --nodes #{_node_fqdn} \
                 > #{_deploy_status_output_file}"
             puts "******************"
+            puts "#{deploy_command}"
+            puts "******************"
             puts "Executing Step 1 deployment of #{_name} on #{_node_fqdn} with execution_id = #{_execution_id}"
             deploy_stdout, deploy_stderr, deploy_status = Open3.capture3(deploy_command)  
             

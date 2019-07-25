@@ -97,7 +97,7 @@ class Deploy < TaskHelper
     end
 
     def task(execution_id:nil, deploy_step:nil, augmented_site_level_config_file:nil, dns_key:nil, deploy_status_file:nil, deploy_status_success:nil, deploy_status_failure:nil, timestamp:nil, deploy_step_1:nil, deploy_step_2:nil, log_dir:nil,  **kwargs)
-        status, output = init_deploy(execution_id, deploy_step, augmented_site_level_config_file, dns_key, deploy_status_file, deploy_status_success, deploy_status_failure) 
+        status, output = init_deploy(execution_id, deploy_step, augmented_site_level_config_file, dns_key, deploy_status_file, deploy_status_success, deploy_status_failure, timestamp, deploy_step_1, deploy_step_2, log_dir) 
         {status: status, output: output }
     end
 end
