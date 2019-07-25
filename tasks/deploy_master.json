@@ -48,6 +48,10 @@
         "modulepath": {
           "type": "String[1]",
           "description": "The modulepath to be used on Lightweight Component nodes."
+        },
+        "timestamp": {
+          "type": "String[1]",
+          "description": "The timestamp to be associated with the log files."
         }
     }
 }

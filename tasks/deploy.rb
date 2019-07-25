@@ -4,14 +4,14 @@ require 'json'
 require 'open3'
 require 'puppet'
 require 'yaml'
+require 'fileutils'
 require_relative "../../ruby_task_helper/files/task_helper.rb"
 
 class Deploy < TaskHelper
-    def init_deploy(execution_id, deploy_step, augmented_site_level_config_file, dns_key, deploy_status_file, deploy_status_success, deploy_status_error)
+    def init_deploy(execution_id, deploy_step, augmented_site_level_config_file, dns_key, deploy_status_file, deploy_status_success, deploy_status_error, timestamp, deploy_step_1, deploy_step_2, log_dir)
         current_deploy_status = Hash.new
         current_dns_info = Hash.new
         output = String.new
-        timestamp = Time.now.strftime("%d/%m/%Y %H:%M")
         augmented_site_level_config  = YAML.load(File.read(augmented_site_level_config_file))
         dns_array = augmented_site_level_config[dns_key]
         dns_array.each do |dns_info|
@@ -32,7 +32,7 @@ class Deploy < TaskHelper
         end
 
         #run puppet
-        puppet_apply = "puppet apply -e \"class{'simple_grid::deploy::lightweight_component::init':execution_id =>#{execution_id}, deploy_step=>#{deploy_step}}\""
+        puppet_apply = "puppet apply -e \"class{'simple_grid::deploy::lightweight_component::init':execution_id =>#{execution_id}, deploy_step=>#{deploy_step}}, timestamp=>#{timestamp}\""
         puppet_stdout, puppet_stderr, puppet_status = Open3.capture3(puppet_apply)
         
         #handle puppet
@@ -44,6 +44,7 @@ class Deploy < TaskHelper
             output = puppet_stderr
             current_deploy_status['puppet_status'] = deploy_status_error
         end
+        
         current_deploy_status['logs'] << timestamp + " : " + output
 
         # run container id
@@ -79,11 +80,23 @@ class Deploy < TaskHelper
             f.write(deploy_status_file_hash.to_yaml)
         }
 
+        puppet_step_1_output_file = "#{log_dir}/#{execution_id}/#{timestamp}/puppet_deploy_step_1.log"
+        puppet_step_2_output_file = "#{log_dir}/#{execution_id}/#{timestamp}/puppet_deploy_step_2.log"
+        if deploy_step == deploy_step_1
+            File.open(puppet_step_1_output_file, "w") { |f| 
+                f.write(output)
+            }
+        elsif deploy_step == deploy_step_2
+            File.open(puppet_step_2_output_file, "w") { |f| 
+                f.write(output)
+            }
+        end
+
         return container_status.success?, output
         
     end
 
-    def task(execution_id:nil, deploy_step:nil, augmented_site_level_config_file:nil, dns_key:nil, deploy_status_file:nil, deploy_status_success:nil, deploy_status_failure:nil, **kwargs)
+    def task(execution_id:nil, deploy_step:nil, augmented_site_level_config_file:nil, dns_key:nil, deploy_status_file:nil, deploy_status_success:nil, deploy_status_failure:nil, timestamp:nil, deploy_step_1:nil, deploy_step_2:nil, log_dir:nil,  **kwargs)
         status, output = init_deploy(execution_id, deploy_step, augmented_site_level_config_file, dns_key, deploy_status_file, deploy_status_success, deploy_status_failure) 
         {status: status, output: output }
     end

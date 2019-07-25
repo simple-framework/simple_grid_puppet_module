@@ -1,5 +1,6 @@
 class simple_grid::components::component_repository::deploy_step_1(
   $execution_id,
+  $timestamp,
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
   $deploy_status_file = lookup('simple_grid::nodes::lightweight_component::deploy_status_file'),
   $component_repository_dir = lookup('simple_grid::nodes::lightweight_component::component_repository_dir'),
@@ -34,8 +35,9 @@ class simple_grid::components::component_repository::deploy_step_1(
   }
 
   class{'simple_grid::component::component_repository::lifecycle::hook::pre_config':
-    scripts => $pre_config_scripts,
-    execution_id                  => $execution_id, 
+    scripts         => $pre_config_scripts,
+    execution_id    => $execution_id,
+    timestamp       => $timestamp
   }
 
   class{'simple_grid::component::component_repository::lifecycle::event::pre_config':
@@ -54,6 +56,7 @@ class simple_grid::components::component_repository::deploy_step_1(
 
 class simple_grid::components::component_repository::deploy_step_2(
   $execution_id,
+  $timestamp,
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
   $deploy_status_file = lookup('simple_grid::nodes::lightweight_component::deploy_status_file'),
   $component_repository_dir = lookup('simple_grid::nodes::lightweight_component::component_repository_dir'),
@@ -174,17 +177,18 @@ class simple_grid::component::component_repository::lifecycle::hook::wrapper(
 
 class simple_grid::component::component_repository::lifecycle::hook::pre_config(
   $scripts,
+  $execution_id,
+  $timestamp,
   $scripts_dir = lookup('simple_grid::scripts_dir'),
   $log_dir = lookup('simple_grid::simple_log_dir'),
   $wrapper = lookup('simple_grid::scripts::wrapper'),
   $mode = lookup('simple_grid::mode'),
-  $execution_id
 ){
   $scripts.each |Hash $script|{
     $actual_script = $script['actual_script']
     if $mode == lookup('simple_grid::mode::docker') or $mode == lookup('simple_grid::mode::dev') {
       exec{"Executing Pre-Config Script $script":
-        command => "${scripts_dir}/${execution_id}/${wrapper} ${actual_script} ${log_dir}/${execution_id}",
+        command => "${scripts_dir}/${execution_id}/${wrapper} ${actual_script} ${log_dir}/${execution_id}/${timestamp}",
         path => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
         user => 'root',
         logoutput => true,
