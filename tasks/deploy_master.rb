@@ -80,8 +80,8 @@ class DeployMaster < TaskHelper
             
             puts "Fetching Step 1 deployment status for #{_name} on #{_node_fqdn} with execution_id = #{_execution_id}"
             execution_status_stdout, execution_status_stderr, execution_status_status = Open3.capture3(execution_status_command)
-            deploy_status = process_execution_status(_execution_status_output_file)['deploy_status']
-        
+            execution_status = process_execution_status(_execution_status_output_file)
+            deploy_status = execution_status['deploy_status']
             _current_output = {
                 "execution_id" => _execution_id,
                 "component" => _name,
@@ -92,8 +92,19 @@ class DeployMaster < TaskHelper
                 "container_status"=>  deploy_status['container_status'],
                 "log_file" => _execution_status_output_file,
             }
-            
             _output << _current_output
+
+            ## Save output files for pre_deploy_step_1
+            log_location = "#{log_dir}/#{_execution_id}/#{timestamp}"
+            File.open("#{log_location}/pre_deploy_step_1.log", 'w') { |file|
+                file.write(execution_status['pre_deploy_step_1'])
+            }
+            execution_status['pre_config'].each do |filename, data|
+                File.open("#{log_location}/#{filename}", "w") { |file|
+                    file.write(data)
+                }
+            end
+            
             if deploy_status['status'] != deploy_status_success
                 _proceed_deploy_step_2 = false
                 puts "Execution of Deployment Step 1 for execution ID #{_execution_id} failed. Check output available at #{_execution_status_output_file} for details."
@@ -147,6 +158,7 @@ class DeployMaster < TaskHelper
                 
                 puts "Fetching Step 2 deployment status for #{_name} on #{_node_fqdn} with execution_id = #{_execution_id}"
                 execution_status_stdout, execution_status_stderr, execution_status_status = Open3.capture3(execution_status_command)
+                execution_status = process_execution_status(_execution_status_output_file)
                 deploy_status = process_execution_status(_execution_status_output_file)['deploy_status']
                 if deploy_status['status'] == deploy_status_failure
                     puts "Execution of Deployment Step 2 for execution ID #{_execution_id} failed. Check output available at #{_execution_status_output_file} for details."
@@ -161,6 +173,25 @@ class DeployMaster < TaskHelper
                     "log_file" => _execution_status_output_file
                 }
                 _output << _current_output
+
+                ## Save output files for pre_deploy_step_2
+                log_location = "#{log_dir}/#{_execution_id}/#{timestamp}"
+                File.open("#{log_location}/pre_deploy_step_2.log", 'w') { |file|
+                    file.write(execution_status['pre_deploy_step_2'])
+                }
+                execution_status['pre_init'].each do |filename, data|
+                    File.open("#{log_location}/#{filename}", "w") { |file|
+                        file.write(data)
+                    }
+                end
+                File.open("#{log_location}/init.log", 'w') { |file|
+                    file.write(execution_status['init'])
+                }
+                execution_status['post_init'].each do |filename, data|
+                    File.open("#{log_location}/#{filename}", "w") { |file|
+                        file.write(data)
+                    }
+                end
             end
         end
 

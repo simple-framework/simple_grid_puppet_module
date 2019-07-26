@@ -161,7 +161,7 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_config(
     }
     elsif $mode == lookup('simple_grid::mode::release') {
       exec{"Executing Pre-Config Script $script":
-        command   => "${scripts_dir}/${execution_id}/${wrapper} ${actual_script} ${log_dir}/${execution_id}/${timestamp}",
+        command   => "${scripts_dir}/${execution_id}/${wrapper} ${actual_script} ${log_dir}/${execution_id}/${timestamp} pre_config",
         path      => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
         user      => 'root',
         logoutput => true
