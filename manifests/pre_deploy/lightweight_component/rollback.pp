@@ -5,7 +5,8 @@ class simple_grid::pre_deploy::lightweight_component::rollback(
   $lifecycle_callbacks_dir_name = lookup('simple_grid::scripts_dir_name'),
   $simple_config_dir = lookup('simple_grid::simple_config_dir'),
   $component_repository_dir = lookup('simple_grid::nodes::lightweight_component::component_repository_dir'),
-  $swarm_status_file = lookup('simple_grid::components::swarm::status_file')
+  $swarm_status_file = lookup('simple_grid::components::swarm::status_file'),
+  $simple_log_dir = lookup('simple_grid::simple_log_dir')
 ){
 
   file{"Removing augmented site level configuration file from LC":
@@ -34,6 +35,18 @@ class simple_grid::pre_deploy::lightweight_component::rollback(
    ensure => absent,
    force  => true,
    path => "${simple_config_dir}/${lifecycle_callbacks_dir_name}"
+  }
+  tidy {"Removing log dir":
+    rmdirs => true,
+    path   => "${simple_log_dir}",
+    recurse => true,
+    matches => "*"
+  }
+  
+  file{"Creating log directories":
+   ensure => directory,
+   force  => true,
+   path => "${simple_log_dir}"
   }
 
   file{"Removing directory for component repositories":

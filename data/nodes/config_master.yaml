@@ -5,3 +5,5 @@ simple_grid::config_master::environments::simple::modulepath: "%{hiera('simple_g
 #ssh
 simple_grid::nodes::config_master::installation_helper::ssh_config::ssh_dir: '/etc/ssh'
 simple_grid::nodes::config_master::installation_helper::ssh_config::ssh_host_key: 'simple_host_key'
+#execution status
+simple_grid::nodes::config_master::execution_status_file_name: 'execution_status.yaml'
