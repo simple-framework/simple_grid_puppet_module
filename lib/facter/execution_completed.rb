@@ -1,7 +1,7 @@
 Facter.add('execution_completed') do
     setcode do
       begin
-        data = YAML.load(File.read("/etc/simple_grid/.deploy_status.yaml"))
+        data = YAML.load(File.read("/etc/simple_grid/logs/deploy_status.yaml"))
         execution_completed = []
         data['deploy_status'].each do |deploy_status| 
           if deploy_status['status'] == "completed"

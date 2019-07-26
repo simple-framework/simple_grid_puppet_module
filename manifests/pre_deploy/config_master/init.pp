@@ -26,7 +26,7 @@ class simple_grid::pre_deploy::config_master::init(
           ipv4_address=${node['ip_address']} \
           hostname=${node_fqdn} \
           --nodes ${node_fqdn} \
-          --modulepath ${puppet_environmentpath}/${env_name}/modules/",
+          --modulepath ${puppet_environmentpath}/${env_name}/modules:${puppet_environmentpath}/${env_name}/site",
         path    => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
         user    => 'root',
         logoutput => true,
@@ -37,7 +37,7 @@ class simple_grid::pre_deploy::config_master::init(
           ipv4_address=${node['ip_address']} \
           hostname=${node_fqdn} \
           --nodes ${node_fqdn} \
-          --modulepath ${puppet_environmentpath}/${env_name}/modules/",
+          --modulepath ${puppet_environmentpath}/${env_name}/modules:${puppet_environmentpath}/${env_name}/site",
         path    => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
         user    => 'root',
         logoutput => true,
@@ -49,7 +49,7 @@ class simple_grid::pre_deploy::config_master::init(
           ipv4_address=${node['ip_address']} \
           hostname=${node_fqdn} \
           --nodes ${node_fqdn} \
-          --modulepath ${puppet_environmentpath}/${env_name}/modules/",
+          --modulepath ${puppet_environmentpath}/${env_name}/modules:${puppet_environmentpath}/${env_name}/site",
         path    => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
         user    => 'root',
         logoutput => true,
@@ -62,7 +62,7 @@ class simple_grid::pre_deploy::config_master::init(
           ipv4_address=${node['ip_address']} \
           hostname=${node_fqdn} \
           --nodes ${node_fqdn} \
-          --modulepath ${puppet_environmentpath}/${env_name}/modules/",
+          --modulepath ${puppet_environmentpath}/${env_name}/modules:${puppet_environmentpath}/${env_name}/site",
         path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
         user    => 'root',
         logoutput => true
@@ -72,7 +72,7 @@ class simple_grid::pre_deploy::config_master::init(
           ipv4_address=${node['ip_address']} \
           hostname=${node_fqdn} \
           --nodes ${node_fqdn} \
-          --modulepath ${puppet_environmentpath}/${env_name}/modules/",
+          --modulepath ${puppet_environmentpath}/${env_name}/modules:${puppet_environmentpath}/${env_name}/site",
         path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
         user    => 'root',
         logoutput => true
@@ -82,7 +82,7 @@ class simple_grid::pre_deploy::config_master::init(
           ipv4_address=${node['ip_address']} \
           hostname=${node_fqdn} \
           --nodes ${node_fqdn} \
-          --modulepath ${puppet_environmentpath}/${env_name}/modules/",
+          --modulepath ${puppet_environmentpath}/${env_name}/modules:${puppet_environmentpath}/${env_name}/site",
         path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
         user    => 'root',
         logoutput => true

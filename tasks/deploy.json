@@ -36,6 +36,22 @@
         "deploy_status_failure": {
             "type": "String[1]",
             "description": "Value updated in deploy_status_file on error"
+        },
+        "timestamp": {
+            "type": "String[1]",
+            "description": "The timestamp to be associated with the logs"
+        },
+        "deploy_step_1": {
+          "type": "String[1]",
+          "description": "The value of hiera variable simple_grid::stage::deploy_step_1"
+        },
+        "deploy_step_2": {
+            "type": "String[1]",
+            "description": "The value of hiera variable simple_grid::stage::deploy_step_2"
+        },
+        "log_dir": {
+            "type": "String[1]",
+            "description": "The log directory for simple_grid on LC node."
         }
     }
 }

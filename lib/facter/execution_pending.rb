@@ -1,7 +1,7 @@
 Facter.add('execution_pending') do
     setcode do
       begin
-        data = YAML.load(File.read("/etc/simple_grid/.deploy_status.yaml")) #try lookup
+        data = YAML.load(File.read("/etc/simple_grid/logs/deploy_status.yaml")) #try lookup
         execution_pending = []
         data['deploy_status'].each do |deploy_status|
           if deploy_status['status'] == 'pending'

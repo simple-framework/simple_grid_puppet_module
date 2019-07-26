@@ -33,9 +33,9 @@
             "type": "String[1]",
             "description": "The location of the deploy_status_file on the LC node where the probes are run."
         },
-        "deploy_status_output_dir": {
+        "execution_status_file_name": {
             "type": "String[1]",
-            "description": "The top level directory for storing deploy_status.yaml from LC node on CM node."
+            "description": "The name of the execution_status file saved on CM for each execution_id."
         },
         "deploy_status_success": {
             "type": "String[1]",
@@ -48,6 +48,14 @@
         "modulepath": {
           "type": "String[1]",
           "description": "The modulepath to be used on Lightweight Component nodes."
+        },
+        "timestamp": {
+          "type": "String[1]",
+          "description": "The timestamp to be associated with the log files."
+        },
+        "log_dir": {
+            "type": "String[1]",
+            "description": "The log directory for simple_grid on LC node."
         }
     }
 }

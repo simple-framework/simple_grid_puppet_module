@@ -29,6 +29,7 @@ class simple_grid::nodes::lightweight_component::init(
     class{"simple_grid::pre_deploy::lightweight_component::copy_augmented_site_level_config":}
     class{"simple_grid::pre_deploy::lightweight_component::copy_additional_files":}
     class{"simple_grid::pre_deploy::lightweight_component::copy_lifecycle_callbacks":}
+    class{"simple_grid::pre_deploy::lightweight_component::create_log_dirs":}
     class{"simple_grid::pre_deploy::lightweight_component::copy_host_certificates":}
     simple_grid::components::execution_stage_manager::set_stage {"Setting stage to pre_deploy_step_3":
       simple_stage => lookup('simple_grid::stage::pre_deploy::step_3')

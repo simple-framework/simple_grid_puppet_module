@@ -13,14 +13,22 @@ class simple_grid::nodes::config_master::init{
 
     ## prep for deploy stage
     $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output')
-    $simple_config_dir = lookup('simple_grid::simple_config_dir')
+    $simple_log_dir = lookup('simple_grid::simple_log_dir')
 
     $site_level_config = loadyaml("${augmented_site_level_config_file}")
     $lightweight_components = $site_level_config["lightweight_components"]
     $lightweight_components.each |Hash $lightweight_component| {
-      $filename = "${simple_config_dir}/.${lightweight_component['execution_id']}.status"
-      file{"${filename}":
-        ensure => "present"
+      $dir = "${simple_log_dir}/${lightweight_component['execution_id']}"
+      $filename = lookup('simple_grid::nodes::lightweight_component::deploy_status_file_name')
+      file{"${dir}":
+        path    => "${dir}",
+        ensure  => "directory",
+        recurse => true
+      } ->
+      file{"${dir}/${filename}":
+        path    => "${dir}/${filename}",
+        ensure  => "present",
+        recurse => true
       }
     }
     simple_grid::components::execution_stage_manager::set_stage {'Setting stage to deploy':
