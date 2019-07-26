@@ -96,8 +96,8 @@ class DeployMaster < TaskHelper
 
             ## Save output files for pre_deploy_step_1
             log_location = "#{log_dir}/#{_execution_id}/#{timestamp}"
-            File.open("#{log_location}/pre_deploy_step_1.log", 'w') { |file|
-                file.write(execution_status['pre_deploy_step_1'])
+            File.open("#{log_location}/puppet_deploy_step_1.log", 'w') { |file|
+                file.write(execution_status['puppet_deploy_step_1'])
             }
             execution_status['pre_config'].each do |filename, data|
                 File.open("#{log_location}/#{filename}", "w") { |file|
@@ -176,8 +176,8 @@ class DeployMaster < TaskHelper
 
                 ## Save output files for pre_deploy_step_2
                 log_location = "#{log_dir}/#{_execution_id}/#{timestamp}"
-                File.open("#{log_location}/pre_deploy_step_2.log", 'w') { |file|
-                    file.write(execution_status['pre_deploy_step_2'])
+                File.open("#{log_location}/puppet_deploy_step_2.log", 'w') { |file|
+                    file.write(execution_status['puppet_deploy_step_2'])
                 }
                 execution_status['pre_init'].each do |filename, data|
                     File.open("#{log_location}/#{filename}", "w") { |file|
