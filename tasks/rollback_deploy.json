@@ -9,6 +9,10 @@
     ],
 
     "parameters": {
+        "augmented_site_level_config_file": {
+          "type": "String[1]",
+          "description": "The location of the augmented_site_level_config_file.yaml on the LC node."
+        },
         "execution_id": {
           "type": "String[1]",
           "description": "The execution_id of the lightweight component that has to be deployed."
@@ -16,6 +20,22 @@
         "deploy_status_file": {
             "type": "String[1]",
             "description": "The deploy status file path presnet on Lightweight Component Node."
+        },
+        "deploy_status_success": {
+          "type": "String[1]",
+          "description": "Value updated in deploy_status_file on success"
+        },
+        "deploy_status_failure": {
+          "type": "String[1]",
+          "description": "Value updated in deploy_status_file on error"
+        },
+        "deploy_status_pending": {
+          "type": "String[1]",
+          "description": "Value updated in deploy_status_file intitally"
+        },
+        "dns_key": {
+          "type": "String[1]",
+          "description": "The name for the yaml object that contains dns info in the augmented_site_level_config_file."
         }
     }
 }
