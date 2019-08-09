@@ -45,10 +45,11 @@ class simple_grid::components::yaml_compiler::execute(
   $virtual_env_dir = lookup('simple_grid::components::yaml_compiler::install::virtual_env_dir'),
   $site_level_config_file = lookup('simple_grid::components::site_level_config_file'),
   $output_file = lookup('simple_grid::components::yaml_compiler::output'),
+  $schema_output_file = lookup('simple_grid::components::yaml_compiler::schema_output'),
 ){
   #8. activate virtual environment
   exec {"execute compiler":
-    command => "bash -c 'source ${virtual_env_dir}/bin/activate && python ${yaml_compiler_dir}/simple_grid_yaml_compiler.py ${site_level_config_file}  -o ${output_file}'",
+    command => "bash -c 'source ${virtual_env_dir}/bin/activate && python ${yaml_compiler_dir}/simple_grid_yaml_compiler.py ${site_level_config_file}  -o ${output_file} -s ${schema_output_file}'",
     path    => "/usr/local/bin/:/usr/bin/:/bin/",
     cwd     => "${yaml_compiler_dir}",
     }
