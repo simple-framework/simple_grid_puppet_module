@@ -119,6 +119,9 @@ class simple_grid::components::component_repository::rollback(
     environment => ["HOME=/root"]
   }
   simple_grid::set_execution_status($deploy_status_file, $execution_id, $pending_deploy_status)
+  simple_grid::components::execution_stage_manager::set_stage {'Setting stage to final':
+    simple_stage => lookup('simple_grid::stage::final')
+    }
 }
 
 class simple_grid::component::component_repository::lifecycle::hook::wrapper(

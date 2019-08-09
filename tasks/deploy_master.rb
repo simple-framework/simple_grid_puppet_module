@@ -25,7 +25,7 @@ class DeployMaster < TaskHelper
         return deploy_status
     end
 
-    def task(simple_config_dir:nil, augmented_site_level_config_file:nil, dns_key:nil, deploy_step_1:nil, deploy_step_2:nil, deploy_status_file:nil, execution_status_file_name:nil, deploy_status_success:nil, deploy_status_failure:nil, modulepath:nil, timestamp:nil, log_dir:nil, **kwargs )
+    def task(simple_config_dir:nil, augmented_site_level_config_file:nil, dns_key:nil, deploy_step_1:nil, deploy_step_2:nil, deploy_status_file:nil, execution_status_file_name:nil, deploy_status_success:nil, deploy_status_failure:nil, modulepath:nil, timestamp:nil, log_dir:nil, stage_final:nil, stage_config_file:nil, **kwargs )
         _overall_deployment_status_file_name = "#{log_dir}/#{timestamp}_deployment_output.yaml"
         _data = YAML.load_file(augmented_site_level_config_file)
         _proceed_deploy_step_2 = true
@@ -198,6 +198,11 @@ class DeployMaster < TaskHelper
         File.open(_overall_deployment_status_file_name,"w") { |file|
             file.write _output.to_yaml
         }
+
+        File.open(stage_config_file,"w") { |file|
+            file.write stage_final
+        }
+
         _output.to_yaml
     end
 end

@@ -10,6 +10,8 @@ class simple_grid::deploy::config_master::init(
   $env_name = lookup('simple_grid::components::ccm::install::env_name'),
   $deploy_step_1 = lookup('simple_grid::stage::deploy::step_1'),
   $deploy_step_2 = lookup('simple_grid::stage::deploy::step_2'),
+  $stag_final = lookup('simple_grid::stage::final'),
+  $stage_config_file = lookup('simple_grid::components::execution_stage_manager::config_file'),
   $log_dir = lookup('simple_grid::simple_log_dir')
  ){
     $modulepath = "/etc/puppetlabs/code/environments/production/modules"
@@ -33,6 +35,8 @@ class simple_grid::deploy::config_master::init(
         modulepath=${modulepath} \
         log_dir=${log_dir} \
         timestamp=${timestamp} \
+        stage_final=${stage_final} \
+        stage_config_file=${stage_config_file} \
         --modulepath ${puppet_environmentpath}/${env_name}/site/ \
         --nodes localhost",
       path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',

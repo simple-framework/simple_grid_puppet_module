@@ -56,6 +56,14 @@
         "log_dir": {
             "type": "String[1]",
             "description": "The log directory for simple_grid on LC node."
-        }
+        },
+        "stage_final": {
+            "type": "String[1]",
+            "description": "The string representing final stage i.e. the stage followed by successful execution of deploy stage"
+        },
+        "stag_config_file": {
+            "type": "String[1]",
+            "description": "The  config file that stores stage information for CM node."
+       }
     }
 }
