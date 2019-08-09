@@ -37,7 +37,7 @@ class simple_grid::deploy::config_master::init(
         timestamp=${timestamp} \
         stage_final=${stage_final} \
         stage_config_file=${stage_config_file} \
-        --modulepath ${puppet_environmentpath}/${env_name}/site/ \
+        --modulepath ${puppet_environmentpath}/${env_name}/site/:${puppet_environmentpath}/${env_name}/modules/ \
         --nodes localhost",
       path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
       user    => 'root',
