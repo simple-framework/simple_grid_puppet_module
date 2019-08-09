@@ -99,6 +99,9 @@ class simple_grid::components::component_repository::deploy_step_2(
     timestamp   => $timestamp,
     container_name => $dns_info['container_fqdn']
   }
+  simple_grid::components::execution_stage_manager::set_stage {'Setting stage to final':
+    simple_stage => lookup('simple_grid::stage::final')
+    }
 }
 
 class simple_grid::components::component_repository::rollback(
@@ -119,8 +122,8 @@ class simple_grid::components::component_repository::rollback(
     environment => ["HOME=/root"]
   }
   simple_grid::set_execution_status($deploy_status_file, $execution_id, $pending_deploy_status)
-  simple_grid::components::execution_stage_manager::set_stage {'Setting stage to final':
-    simple_stage => lookup('simple_grid::stage::final')
+  simple_grid::components::execution_stage_manager::set_stage {'Setting stage to deploy_step_1':
+    simple_stage => lookup('simple_grid::stage::deploy::step_1')
     }
 }
 
