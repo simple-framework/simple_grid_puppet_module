@@ -111,7 +111,7 @@ class simple_grid::components::component_repository::rollback(
   $dns = simple_grid::get_dns_info($augmented_site_level_config, $execution_id)
   $container_name = $dns['container_fqdn']
   $docker_stop_rm_command = "docker stop ${container_name} && docker rm ${container_name}"
-  exec{"Cleanup container ${container_fqdn}":
+  exec{"Cleanup container ${container_name}":
     command     => $docker_stop_rm_command,
     user        => root,
     logoutput   => true,
@@ -119,9 +119,6 @@ class simple_grid::components::component_repository::rollback(
     environment => ["HOME=/root"]
   }
   simple_grid::set_execution_status($deploy_status_file, $execution_id, $pending_deploy_status)
-  simple_grid::components::execution_stage_manager::set_stage {'Setting stage to deploy_step_1':
-    simple_stage => lookup('simple_grid::stage::deploy::step_1')
-    }
 }
 
 class simple_grid::component::component_repository::lifecycle::hook::wrapper(
