@@ -7,7 +7,4 @@ class simple_grid::deploy::lightweight_component::rollback(
   class{"simple_grid::components::component_repository::rollback":
     execution_id => $execution_id
   }
-  simple_grid::components::execution_stage_manager::set_stage {"Setting stage to deploy_step_1":
-    simple_stage => lookup('simple_grid::stage::deploy::step_1')
-  }
 }
