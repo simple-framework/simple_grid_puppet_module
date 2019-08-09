@@ -14,7 +14,7 @@ class simple_grid::pre_deploy::lightweight_component::copy_host_certificates(
       mode => "0644",
     }
     notify{"Setting permissiions for hostkey.pem":}
-    file{"Copying host copy_host_certificates from CM to ${host_certificates_dir}":
+    file{"Copying hostkey from CM to ${host_certificates_dir}":
       ensure => directory,
       recurse => 'remote',
       source => "puppet:///simple_grid/${host_certificates_dir_name}/${fqdn}/hostkey.pem",
@@ -22,7 +22,7 @@ class simple_grid::pre_deploy::lightweight_component::copy_host_certificates(
       mode => "0600",
     }
     notify{"Setting permissions for hostcert.pem}":}
-    file{"Copying host copy_host_certificates from CM to ${host_certificates_dir}":
+    file{"Copying hostcert from CM to ${host_certificates_dir}":
       ensure => present,
       recurse => 'remote',
       source => "puppet:///simple_grid/${host_certificates_dir_name}/${fqdn}/hostcert.pem",
