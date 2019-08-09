@@ -5,6 +5,8 @@ simple_grid::components::yaml_compiler::download::dir: "%{hiera('simple_grid::si
 #output
 simple_grid::components::yaml_compiler::output_file_name: augmented_site_level_config_file.yaml
 simple_grid::components::yaml_compiler::output: "%{hiera('simple_grid::site_config_dir')}/%{hiera('simple_grid::components::yaml_compiler::output_file_name')}"
+simple_grid::components::yaml_compiler::schema_output_file_name: augmented_site_level_config_schema.yaml
+simple_grid::components::yaml_compiler::schema_output: "%{hiera('simple_grid::site_config_dir')}/%{hiera('simple_grid::components::yaml_compiler::schema_output_file_name')}"
 
 #git repo
 simple_grid::components::yaml_compiler::download::repository_url: "https://github.com/WLCG-Lightweight-Sites/simple_grid_yaml_compiler"
