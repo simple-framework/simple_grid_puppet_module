@@ -17,7 +17,7 @@ simple_grid::components::ccm::install::mode::dev::revision: "master"
 
 # puppet module for release mode
 simple_grid::components::ccm::install::mode::release::forge_module_name: "maany-simple_grid"
-simple_grid::components::ccm::install::mode::release::forge_module_version: "1.0.0"
+simple_grid::components::ccm::install::mode::release::forge_module_version: "1.0.3"
 
 # fileserver
 simple_grid::components::ccm::installation_helper::fileserver::fileserver_conf_path: '/etc/puppetlabs/puppet/fileserver.conf'
