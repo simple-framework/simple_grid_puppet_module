@@ -11,7 +11,7 @@ simple_grid::components::yaml_compiler::schema_output: "%{hiera('simple_grid::si
 #git repo
 simple_grid::components::yaml_compiler::download::repository_url: "https://github.com/WLCG-Lightweight-Sites/simple_grid_yaml_compiler"
 simple_grid::components::yaml_compiler::download::revision: "master"
-simple_grid::components::yaml_compiler::download::pypy::revision: "1.0.4"
+simple_grid::components::yaml_compiler::download::pypy::revision: "1.0.5"
 #virtual env
 simple_grid::components::yaml_compiler::install::virtual_env_dir: "%{hiera('simple_grid::components::yaml_compiler::download::dir')}/.env"
 
