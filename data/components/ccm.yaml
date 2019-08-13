@@ -3,7 +3,7 @@
 simple_grid::components::ccm::environment::production::modules_dir: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/production/modules"
 #puppet env
 simple_grid::components::ccm::install::env_repository_url: "https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_env"
-simple_grid::components::ccm::install::env_revision: "master"
+simple_grid::components::ccm::install::env_revision: "v1.0.0"
 simple_grid::components::ccm::install::env_name: "simple"
 simple_grid::components::ccm::install::env_dir: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/%{hiera('simple_grid::components::ccm::install::env_name')}"
 simple_grid::components::ccm::install::modules_dir: "%{hiera('simple_grid::components::ccm::install::env_dir')}/site"
