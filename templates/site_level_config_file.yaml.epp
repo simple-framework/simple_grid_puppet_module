@@ -1,3 +1,6 @@
+### url of schema
+schema:  "https://raw.githubusercontent.com/WLCG-Lightweight-Sites/simple_grid_site_repo/master/simple_base_schema.yaml"
+
 ### Variable declaration:
 global_variables:
   - &lightweight_component01_ip_address 192.168.0.4
@@ -25,7 +28,11 @@ site:
   grid: 'wlcg' #site_other_grid: str(), wlcg, egi,osg
   tier: 3
   bdii_host: bdii.cern.ch
-  use_argus: false
+  cvmfs_http_proxy_list:
+    - "http://cvmfs.cat.cbpf.br:3128"
+    - "http://cvmfs-sec.cat.cbpf.br:3128"
+  use_argus: no
+
 
 preferred_tech_stack:
   level_1_configuration: puppet

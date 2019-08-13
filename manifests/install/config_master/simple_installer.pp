@@ -17,25 +17,25 @@ class simple_grid::install::config_master::simple_installer(
 
   notify{"***** Stage:Install; Node: CM *****":}
 
-  notify {"Installing Git":}
-  include 'git'
+  # notify {"Installing Git":}
+  # include 'git'
 
-  notify{"Installing Docker":}
-  class{"docker":
-      version => '18.09.2'
-  }
-  notify{"Installing Puppet CCM":}
-  class {"simple_grid::components::ccm::install":}
+  # notify{"Installing Docker":}
+  # class{"docker":
+  #     version => '18.09.2'
+  # }
+  # notify{"Installing Puppet CCM":}
+  # class {"simple_grid::components::ccm::install":}
 
-  notify{"Installation Stage has ended":}
+  # notify{"Installation Stage has ended":}
 
-  notify{"Configuring CCM on Config Master":}
-  class{"simple_grid::components::ccm::config":
-    node_type => "CM"
-  }
+  # notify{"Configuring CCM on Config Master":}
+  # class{"simple_grid::components::ccm::config":
+  #   node_type => "CM"
+  # }
 
-  notify{"Installing Bolt on Config Master":}
-  class{"simple_grid::components::bolt::install":}
+  # notify{"Installing Bolt on Config Master":}
+  # class{"simple_grid::components::bolt::install":}
 
   # Config stage
   class{"simple_grid::config::config_master::init":}
