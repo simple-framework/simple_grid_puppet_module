@@ -251,8 +251,15 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
   $config_dir = "${repository_path}/${level_2_configurator}/${l2_repository_relative_config_dir}"
   $logs_dir = "${log_dir}/${execution_id}"
   $container_logs_dir = "${log_dir}"
-  $docker_hub_tag = $meta_info['level_2_configurators']["${level_2_configurator}"]['docker_hub_tag']
-
+  if has_key($meta_info['level_2_configurators']["${level_2_configurator}"]['docker_run_parameters'], 'docker_hub_tag'){
+    if $meta_info['level_2_configurators']["${level_2_configurator}"]['docker_run_parameters']['docker_hub_tag'] {
+      $docker_hub_tag = $meta_info['level_2_configurators']["${level_2_configurator}"]['docker_run_parameters']['docker_hub_tag']
+    } else {
+      $docker_hub_tag = ''
+    }
+  } else {
+    $docker_hub_tag = ''
+  }
   if length($docker_hub_tag)> 0 {
     $image_name = $docker_hub_tag
   }else {
