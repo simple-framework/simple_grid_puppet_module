@@ -37,6 +37,12 @@ class simple_grid::install::config_master::simple_installer(
   notify{"Installing Bolt on Config Master":}
   class{"simple_grid::components::bolt::install":}
 
+  notify{"Opening TCP port 8140 for puppet server":}
+  firewall {'00 TCP SIMPLE Framework Firewall rule for Puppet Server':
+      dport  => [8140],
+      action => accept,
+      proto  => tcp,
+  1}
   # Config stage
   class{"simple_grid::config::config_master::init":}
 
