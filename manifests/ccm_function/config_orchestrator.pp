@@ -31,6 +31,9 @@ class simple_grid::ccm_function::config_orchestrator(
             main_manager => $main_manager
           }
           class{'simple_grid::components::swarm::configure::firewall':}
+          class{'simple_grid::components::swarm::recreate_ingress':
+            main_manager => $main_manager,
+          }
           class{'simple_grid::components::swarm::create_network':
             main_manager => $main_manager,
           }

@@ -83,9 +83,10 @@ class simple_grid::components::yaml_compiler::execute(
   if lookup('simple_grid::mode') != lookup('simple_grid::mode::release'){
     #8. activate virtual environment
     exec {"execute compiler":
-      command => "bash -c 'source ${virtual_env_dir}/bin/activate && python ${yaml_compiler_dir}/simple_grid_yaml_compiler.py ${site_level_config_file}  -o ${output_file} -s ${schema_output_file}'",
+      command => "bash -c 'source ${virtual_env_dir}/bin/activate && python ${yaml_compiler_dir}/simple_grid_yaml_compiler/yaml_compiler.py ${site_level_config_file}  -o ${output_file} -s ${schema_output_file}'",
       path    => "/usr/local/bin/:/usr/bin/:/bin/",
       cwd     => "${yaml_compiler_dir}",
+      environment => ["PYTHONPATH=${yaml_compiler_dir}"]
     }
   }
   elsif lookup('simple_grid::mode') == lookup('simple_grid::mode::release'){

@@ -22,7 +22,7 @@ class simple_grid::pre_deploy::config_master::rollback(
   notify{"Rolling back Docker Swarm as the container orchestrator for the entire cluster":}
   if $mode == lookup('simple_grid::mode::docker') or $mode == lookup('simple_grid::mode::dev') {
     exec{"ROlling back docker swarm on the entire cluster":
-      command => "bolt task run simple_grid::rollback_swarm augmented_site_level_config_file=${augmented_site_level_config_file} network=${network} modulepath= ${modulepath} --nodes localhost > /etc/simple_grid/.swarm_status",
+      command => "bolt task run simple_grid::rollback_swarm augmented_site_level_config_file=${augmented_site_level_config_file} network=${network} modulepath=${modulepath} --nodes localhost > /etc/simple_grid/.swarm_status",
       path    => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
       user    => 'root',
       logoutput => true,
