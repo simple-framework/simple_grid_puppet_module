@@ -23,8 +23,8 @@ simple_grid::components::ccm::install::mode::release::forge_module_version: "1.0
 simple_grid::components::ccm::installation_helper::fileserver::fileserver_conf_path: '/etc/puppetlabs/puppet/fileserver.conf'
 
 # runintervals LC
-simple_grid::components::ccm::installation_helper::init_agent::runinterval: "1m"
-simple_grid::components::ccm::installation_helper::reset_agent::runinterval: "30m"
+simple_grid::components::ccm::installation_helper::init_agent::runinterval: "0"
+simple_grid::components::ccm::installation_helper::reset_agent::runinterval: "10y"
 
 # site manifest
 simple_grid::components::ccm::installation_helper::generate_site_manifest::site_manifest_path: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/simple/manifests/site.pp"
