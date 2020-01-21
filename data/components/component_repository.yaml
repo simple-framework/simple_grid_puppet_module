@@ -29,4 +29,4 @@ simple_grid::components::component_repository::pre_config_image_tag: "pre_config
 simple_grid::components::component_repository::component_image_tag: "boot"
 
 #Timeout
-simple_grid::components::component_repository::unit_deployment_timeout: 900
+simple_grid::components::component_repository::unit_deployment_timeout: 0
