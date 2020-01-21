@@ -13,7 +13,7 @@ class simple_grid::pre_deploy::config_master::init(
 
   notify{'Configuring container orchestrator':}
   class{"simple_grid::ccm_function::config_orchestrator":}
-  
+
   $augmented_site_level_config = loadyaml("${augmented_site_level_config_file}")
   $site_infrastructure = $augmented_site_level_config['site_infrastructure']
   $site_infrastructure.each |Integer $index, Hash $node| {

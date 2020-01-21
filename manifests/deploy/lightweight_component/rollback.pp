@@ -6,5 +6,6 @@ class simple_grid::deploy::lightweight_component::rollback(
   notify{"Rollback Deploy stage for execution_id ${execution_id}":}
   class{"simple_grid::components::component_repository::rollback":
     execution_id => $execution_id
-  }
+  }~>
+  class{'simple_grid::components::ccm::installation_helper::reset_agent':}
 }
