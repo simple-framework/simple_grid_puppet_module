@@ -42,7 +42,7 @@ class simple_grid::install::config_master::simple_installer(
       dport  => [8140],
       action => accept,
       proto  => tcp,
-  1}
+  }
   # Config stage
   class{"simple_grid::config::config_master::init":}
 
