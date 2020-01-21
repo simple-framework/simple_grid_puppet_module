@@ -20,7 +20,13 @@ class simple_grid::deploy::config_master::init(
     $timeout = $no_lightweight_components * $unit_deployment_timeout
     $timeout_minutes = $timeout/60
     $timestamp = "${strftime('%Y-%m-%dT%H:%M:%S-%Z')}"
-    Notify{"Starting Deployment with identifier: ${timestamp}. This may take a while!. Setting timeout to: ${timeout_minutes} minutes. Don't worry you'll be done waayyy sooner. This is just a worst case condition.":}
+    Notify{"Starting Deployment with identifier: ${timestamp}.":}
+    notify{"This may take a while!. Generally around 15-20 minutes per container depending on several factors. Please use the SIMPLE command line utility to probe the details of the deployment.":}
+    notify{"You can also create a file called lc.txt containing the ip address of all LC hosts in a new line.":}
+    notify{"Then you can run: \"bolt command run '\${some_inspection_command}' --nodes @lc.txt\" to inspect all nodes.":}
+    notify{"where, \${some_inspection_command} could be:":}
+    notify{"docker image ls":}
+    notify{"docker ps -a":}
     exec{"Executing deploy master":
       command => "bolt task run simple_grid::deploy_master \
         simple_config_dir=${simple_config_dir} \
