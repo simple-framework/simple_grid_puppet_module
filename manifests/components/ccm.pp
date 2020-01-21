@@ -50,9 +50,9 @@ class simple_grid::components::ccm::install(
       notify {"Installing CCM in Release MODE. The value for simple_grid::mode is : ${mode}":}
       exec {'Installing Simple Grid Puppet Module from Puppet Forge':
         command => "puppet module install --version ${forge_module_version} --environment ${env_name} --target-dir ${env_dir}/modules ${forge_module_name}",
-        path    => "/usr/local/bin/:/usr/bin/:/bin/::/opt/puppetlabs/bin/"
+        path    => "/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/"
       }
-    } 
+    }
 }
 
 class simple_grid::components::ccm::config(
@@ -116,7 +116,7 @@ class simple_grid::components::ccm::installation_helper::r10k::install(
 class simple_grid::components::ccm::installation_helper::puppet_agent(
   $puppet_conf = lookup("simple_grid::config_master::puppet_conf"),
   $env_name = lookup("simple_grid::components::ccm::install::env_name"),
-  #$runinterval = lookup("simple_grid::components::ccm::installation_helper::puppet_agent::runinterval")
+  $runinterval = lookup("simple_grid::components::ccm::installation_helper::reset_agent::runinterval")
 ){
   notify{"Adding [agent] config to ${puppet_conf}":}
   $puppet_conf_data = simple_grid::deserialize_puppet_conf("${puppet_conf}")
@@ -124,7 +124,7 @@ class simple_grid::components::ccm::installation_helper::puppet_agent(
     "agent" => {
       "environment" => "${env_name}",
       "server"      => "${fqdn}",
-      #"runinterval" => "${runinterval}"
+      "runinterval" => "${runinterval}"
     }
   }
   $puppet_conf_content_hash = simple_grid::puppet_conf_editor($puppet_conf_data, $puppet_conf_updates)
@@ -211,6 +211,7 @@ class simple_grid::components::ccm::installation_helper::ssh_config::lightweight
 class simple_grid::components::ccm::installation_helper::init_agent(
   $puppet_master,
   $puppet_conf = lookup('simple_grid::nodes::lightweight_component::puppet_conf'),
+  $env_name = lookup("simple_grid::components::ccm::install::env_name"),
   $runinterval,
 ){
   notify{"Configuring Puppet Agent":}
@@ -220,13 +221,13 @@ class simple_grid::components::ccm::installation_helper::init_agent(
     "agent" => {
       "server"       => $puppet_master,
       "runinterval"  => "${runinterval}",
-      "environment"  => "simple"
+      "environment"  => "${env_name}"
       }
     }
   $puppet_conf_content_hash = simple_grid::puppet_conf_editor($puppet_conf_data, $puppet_conf_updates)
   $puppet_conf_content = simple_grid::serialize_puppet_conf($puppet_conf_content_hash)
 
-  notify{"Restarting Puppet":}
+  notify{"Ensure Puppet Agent is running":}
   file {"Writing data to puppet conf":
     path => "${puppet_conf}",
     content => "$puppet_conf_content",
@@ -236,6 +237,7 @@ class simple_grid::components::ccm::installation_helper::init_agent(
     subscribe => File["$puppet_conf"]
   }
 }
+
 class simple_grid::components::ccm::installation_helper::reset_agent(
   $runinterval,
   $env_name = lookup("simple_grid::components::ccm::install::env_name"),
@@ -252,7 +254,7 @@ class simple_grid::components::ccm::installation_helper::reset_agent(
   }
   $puppet_conf_content_hash = simple_grid::puppet_conf_editor($puppet_conf_data, $puppet_conf_updates)
   $puppet_conf_content = simple_grid::serialize_puppet_conf($puppet_conf_content_hash)
-  notify{"Restarting Puppet":}
+  notify{"Ensure Service Puppet Agent is running":}
   file{'Updating puppet.conf': 
     path    => "$puppet_conf",
     content => "$puppet_conf_content"
