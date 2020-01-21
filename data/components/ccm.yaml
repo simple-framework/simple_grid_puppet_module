@@ -6,7 +6,7 @@ simple_grid::components::ccm::install::env_repository_url: "https://github.com/W
 simple_grid::components::ccm::install::env_revision: "v1.0.0"
 simple_grid::components::ccm::install::env_name: "simple"
 simple_grid::components::ccm::install::env_dir: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/%{hiera('simple_grid::components::ccm::install::env_name')}"
-simple_grid::components::ccm::install::modules_dir: "%{hiera('simple_grid::components::ccm::install::env_dir')}/site"
+simple_grid::components::ccm::install::modules_dir: "%{hiera('simple_grid::components::ccm::install::env_dir')}/modules"
 #puppet module
 simple_grid::components::ccm::install::simple_module_name: simple_grid
 simple_grid::components::ccm::install::module_dir: "%{hiera('simple_grid::components::ccm::install::modules_dir')}/%{hiera('simple_grid::components::ccm::install::simple_module_name')}"
@@ -25,6 +25,7 @@ simple_grid::components::ccm::installation_helper::fileserver::fileserver_conf_p
 # runintervals LC
 simple_grid::components::ccm::installation_helper::init_agent::runinterval: "0"
 simple_grid::components::ccm::installation_helper::reset_agent::runinterval: "10y"
+simple_grid::components::ccm::installation_helper::final_agent::runinterval: "30m"
 
 # site manifest
 simple_grid::components::ccm::installation_helper::generate_site_manifest::site_manifest_path: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/simple/manifests/site.pp"

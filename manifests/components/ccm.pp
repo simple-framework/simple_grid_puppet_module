@@ -41,7 +41,7 @@ class simple_grid::components::ccm::install(
         ensure => directory,
         path   => "${module_dir}",
       } ~>
-      exec{"Mounting Simple Grid Puppet Module to ${module_dir}/${simple_module_name}":
+      exec{"Mounting Simple Grid Puppet Module to ${module_dir}":
         command => "mount --bind /${simple_module_name} ${module_dir}",
         path    => "/usr/local/bin/:/usr/bin/:/bin/",
       }
@@ -250,6 +250,34 @@ class simple_grid::components::ccm::installation_helper::reset_agent(
     "agent" => {
       "environment" => "${env_name}",
       "runinterval" => "${runinterval}"
+    }
+  }
+  $puppet_conf_content_hash = simple_grid::puppet_conf_editor($puppet_conf_data, $puppet_conf_updates)
+  $puppet_conf_content = simple_grid::serialize_puppet_conf($puppet_conf_content_hash)
+  notify{"Ensure Service Puppet Agent is running":}
+  file{'Updating puppet.conf': 
+    path    => "$puppet_conf",
+    content => "$puppet_conf_content"
+
+  }
+  service {"puppet":
+    ensure    => running,
+    subscribe => File["$puppet_conf"]
+  }
+}
+
+class simple_grid::components::ccm::config::final_agent(
+  $final_runinterval = lookup('simple_grid::components::ccm::installation_helper::final_agent::runinterval'),
+  $env_name = lookup("simple_grid::components::ccm::install::env_name"),
+  $puppet_conf = lookup('simple_grid::nodes::lightweight_component::puppet_conf'),
+) {
+
+  $puppet_conf_data = simple_grid::puppet_conf_from_fact($facts["puppet_conf"])
+  notify{"data was ${puppet_conf_data}":}
+  $puppet_conf_updates = {
+    "agent" => {
+      "environment" => "${env_name}",
+      "runinterval" => "${final_runinterval}"
     }
   }
   $puppet_conf_content_hash = simple_grid::puppet_conf_editor($puppet_conf_data, $puppet_conf_updates)

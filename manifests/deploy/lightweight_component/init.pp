@@ -27,7 +27,8 @@
         class {'simple_grid::components::component_repository::deploy_step_2':
             execution_id => $execution_id,
             timestamp    => "${timestamp}"
-        }
+        }~>
+        class {'simple_grid::components::ccm::config::final_agent':}
     }
     # }
 }

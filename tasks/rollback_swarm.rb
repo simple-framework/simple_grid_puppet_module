@@ -22,13 +22,20 @@ class Deploy < TaskHelper
         end
         return ip
         end
-        def swarm_leave_managers(main_manager, network, modulepath)
+        def swarm_leave_managers(main_manager, network, ingress_network_name, modulepath)
                 puts "Removing main manager on #{main_manager}"
                 get_cmd = "bolt task run simple_grid::swarm_leave force=true --nodes #{main_manager} --modulepath #{modulepath}" 
                 stdout, stderr, status = Open3.capture3(get_cmd)
                 puts get_cmd
                 if !status.success?
                         raise "Failed to leave swarm manager: #{stderr}"
+                end
+                puts "Removing substitute ingress network on #{main_manager}"
+                rm_cmd = "bolt command run 'docker network rm #{ingress_network_name}' --nodes #{main_manager} --modulepath #{modulepath}" 
+                stdout, stderr, status = Open3.capture3(rm_cmd)
+                puts rm_cmd
+                if !status.success?
+                        raise "Failed to remove #{ingress_network_name} network on #{main_manager}: #{stderr}"
                 end
         end
         # Generate, extract token and join docker swarm
@@ -68,10 +75,10 @@ class Deploy < TaskHelper
                 end
                 return swarm_manager_ip, swarm_worker_ip_array   
         end
-        def task(augmented_site_level_config_file:nil, network:nil, subnet:nil, modulepath:nil, **kwargs)
+        def task(augmented_site_level_config_file:nil, network:nil, subnet:nil, ingress_network_name:nil, modulepath:nil, **kwargs)
                 swarm_manager_ip, swarm_worker_ip_array = get_managers_and_workers(augmented_site_level_config_file)
                 swarm_leave_workers(swarm_worker_ip_array, modulepath)
-                swarm_leave_managers(swarm_manager_ip, network, modulepath)
+                swarm_leave_managers(swarm_manager_ip, network, ingress_network_name, modulepath)
                 
                 puts "#########################"
                 puts "Removed swarm manager on #{swarm_manager_ip}"

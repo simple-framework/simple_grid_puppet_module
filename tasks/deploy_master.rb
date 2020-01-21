@@ -202,6 +202,7 @@ class DeployMaster < TaskHelper
         File.open(stage_config_file,"w") { |file|
             file.write stage_final
         }
+        
 
         _output.to_yaml
     end
