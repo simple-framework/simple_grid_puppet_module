@@ -3,5 +3,8 @@ simple_grid::components::swarm::status_file: "%{hiera('simple_grid::simple_confi
 # container orchestrator
 simple_grid::components::swarm::dns: "%{hiera('simple_grid::simple_config_dir')}/.dns.yaml"
 simple_grid::components::swarm::subnet: "10.0.0.0/16"
+simple_grid::components::swarm::ingress::subnet: "10.11.0.0/16"
+simple_grid::components::swarm::ingress::gateway: "10.11.0.2"
+simple_grid::components::swarm::ingress::name: "new-ingress"
 simple_grid::components::swarm::network: "simple"
 simple_grid::components::swarm::swarm_log: "%{hiera('simple_grid::simple_config_dir')}/.swarm"

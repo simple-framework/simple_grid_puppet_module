@@ -7,8 +7,9 @@ class simple_grid::pre_deploy::config_master::rollback(
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
   $network = lookup('simple_grid::components::swarm::network'),
   $env_name = lookup('simple_grid::components::ccm::install::env_name'),
-  $modulepath = "${puppet_environmentpath}/${env_name}/modules:${puppet_environmentpath}/${env_name}/site",
-  $swarm_status_file = lookup('simple_grid::components::swarm::status_file')
+  $modulepath = "${puppet_environmentpath}/${env_name}/site:${puppet_environmentpath}/${env_name}/modules",
+  $swarm_status_file = lookup('simple_grid::components::swarm::status_file'),
+  $ingress_network_name = lookup('simple_grid::components::swarm::ingress::name')
 ){
   notify{"Rolling back lifecycle callback scripts for all lightweight components":}
   include simple_grid::ccm_function::rollback_aggregate_repository_lifecycle_scripts
@@ -22,7 +23,7 @@ class simple_grid::pre_deploy::config_master::rollback(
   notify{"Rolling back Docker Swarm as the container orchestrator for the entire cluster":}
   if $mode == lookup('simple_grid::mode::docker') or $mode == lookup('simple_grid::mode::dev') {
     exec{"ROlling back docker swarm on the entire cluster":
-      command => "bolt task run simple_grid::rollback_swarm augmented_site_level_config_file=${augmented_site_level_config_file} network=${network} modulepath=${modulepath} --nodes localhost > /etc/simple_grid/.swarm_status",
+      command => "bolt task run simple_grid::rollback_swarm augmented_site_level_config_file=${augmented_site_level_config_file} network=${network} ingress_network_name=${ingress_network_name} modulepath=${modulepath} --nodes localhost > /etc/simple_grid/.swarm_status",
       path    => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
       user    => 'root',
       logoutput => true,
@@ -31,7 +32,7 @@ class simple_grid::pre_deploy::config_master::rollback(
   }
   elsif $mode == lookup('simple_grid::mode::release') {
     exec{"Rolling back docker swarm on the entire cluster":
-      command => "bolt task run simple_grid::rollback_swarm augmented_site_level_config_file=${augmented_site_level_config_file} network=${network} modulepath=${modulepath}  --modulepath ${modulepath} --nodes localhost > /etc/simple_grid/.swarm_status",
+      command => "bolt task run simple_grid::rollback_swarm augmented_site_level_config_file=${augmented_site_level_config_file} network=${network} ingress_network_name=${ingress_network_name} modulepath=${modulepath}  --modulepath ${modulepath} --nodes localhost > /etc/simple_grid/.swarm_status",
       path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
       user    => 'root',
       logoutput => true,
@@ -49,11 +50,11 @@ class simple_grid::pre_deploy::config_master::rollback(
       ensure => present,
       content => $augmented_site_level_config_content,
   }
-  
+
   $augmented_site_level_config = loadyaml($augmented_site_level_config_file)
-  $lightweight_components = $augmented_site_level_config['lightweight_components']
-  $lightweight_components.each |Integer $index, Hash $lightweight_component| {
-    $node_fqdn = $lightweight_component['deploy']['node']
+  $site_infrastructure = $augmented_site_level_config['site_infrastructure']
+  $site_infrastructure.each |Integer $index, Hash $site_infra_node| {
+    $node_fqdn = $site_infra_node['fqdn']
     exec{"Rolling back pre_deploy stage on ${node_fqdn}":
       command => "bolt task run simple_grid::rollback_pre_deploy --modulepath ${modulepath} --nodes ${node_fqdn}",
       path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',

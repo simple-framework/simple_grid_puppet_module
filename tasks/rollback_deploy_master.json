@@ -13,6 +13,10 @@
             "type": "String[1]",
             "description": "The location of the config directory for SIMPLE framework"
         },
+        "remove_images": {
+          "type": "Boolean",
+          "description": "Whether docker images for boot and pre_config stages should be removed."
+        },
         "augmented_site_level_config_file":{
             "type": "String[1]",
             "description": "The location of the site level configuration file on the Config Master and Lightweight Component nodes"

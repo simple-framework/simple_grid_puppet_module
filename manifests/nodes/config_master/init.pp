@@ -1,5 +1,6 @@
 class simple_grid::nodes::config_master::init{
   if $simple_stage == lookup('simple_grid::stage::config'){
+    # NOTE: this has been bypassed in simple_installer since #116. 
     simple_grid::components::execution_stage_manager::set_stage { 'Setting stage to pre_deploy':
      simple_stage => lookup('simple_grid::stage::pre_deploy')
     }

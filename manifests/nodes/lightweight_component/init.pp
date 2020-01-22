@@ -12,9 +12,6 @@ class simple_grid::nodes::lightweight_component::init(
 {
   if $simple_stage == lookup('simple_grid::stage::install'){
     class{"simple_grid::install::lightweight_component::init":}
-    class{"docker":
-        version => '18.09.2'
-    }
     simple_grid::components::execution_stage_manager::set_stage { "Setting stage to pre_deploy_step_1":
       simple_stage => lookup('simple_grid::stage::pre_deploy::step_1') #handled by tasks executed by CM
     }

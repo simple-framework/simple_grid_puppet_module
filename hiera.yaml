@@ -34,6 +34,9 @@ hierarchy:
   - name: "components::bolt"
     path: "components/bolt.yaml"
 
+  - name: "components::docker"
+    path: "components/docker.yaml"
+
   - name: "nodes::config_master"
     path: "nodes/config_master.yaml"
 
