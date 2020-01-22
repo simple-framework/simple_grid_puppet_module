@@ -101,9 +101,9 @@ class simple_grid::components::yaml_compiler::execute(
 class simple_grid::components::yaml_compiler::rollback(
   $yaml_compiler_dir = lookup('simple_grid::components::yaml_compiler::download::dir'),
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
+  $augmented_site_level_config_schema =lookup('simple_grid::components::yaml_compiler::schema_output'),
   $virtual_env_dir = lookup('simple_grid::components::yaml_compiler::install::virtual_env_dir')
 ){
-  if lookup('simple_grid::mode') != lookup('simple_grid::mode::release') {
     file{'Removing yaml compiler':
       path   => "${yaml_compiler_dir}",
       ensure => absent,
@@ -114,14 +114,10 @@ class simple_grid::components::yaml_compiler::rollback(
       ensure => absent,
       force  => true,
     }
-  }
-  elsif lookup('simple_grid::mode') == lookup('simple_grid::mode::release') {
-    notify{'Uninstalling simple_grid_yaml_compiler':}
-    file {'Removing yaml_compiler installation dir':
+    file{'Removing augmented site level config schema':
+      path   => "${augmented_site_level_config_schema}",
       ensure => absent,
-      path   => $yaml_compiler_dir,
-      force  => true
+      force  => true,
     }
-  }
 }
 
