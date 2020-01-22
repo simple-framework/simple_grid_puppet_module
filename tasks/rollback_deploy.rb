@@ -8,7 +8,7 @@ require_relative "../../ruby_task_helper/files/task_helper.rb"
 
 # This task is run on the LC node. It stored output on /etc/simple_grid/.deploy.log
 class RollbackDeploy < TaskHelper
-    def init_deploy(augmented_site_level_config_file, execution_id, deploy_status_file, deploy_status_success, deploy_status_failure, deploy_status_pending, dns_key)
+    def init_deploy(augmented_site_level_config_file, execution_id, remove_images, deploy_status_file, deploy_status_success, deploy_status_failure, deploy_status_pending, dns_key)
         current_deploy_status = Hash.new
         current_dns_info = Hash.new
         output = String.new
@@ -35,7 +35,7 @@ class RollbackDeploy < TaskHelper
         end
 
         # run puppet
-        puppet_apply = "puppet apply -e \"class{'simple_grid::deploy::lightweight_component::rollback':execution_id =>#{execution_id}}\""
+        puppet_apply = "puppet apply -e \"class{'simple_grid::deploy::lightweight_component::rollback':execution_id =>#{execution_id}, remove_images => #{remove_images}}\""
         puppet_stdout, puppet_stderr, puppet_status = Open3.capture3(puppet_apply)
         #handle puppet
         if puppet_status.success?
@@ -80,8 +80,8 @@ class RollbackDeploy < TaskHelper
         }
         return !container_status.success?, current_dns_info['container_fqdn'], puppet_status, output
     end
-    def task(augmented_site_level_config_file:nil, execution_id:nil,deploy_status_file:nil, deploy_status_success:nil, deploy_status_failure:nil, deploy_status_pending:nil, dns_key:nil, **kwargs)
-        container_status, container_name, puppet_status, output = init_deploy(augmented_site_level_config_file, execution_id, deploy_status_file, deploy_status_success, deploy_status_failure, deploy_status_pending, dns_key)
+    def task(augmented_site_level_config_file:nil, execution_id:nil, remove_images:nil, deploy_status_file:nil, deploy_status_success:nil, deploy_status_failure:nil, deploy_status_pending:nil, dns_key:nil, **kwargs)
+        container_status, container_name, puppet_status, output = init_deploy(augmented_site_level_config_file, execution_id, remove_images, deploy_status_file, deploy_status_success, deploy_status_failure, deploy_status_pending, dns_key)
         {container_status: container_status, container_name: container_name, puppet_status: puppet_status ,puppet_output: output}
     end
 end
