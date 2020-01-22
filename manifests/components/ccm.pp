@@ -293,3 +293,34 @@ class simple_grid::components::ccm::config::final_agent(
     subscribe => File["$puppet_conf"]
   }
 }
+class simple_grid::components::ccm::rollback(
+  $mode = lookup('simple_grid::mode'),
+  $env_dir = lookup('simple_grid::components::ccm::install::env_dir'),
+  $module_dir = lookup('simple_grid::components::ccm::install::module_dir')
+){
+  if $mode == lookup('simple_grid::mode::release'){
+    file{"Removing Puppet environment at ${env}":
+      path => $env_dir,
+      ensure => absent,
+      force => true,
+    }
+  }
+  elsif $mode == lookup('simple_grid::mode::dev'){
+    file{"Removing Puppet environment at ${env}":
+      path => $env_dir,
+      ensure => absent,
+      force => true,
+    }
+  }
+  elsif $mode == lookup('simple_grid::mode::docker'){
+    exec{"Unmonuting ${module_dir}":
+      command => "umount -l ${module_dir} && umount -f ${module_dir}",
+      path    => "/usr/local/bin/:/usr/bin/:/bin/",
+    }->
+    file{"Removing Puppet environment at ${env}":
+      path => $env_dir,
+      ensure => absent,
+      force => true,
+    }
+  }
+}
