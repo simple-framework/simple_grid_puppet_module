@@ -20,7 +20,7 @@ class RollbackDeployMaster < TaskHelper
         deploy_status = YAML.load(yaml_data.join("\n"))
         return deploy_status
     end
-    def task(simple_config_dir:nil, augmented_site_level_config_file:nil, deploy_status_file:nil, deploy_status_output_dir:nil, deploy_status_success:nil, deploy_status_failure:nil, deploy_status_pending:nil, modulepath:nil, dns_key:nil, **kwargs )
+    def task(simple_config_dir:nil, remove_images:nil, augmented_site_level_config_file:nil, deploy_status_file:nil, deploy_status_output_dir:nil, deploy_status_success:nil, deploy_status_failure:nil, deploy_status_pending:nil, modulepath:nil, dns_key:nil, **kwargs )
         _overall_deployment_status_file_name = simple_config_dir + "/deployment_output.yaml"
         _data = YAML.load_file(augmented_site_level_config_file)
         _lightweight_components = _data['lightweight_components']
@@ -32,6 +32,7 @@ class RollbackDeployMaster < TaskHelper
             _deploy_status_output_file = "#{deploy_status_output_dir}/.#{_execution_id}.status" 
             deploy_command = "bolt task run simple_grid::rollback_deploy "\
             " execution_id=#{_execution_id}"\
+            " remove_images=#{remove_images}"\
             " augmented_site_level_config_file=#{augmented_site_level_config_file}"\
             " deploy_status_file=#{deploy_status_file}"\
             " deploy_status_success=#{deploy_status_success}"\
