@@ -110,7 +110,7 @@ class simple_grid::components::swarm::recreate_ingress(
     logoutput => true,
     path      => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
     environment => ['HOME=/root']
-  }~>exec { 'Create Ingress Network':
+  }->exec { 'Create Ingress Network':
     command   => $bolt_ingress_network_create_cmd,
     user      => 'root',
     logoutput => true,
