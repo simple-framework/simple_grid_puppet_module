@@ -99,10 +99,17 @@ class simple_grid::components::component_repository::deploy_step_2(
     timestamp   => $timestamp,
     container_name => $dns_info['container_fqdn']
   }
+  simple_grid::components::execution_stage_manager::set_stage {'Setting stage to final':
+    simple_stage => lookup('simple_grid::stage::final')
+    }
 }
 
 class simple_grid::components::component_repository::rollback(
   $execution_id,
+  $remove_images,
+  $component_image_tag = lookup('simple_grid::components::component_repository::component_image_tag'),
+  $pre_config_image_tag = lookup('simple_grid::components::component_repository::pre_config_image_tag'),
+  $meta_info_prefix = lookup('simple_grid::components::site_level_config_file::objects:meta_info_prefix'),
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
   $deploy_status_file = lookup('simple_grid::nodes::lightweight_component::deploy_status_file'),
   $pending_deploy_status = lookup('simple_grid::stage::deploy::status::initial')
@@ -111,12 +118,50 @@ class simple_grid::components::component_repository::rollback(
   $dns = simple_grid::get_dns_info($augmented_site_level_config, $execution_id)
   $container_name = $dns['container_fqdn']
   $docker_stop_rm_command = "docker stop ${container_name} && docker rm ${container_name}"
-  exec{"Cleanup container ${container_fqdn}":
+  exec{"Cleanup container ${container_name}":
     command     => $docker_stop_rm_command,
     user        => root,
     logoutput   => true,
     path        => '/usr/sue/sbin:/usr/sue/bin:/use/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/sbin:/bin:/opt/puppetlabs/bin',
     environment => ["HOME=/root"]
+  }
+  if $remove_images {
+    $current_lightweight_component = simple_grid::get_lightweight_component($augmented_site_level_config_file, $execution_id)
+    $level_2_configurator = simple_grid::get_level_2_configurator($augmented_site_level_config, $current_lightweight_component)
+    $repository_name = $current_lightweight_component['name']
+    $meta_info_parent = "${meta_info_prefix}${downcase($repository_name)}"
+    $meta_info = $augmented_site_level_config["${meta_info_parent}"]
+    $repository_name_lowercase = downcase($repository_name)
+    $pre_config_image_name = "${repository_name_lowercase}_${pre_config_image_tag}"
+    if has_key($meta_info['level_2_configurators']["${level_2_configurator}"]['docker_run_parameters'], 'docker_hub_tag'){
+      if $meta_info['level_2_configurators']["${level_2_configurator}"]['docker_run_parameters']['docker_hub_tag'] {
+        $docker_hub_tag = $meta_info['level_2_configurators']["${level_2_configurator}"]['docker_run_parameters']['docker_hub_tag']
+      } else {
+        $docker_hub_tag = ''
+      }
+    } else {
+      $docker_hub_tag = ''
+    }
+    if length($docker_hub_tag)> 0 {
+      $image_name = $docker_hub_tag
+    }else {
+      $image_name = "${repository_name_lowercase}_${component_image_tag}"
+    }
+    # notify{"****** Removing ****** : ${image_name} ${pre_config_image_name}":}
+    exec{"Removing boot image: ${image_name}":
+      command     => "docker rmi ${image_name}",
+      user        => root,
+      logoutput   => true,
+      path        => '/usr/sue/sbin:/usr/sue/bin:/use/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/sbin:/bin:/opt/puppetlabs/bin',
+      environment => ["HOME=/root"]
+    }
+    exec{"Removing pre_config image: ${pre_config_image_name}":
+      command     => "docker rmi ${pre_config_image_name}",
+      user        => root,
+      logoutput   => true,
+      path        => '/usr/sue/sbin:/usr/sue/bin:/use/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/sbin:/bin:/opt/puppetlabs/bin',
+      environment => ["HOME=/root"]
+    }
   }
   simple_grid::set_execution_status($deploy_status_file, $execution_id, $pending_deploy_status)
   simple_grid::components::execution_stage_manager::set_stage {'Setting stage to deploy_step_1':
@@ -248,8 +293,15 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
   $config_dir = "${repository_path}/${level_2_configurator}/${l2_repository_relative_config_dir}"
   $logs_dir = "${log_dir}/${execution_id}"
   $container_logs_dir = "${log_dir}"
-  $docker_hub_tag = $meta_info['level_2_configurators']["${level_2_configurator}"]['docker_hub_tag']
-
+  if has_key($meta_info['level_2_configurators']["${level_2_configurator}"]['docker_run_parameters'], 'docker_hub_tag'){
+    if $meta_info['level_2_configurators']["${level_2_configurator}"]['docker_run_parameters']['docker_hub_tag'] {
+      $docker_hub_tag = $meta_info['level_2_configurators']["${level_2_configurator}"]['docker_run_parameters']['docker_hub_tag']
+    } else {
+      $docker_hub_tag = ''
+    }
+  } else {
+    $docker_hub_tag = ''
+  }
   if length($docker_hub_tag)> 0 {
     $image_name = $docker_hub_tag
   }else {

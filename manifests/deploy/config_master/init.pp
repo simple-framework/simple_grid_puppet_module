@@ -10,6 +10,8 @@ class simple_grid::deploy::config_master::init(
   $env_name = lookup('simple_grid::components::ccm::install::env_name'),
   $deploy_step_1 = lookup('simple_grid::stage::deploy::step_1'),
   $deploy_step_2 = lookup('simple_grid::stage::deploy::step_2'),
+  $stage_final = lookup('simple_grid::stage::final'),
+  $stage_config_file = lookup('simple_grid::components::execution_stage_manager::config_file'),
   $log_dir = lookup('simple_grid::simple_log_dir')
  ){
     $modulepath = "/etc/puppetlabs/code/environments/production/modules"
@@ -18,7 +20,11 @@ class simple_grid::deploy::config_master::init(
     $timeout = $no_lightweight_components * $unit_deployment_timeout
     $timeout_minutes = $timeout/60
     $timestamp = "${strftime('%Y-%m-%dT%H:%M:%S-%Z')}"
-    Notify{"Starting Deployment with identifier: ${timestamp}. This may take a while!. Setting timeout to: ${timeout_minutes} minutes. Don't worry you'll be done waayyy sooner. This is just a worst case condition.":}
+    Notify{"Starting Deployment with identifier: ${timestamp}. This may take a while!. Generally around 15-20 minutes per container \
+depending on several factors. Please use the SIMPLE command line utility to probe the details of the deployment. \
+You can also create a file called lc.txt containing the ip address of all LC hosts in a new line. \
+Then you can run: \"bolt command run '\${some_inspection_command}' --nodes @lc.txt\" to inspect all nodes. \
+Where, \${some_inspection_command} could be: \n docker image ls \ndocker ps -a\n":}
     exec{"Executing deploy master":
       command => "bolt task run simple_grid::deploy_master \
         simple_config_dir=${simple_config_dir} \
@@ -33,7 +39,9 @@ class simple_grid::deploy::config_master::init(
         modulepath=${modulepath} \
         log_dir=${log_dir} \
         timestamp=${timestamp} \
-        --modulepath ${puppet_environmentpath}/${env_name}/site/ \
+        stage_final=${stage_final} \
+        stage_config_file=${stage_config_file} \
+        --modulepath ${puppet_environmentpath}/${env_name}/site/:${puppet_environmentpath}/${env_name}/modules/ \
         --nodes localhost",
       path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
       user    => 'root',

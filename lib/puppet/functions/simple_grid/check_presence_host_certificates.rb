@@ -4,7 +4,7 @@ Puppet::Functions.create_function(:'simple_grid::check_presence_host_certificate
         param 'String', :fqdn 
     end
     def check_presence_host_certificates(host_certificates_dir, fqdn)
-        directory = "#{host_certificates_dir}/#{fqdn}"
+        directory = "#{host_certificates_dir}/"
         File.directory?(directory)
     end
 end

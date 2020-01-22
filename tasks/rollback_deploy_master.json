@@ -13,6 +13,10 @@
             "type": "String[1]",
             "description": "The location of the config directory for SIMPLE framework"
         },
+        "remove_images": {
+          "type": "Boolean",
+          "description": "Whether docker images for boot and pre_config stages should be removed."
+        },
         "augmented_site_level_config_file":{
             "type": "String[1]",
             "description": "The location of the site level configuration file on the Config Master and Lightweight Component nodes"
@@ -25,13 +29,25 @@
             "type": "String[1]",
             "description": "The top level directory for storing deploy_status.yaml from LC node on CM node."
         },
-        "deploy_status_pending": {
-            "type": "String[1]",
-            "description": "The string to be used to indiciate a pending deployment."
-        },
         "modulepath": {
           "type": "String[1]",
           "description": "The modulepath to be used on Lightweight Component nodes."
+        },
+        "deploy_status_success": {
+            "type": "String[1]",
+            "description": "Value updated in deploy_status_file on success"
+        },
+        "deploy_status_failure": {
+          "type": "String[1]",
+          "description": "Value updated in deploy_status_file on error"
+        },
+        "deploy_status_pending": {
+          "type": "String[1]",
+          "description": "Value updated in deploy_status_file intitally"
+        },
+        "dns_key": {
+          "type": "String[1]",
+          "description": "The name for the yaml object that contains dns info in the augmented_site_level_config_file."
         }
     }
 }

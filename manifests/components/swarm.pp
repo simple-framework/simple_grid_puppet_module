@@ -86,6 +86,38 @@ class simple_grid::components::swarm::join(
   }
 }
 #Executes on CM
+class simple_grid::components::swarm::recreate_ingress(
+  $main_manager,
+  $network = lookup('simple_grid::components::swarm::network'),
+  $subnet = lookup('simple_grid::components::swarm::subnet'),
+  $ingress_subnet = lookup('simple_grid::components::swarm::ingress::subnet'),
+  $ingress_gateway = lookup('simple_grid::components::swarm::ingress::gateway'),
+  $ingress_network_name = lookup('simple_grid::components::swarm::ingress::name'),
+){
+  $ingress_rm_cmd = "yes | docker network rm ingress"
+  $ingress_create_cmd = "docker network create \
+                                      --driver overlay \
+                                      --ingress \
+                                      --subnet ${ingress_subnet} \
+                                      --gateway ${ingress_gateway} \
+                                      --opt com.docker.network.driver.mtu=1200 \
+                                      ${ingress_network_name}"
+  $bolt_ingress_network_rm_cmd    = "bolt command run '${ingress_rm_cmd}' --node ${main_manager}"
+  $bolt_ingress_network_create_cmd    = "bolt command run '${ingress_create_cmd}' --node ${main_manager}"
+  exec { 'Delete existing Ingress Network':
+    command   => $bolt_ingress_network_rm_cmd,
+    user      => 'root',
+    logoutput => true,
+    path      => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
+    environment => ['HOME=/root']
+  }->exec { 'Create Ingress Network':
+    command   => $bolt_ingress_network_create_cmd,
+    user      => 'root',
+    logoutput => true,
+    path      => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
+    environment => ['HOME=/root']
+  }
+}
 class simple_grid::components::swarm::create_network(
   $main_manager,
   $network = lookup('simple_grid::components::swarm::network'),
