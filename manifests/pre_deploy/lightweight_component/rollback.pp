@@ -30,7 +30,7 @@ class simple_grid::pre_deploy::lightweight_component::rollback(
         path => "${host_certificates_dir}",
     }  
   }
-  
+
   file{"Removing directory for lifecycle callback scripts":
    ensure => absent,
    force  => true,

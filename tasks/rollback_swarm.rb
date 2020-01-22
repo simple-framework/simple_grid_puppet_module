@@ -30,13 +30,14 @@ class Deploy < TaskHelper
                 if !status.success?
                         raise "Failed to leave swarm manager: #{stderr}"
                 end
-                puts "Removing substitute ingress network on #{main_manager}"
-                rm_cmd = "bolt command run 'docker network rm #{ingress_network_name}' --nodes #{main_manager} --modulepath #{modulepath}" 
-                stdout, stderr, status = Open3.capture3(rm_cmd)
-                puts rm_cmd
-                if !status.success?
-                        raise "Failed to remove #{ingress_network_name} network on #{main_manager}: #{stderr}"
-                end
+                # NOTE: Deprecated since #101 as docker swarm leave --force removes ingress network automatically
+                # puts "Removing substitute ingress network on #{main_manager}"
+                # rm_cmd = "bolt command run 'docker network rm #{ingress_network_name}' --nodes #{main_manager} --modulepath #{modulepath}" 
+                # stdout, stderr, status = Open3.capture3(rm_cmd)
+                # puts rm_cmd
+                # if !status.success?
+                #         raise "Failed to remove #{ingress_network_name} network on #{main_manager}: #{stderr}"
+                # end
         end
         # Generate, extract token and join docker swarm
         def swarm_leave_workers(wn_ip, modulepath)

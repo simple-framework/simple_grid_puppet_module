@@ -6,13 +6,21 @@ class simple_grid::pre_deploy::config_master::init(
   $subnet = lookup('simple_grid::components::swarm::subnet'),
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
   $network = lookup('simple_grid::components::swarm::network'),
-  $env_name = lookup('simple_grid::components::ccm::install::env_name')
+  $env_name = lookup('simple_grid::components::ccm::install::env_name'),
+  $host_certificates_dir = lookup('simple_grid::host_certificates_dir')
 ){
   notify{"Aggregating lifecycle callback scripts for all lightweight components":}
   include simple_grid::ccm_function::aggregate_repository_lifecycle_scripts
 
   notify{'Configuring container orchestrator':}
-  class{"simple_grid::ccm_function::config_orchestrator":}
+  class{'simple_grid::ccm_function::config_orchestrator':}
+
+  file{"Changing owner of ${host_certificates_dir} to puppet. This is required by puppet fileserver.":
+    path    => $host_certificates_dir,
+    owner   => "puppet",
+    ensure  => directory,
+    recurse => true 
+  }
 
   $augmented_site_level_config = loadyaml("${augmented_site_level_config_file}")
   $site_infrastructure = $augmented_site_level_config['site_infrastructure']
