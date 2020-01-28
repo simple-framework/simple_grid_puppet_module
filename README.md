@@ -10,7 +10,8 @@ The usage of the module is described in the Docs available at [SIMPLE Framework'
 
 ## Fixed bugs
 This release includes the following bug fixes. It fixes the following issues:
-- [Issue 152: Fix timeout for deploy stage rollback](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/152)
+- [Issue 154: Fix notify message in ccm rollback](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/154)
+- [Issue 156: Fix forge revision in hiera](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/156)
 
 
 
