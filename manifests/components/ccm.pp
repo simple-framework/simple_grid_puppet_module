@@ -299,14 +299,14 @@ class simple_grid::components::ccm::rollback(
   $module_dir = lookup('simple_grid::components::ccm::install::module_dir')
 ){
   if $mode == lookup('simple_grid::mode::release'){
-    file{"Removing Puppet environment at ${env}":
+    file{"Removing Puppet environment at ${env_dir}":
       path => $env_dir,
       ensure => absent,
       force => true,
     }
   }
   elsif $mode == lookup('simple_grid::mode::dev'){
-    file{"Removing Puppet environment at ${env}":
+    file{"Removing Puppet environment at ${env_dir}":
       path => $env_dir,
       ensure => absent,
       force => true,
