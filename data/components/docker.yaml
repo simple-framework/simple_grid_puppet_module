@@ -1,1 +1,1 @@
-simple_grid::components::docker::version: 19.03.5
+simple_grid::components::docker::version: "%{hiera('simple_grid::version::docker')}"

@@ -1,6 +1,13 @@
 ---
+# Versions
+simple_grid::version: 1.0.7
+simple_grid::version::yaml_compiler::dev: "master"
+simple_grid::version::yaml_compiler::release: "1.0.5"
+simple_grid::version::env: "v1.0.0"
+simple_grid::version::docker: 19.03.5
+
 # Current Mode
-simple_grid::mode: "%{hiera('simple_grid::mode::release')}" 
+simple_grid::mode: "%{hiera('simple_grid::mode::docker')}" 
 
 # Types of Modes
 simple_grid::mode::dev: dev
