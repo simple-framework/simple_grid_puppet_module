@@ -7,7 +7,7 @@ simple_grid::version::env: "v1.0.0"
 simple_grid::version::docker: 19.03.5
 
 # Current Mode
-simple_grid::mode: "%{hiera('simple_grid::mode::docker')}" 
+simple_grid::mode: "%{hiera('simple_grid::mode::release')}" 
 
 # Types of Modes
 simple_grid::mode::dev: dev
