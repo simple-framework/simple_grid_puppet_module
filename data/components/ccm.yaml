@@ -3,7 +3,7 @@
 simple_grid::components::ccm::environment::production::modules_dir: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/production/modules"
 #puppet env
 simple_grid::components::ccm::install::env_repository_url: "https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_env"
-simple_grid::components::ccm::install::env_revision: "v1.0.0"
+simple_grid::components::ccm::install::env_revision: "%{hiera('simple_grid::version::env')}"
 simple_grid::components::ccm::install::env_name: "simple"
 simple_grid::components::ccm::install::env_dir: "%{hiera('simple_grid::config_master::puppet_code_environments_dir')}/%{hiera('simple_grid::components::ccm::install::env_name')}"
 simple_grid::components::ccm::install::modules_dir: "%{hiera('simple_grid::components::ccm::install::env_dir')}/modules"
@@ -17,7 +17,7 @@ simple_grid::components::ccm::install::mode::dev::revision: "master"
 
 # puppet module for release mode
 simple_grid::components::ccm::install::mode::release::forge_module_name: "maany-simple_grid"
-simple_grid::components::ccm::install::mode::release::forge_module_version: "1.0.4"
+simple_grid::components::ccm::install::mode::release::forge_module_version: "%{hiera('simple_grid::version')}"
 
 # fileserver
 simple_grid::components::ccm::installation_helper::fileserver::fileserver_conf_path: '/etc/puppetlabs/puppet/fileserver.conf'
