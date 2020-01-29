@@ -30,7 +30,6 @@ class simple_grid::ccm_function::config_orchestrator(
           class{'simple_grid::components::swarm::init':
             main_manager => $main_manager
           }
-          class{'simple_grid::components::swarm::configure::firewall':}
           class{'simple_grid::components::swarm::recreate_ingress':
             main_manager => $main_manager,
           }
@@ -47,11 +46,11 @@ class simple_grid::ccm_function::config_orchestrator(
       $managers = $swarm_status["managers"]
       $manager_token = $swarm_status["tokens"]["manager"]
       $worker_token = $swarm_status["tokens"]["worker"]
+      class{'simple_grid::components::swarm::configure::firewall':}
       if $fqdn in $managers {
-        class{'simple_grid::components::swarm::configure::firewall':}
         class {'simple_grid::components::swarm::join':
           token        => $manager_token,
-          main_manager => $main_manager
+          main_manager => $main_manager,
         }
       } elsif $fqdn == $main_manager{
           notify{'Not executing docker swarm join command as the node is the main swarm manager':}
