@@ -22,6 +22,7 @@ class simple_grid::nodes::lightweight_component::init(
     }
   }
   elsif $simple_stage == lookup('simple_grid::stage::pre_deploy::step_2'){
+    class{"simple_grid::components::swarm::configure::firewall":}
     class{"simple_grid::pre_deploy::lightweight_component::generate_deploy_status_file":}
     class{"simple_grid::pre_deploy::lightweight_component::copy_augmented_site_level_config":}
     class{"simple_grid::pre_deploy::lightweight_component::copy_additional_files":}
