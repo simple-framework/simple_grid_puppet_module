@@ -55,7 +55,6 @@ class simple_grid::ccm_function::config_orchestrator(
       } elsif $fqdn == $main_manager{
           notify{'Not executing docker swarm join command as the node is the main swarm manager':}
       }else {
-        class{'simple_grid::components::swarm::configure::firewall':}
         class {'simple_grid::components::swarm::join':
           token        => $worker_token,
           main_manager => $main_manager
