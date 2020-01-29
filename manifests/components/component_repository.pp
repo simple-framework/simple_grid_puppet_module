@@ -133,15 +133,12 @@ class simple_grid::components::component_repository::rollback(
     $meta_info = $augmented_site_level_config["${meta_info_parent}"]
     $repository_name_lowercase = downcase($repository_name)
     $pre_config_image_name = "${repository_name_lowercase}_${pre_config_image_tag}"
-    if has_key($meta_info['level_2_configurators']["${level_2_configurator}"]['docker_run_parameters'], 'docker_hub_tag'){
-      if $meta_info['level_2_configurators']["${level_2_configurator}"]['docker_run_parameters']['docker_hub_tag'] {
-        $docker_hub_tag = $meta_info['level_2_configurators']["${level_2_configurator}"]['docker_run_parameters']['docker_hub_tag']
-      } else {
+    if has_key($meta_info['level_2_configurators']["${level_2_configurator}"], 'docker_hub_tag'){
+        $docker_hub_tag = $meta_info['level_2_configurators']["${level_2_configurator}"]['docker_hub_tag']
+    }else {
         $docker_hub_tag = ''
-      }
-    } else {
-      $docker_hub_tag = ''
     }
+    
     if length($docker_hub_tag)> 0 {
       $image_name = $docker_hub_tag
     }else {
