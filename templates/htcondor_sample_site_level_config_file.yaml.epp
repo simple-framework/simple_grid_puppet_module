@@ -105,6 +105,7 @@ lightweight_components:
       num_slots: 1
     supplemental_config:
       some_param: some_val
+      
 supported_virtual_organizations:
   - *default_vo_alice
   - *default_vo_dteam

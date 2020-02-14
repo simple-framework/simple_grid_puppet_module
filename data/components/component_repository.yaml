@@ -20,6 +20,7 @@ simple_grid::components::component_repository::l2_relative_config_dir: "config"
 
 # Directory Structure inside container (relative to /)
 simple_grid::components::component_repository::container::scripts_dir: "%{hiera('simple_grid::simple_config_dir')}/scripts"
+simple_grid::components::component_repository::container::script_dir::wrappers: "%{hiera('simple_grid::simple_config_dir')}/scripts/wrappers"
 simple_grid::components::component_repository::container::host_certificates_dir: "%{hiera('simple_grid::simple_config_dir')}/%{hiera('simple_grid::host_certificates_dir_name')}"
 simple_grid::components::component_repository::container::config_dir: "%{hiera('simple_grid::simple_config_dir')}/config"
 simple_grid::components::component_repository::container::augmented_site_level_config_file: "%{hiera('simple_grid::components::yaml_compiler::output')}"

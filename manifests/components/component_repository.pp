@@ -19,15 +19,10 @@ class simple_grid::components::component_repository::deploy_step_1(
   $pre_init_scripts = simple_grid::get_scripts($scripts_dir_structure, $execution_id, 'pre_init')
   $post_init_scripts = simple_grid::get_scripts($scripts_dir_structure, $execution_id, 'post_init')
   notify{"Deploy Stage Step 1 -  execution_id ${execution_id} with name ${repository_name} now!!!!":}
-  Class['simple_grid::component::component_repository::lifecycle::hook::wrapper'] ->
   Class['simple_grid::ccm_function::prep_host'] ->
   Class['simple_grid::component::component_repository::lifecycle::hook::pre_config'] ->
   Class['simple_grid::component::component_repository::lifecycle::event::pre_config'] ->
   Class['simple_grid::component::component_repository::lifecycle::event::boot']
-
-  class {'simple_grid::component::component_repository::lifecycle::hook::wrapper':
-      execution_id                  => $execution_id, 
-  }
 
   class{'simple_grid::ccm_function::prep_host':
     current_lightweight_component => $current_lightweight_component,
@@ -35,9 +30,9 @@ class simple_grid::components::component_repository::deploy_step_1(
   }
 
   class{'simple_grid::component::component_repository::lifecycle::hook::pre_config':
-    scripts         => $pre_config_scripts,
-    execution_id    => $execution_id,
-    timestamp       => $timestamp
+    scripts      => $pre_config_scripts,
+    execution_id => $execution_id,
+    timestamp    => $timestamp
   }
 
   class{'simple_grid::component::component_repository::lifecycle::event::pre_config':
@@ -138,7 +133,6 @@ class simple_grid::components::component_repository::rollback(
     }else {
         $docker_hub_tag = ''
     }
-    
     if length($docker_hub_tag)> 0 {
       $image_name = $docker_hub_tag
     }else {
@@ -166,27 +160,13 @@ class simple_grid::components::component_repository::rollback(
     }
 }
 
-class simple_grid::component::component_repository::lifecycle::hook::wrapper(
-  $scripts_dir = lookup('simple_grid::scripts_dir'),
-  $wrapper = lookup('simple_grid::scripts::wrapper'),
-  $execution_id
-){
-  notify{"Creating wrapper script":} 
-  file {'${scripts_dir}/${execution_id}/${wrapper}':
-    ensure  => present,
-    path    => "${scripts_dir}/${execution_id}/${wrapper}",
-    mode    => '555',
-    content => epp("simple_grid/${wrapper}")
-    }   
-}
-
 class simple_grid::component::component_repository::lifecycle::hook::pre_config(
   $scripts,
   $execution_id,
   $timestamp,
   $scripts_dir = lookup('simple_grid::scripts_dir'),
   $log_dir = lookup('simple_grid::simple_log_dir'),
-  $wrapper = lookup('simple_grid::scripts::wrapper'),
+  $wrapper = lookup('simple_grid::scripts::wrapper::lifecycle'),
   $mode = lookup('simple_grid::mode'),
 ){
   $scripts.each |Hash $script|{
@@ -194,7 +174,7 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_config(
     notify{"Running pre config script ${pre_config_script}. The output is available at ${logdir}/${execution_id}/${timestamp}":}
     if $mode == lookup('simple_grid::mode::docker') or $mode == lookup('simple_grid::mode::dev') {
       exec{"Executing Pre-Config Script $script":
-        command => "${scripts_dir}/${execution_id}/${wrapper} ${actual_script} ${log_dir}/${execution_id}/${timestamp} pre_config",
+        command => "${scripts_dir}/${wrapper} ${actual_script} ${log_dir}/${execution_id}/${timestamp} pre_config",
         path => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
         user => 'root',
         logoutput => true,
@@ -203,7 +183,7 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_config(
     }
     elsif $mode == lookup('simple_grid::mode::release') {
       exec{"Executing Pre-Config Script $script":
-        command   => "${scripts_dir}/${execution_id}/${wrapper} ${actual_script} ${log_dir}/${execution_id}/${timestamp} pre_config",
+        command   => "${scripts_dir}/${wrapper} ${actual_script} ${log_dir}/${execution_id}/${timestamp} pre_config",
         path      => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
         user      => 'root',
         logoutput => true
@@ -231,35 +211,22 @@ class simple_grid::component::component_repository::lifecycle::event::pre_config
   $config_dir = "${repository_path}/${level_2_configurator}/${l2_relative_config_dir}/"
   $repository_name_lowercase = downcase($repository_name)
   $pre_config_image_name = "${repository_name_lowercase}_${pre_config_image_tag}"
+  $docker_run_command = "docker run --rm -i -v ${repository_path}:/component_repository -e 'EXECUTION_ID=${execution_id}' ${pre_config_image_name}"
   notify{"Building Dockerfile at: ${pre_config_dir}":}
-  Class['docker'] -> Docker::Image["${pre_config_image_name}"] -> Exec['Level-2']
-  class {'docker':}
-    docker::image {"${pre_config_image_name}":
-      docker_file => "${pre_config_dir}/Dockerfile"
-  }
-
-  file{"$config_dir":
+  Simple_grid::Components::Docker::Build_image['Build pre_config image'] -> Simple_grid::Components::Docker::Run['Executing pre_config container']
+  file{"Create ${config_dir}":
     ensure => directory,
-    mode   => "0766",
+    path   => $config_dir,
+    mode   => '0766',
   }
-
-  exec{"Level-2":
-    command => "docker run --rm -i -v ${repository_path}:/component_repository -e 'EXECUTION_ID=${execution_id}' ${pre_config_image_name}",
-    path => "/usr/local/bin:/usr/bin/:/bin/:/opt/puppetlabs/bin/:/usr/sue/sbin",
-    user => 'root',
-    logoutput => true,
-    environment => ["HOME=/root"],
-    require => Docker::Image["${pre_config_image_name}"]
+  simple_grid::components::docker::build_image { 'Build pre_config image':
+    image_name => $pre_config_image_name,
+    dockerfile => $pre_config_dir
   }
-
-}
-class simple_grid::component::component_repository::lifecycle::event::boot::build_image(
-  $image_name,
-  $dockerfile,
-){
-    docker::image{"${image_name}":
-      docker_file => "${dockerfile}"
-    }
+  simple_grid::components::docker::run{'Executing pre_config container':
+    command               => $docker_run_command,
+    container_description => "Pre-Config container for ${repository_name} with execution id: ${execution_id}"
+  }
 }
 
 class simple_grid::component::component_repository::lifecycle::event::boot(
@@ -270,6 +237,7 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
   $component_repository_dir = lookup('simple_grid::nodes::lightweight_component::component_repository_dir'),
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
   $scripts_dir = lookup('simple_grid::scripts_dir'),
+  $wrapper_dir = lookup('simple_grid::scripts::wrapper_dir'),
   ## params for Container Bootup ###
   $network = lookup('simple_grid::components::swarm::network'),
   $component_image_tag = lookup('simple_grid::components::component_repository::component_image_tag'),
@@ -278,6 +246,7 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
   $l2_repository_relative_config_dir = lookup('simple_grid::components::component_repository::l2_relative_config_dir'),
   ### Container Directory Structure ###
   $container_scripts_dir = lookup('simple_grid::components::component_repository::container::scripts_dir'),
+  $container_script_wrappers_dir = lookup('simple_grid::components::component_repository::container::script_dir::wrappers'),
   $container_host_certificates_dir = lookup('simple_grid::components::component_repository::container::host_certificates_dir'),
   $container_augmented_site_level_config_file = lookup('simple_grid::components::component_repository::container::augmented_site_level_config_file'),
   $container_config_dir = lookup('simple_grid::components::component_repository::container::config_dir'),
@@ -297,34 +266,53 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
   }
   if length($docker_hub_tag)> 0 {
     $image_name = $docker_hub_tag
+    simple_grid::components::docker::pull_image{"Fetching ${image_name} from image registry":
+      image_name => $image_name
+    }
   }else {
     $repository_name_lowercase = downcase($repository_name)
     $image_name = "${repository_name_lowercase}_${component_image_tag}"
-    notify{"Building image: ${image_name}":}
-    docker::image{"${image_name}":
-      docker_file => "${repository_path}/${level_2_configurator}/Dockerfile",
-      before => Exec["Booting container for ${current_lightweight_component['name']}"],
+    notify{"Building boot image: ${image_name}":}
+    simple_grid::components::docker::build_image{'Build boot Image':
+      image_name => $image_name,
+      dockerfile => "${repository_path}/${level_2_configurator}/Dockerfile",
+      before     => Simple_grid::Components::Docker::Run['Start boot container'],
     }
   }
   $host_certificates_dir = "${repository_path}/${repository_relative_host_certificates_dir}"
-  $docker_run_command = simple_grid::docker_run($augmented_site_level_config, $current_lightweight_component, $meta_info, $image_name, $augmented_site_level_config_file, $container_augmented_site_level_config_file, $config_dir, $container_config_dir, $scripts_dir, $container_scripts_dir, $logs_dir, $container_logs_dir , $host_certificates_dir, $container_host_certificates_dir, $network, $level_2_configurator )
-  notify{"Docker run command":}
-  notify{"${docker_run_command}":}
-  exec{"Booting container for ${current_lightweight_component['name']}":
-    command => "${docker_run_command}",
-    path => "/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin",
-    user => "root",
-    environment => ["HOME=/root"],
-    logoutput => true,
+  $docker_run_command = simple_grid::docker_run(
+    $augmented_site_level_config,
+    $current_lightweight_component,
+    $meta_info,
+    $image_name,
+    $augmented_site_level_config_file,
+    $container_augmented_site_level_config_file,
+    $config_dir,
+    $container_config_dir,
+    $scripts_dir,
+    $container_scripts_dir,
+    $wrapper_dir,
+    $container_script_wrappers_dir,
+    $logs_dir,
+    $container_logs_dir,
+    $host_certificates_dir,
+    $container_host_certificates_dir,
+    $network,
+    $level_2_configurator
+  )
+  notify{"Docker run command\n ${docker_run_command}":}
+  simple_grid::components::docker::run { 'Start boot container':
+    command               => $docker_run_command,
+    container_description => "Container for ${repository_name} with Execution ID: ${execution_id}"
   }
-
 }
+
 class simple_grid::component::component_repository::lifecycle::hook::pre_init(
   $current_lightweight_component,
   $execution_id,
   $timestamp,
   $scripts,
-  $wrapper = lookup('simple_grid::scripts::wrapper'),
+  $wrapper = lookup('simple_grid::scripts::wrapper::lifecycle'),
   $log_dir = lookup('simple_grid::simple_log_dir'),
   $container_name,
   $pre_init_hook = lookup('simple_grid::components::component_repository::lifecycle::hook::pre_init'),
@@ -348,9 +336,9 @@ class simple_grid::component::component_repository::lifecycle::event::init(
   $current_lightweight_component,
   $execution_id,
   $timestamp,
-  $wrapper = lookup('simple_grid::scripts::wrapper'),
-  $log_dir = lookup('simple_grid::simple_log_dir'),
   $container_name,
+  $wrapper = lookup('simple_grid::scripts::wrapper::lifecycle'),
+  $log_dir = lookup('simple_grid::simple_log_dir'),
   $config_dir = lookup('simple_grid::components::component_repository::container::config_dir'),
   $container_scripts_dir = lookup("simple_grid::components::component_repository::container::scripts_dir")
 ){
@@ -370,7 +358,7 @@ class simple_grid::component::component_repository::lifecycle::hook::post_init(
   $execution_id,
   $scripts,
   $timestamp,
-  $wrapper = lookup('simple_grid::scripts::wrapper'),
+  $wrapper = lookup('simple_grid::scripts::wrapper::lifecycle'),
   $log_dir = lookup('simple_grid::simple_log_dir'),
   $container_name,
   $post_init_hook = lookup('simple_grid::components::component_repository::lifecycle::hook::post_init'),

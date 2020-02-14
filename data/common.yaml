@@ -22,10 +22,13 @@ simple_grid::site_config_dir: "%{hiera('simple_grid::simple_config_dir')}/%{hier
 simple_grid::simple_log_dir_name: "logs"
 simple_grid::simple_log_dir: "%{hiera('simple_grid::simple_config_dir')}/%{hiera('simple_grid::simple_log_dir_name')}"
 
-# Lifecycle Scripts 
-simple_grid::scripts::wrapper: "lifecyclehook.sh"
+# Scripts and Wrappers
+simple_grid::scripts::wrapper::lifecycle: "lifecyclehook.sh"
+simple_grid::scripts::wrapper::retry: "retry_command_wrapper.sh"
 simple_grid::scripts_dir_name: "scripts"
+simple_grid::scripts::wrapper_dir_name: "wrappers"
 simple_grid::scripts_dir: "%{hiera('simple_grid::simple_config_dir')}/%{hiera('simple_grid::scripts_dir_name')}"
+simple_grid::scripts::wrapper_dir: "%{hiera('simple_grid::scripts_dir')}/%{hiera('simple_grid::scripts::wrapper_dir_name')}"
 
 # host certificates
 simple_grid::host_certificates_dir_name: "host_certificates"

@@ -10,6 +10,8 @@ Puppet::Functions.create_function(:'simple_grid::docker_run') do
         param 'String', :container_config_dir
         param 'String', :scripts_dir
         param 'String', :container_scripts_dir
+        param 'String', :wrapper_dir
+        param 'String', :container_script_wrappers_dir
         param 'String', :logs_dir
         param 'String', :container_logs_dir
         param 'String', :host_certificates_dir
@@ -18,7 +20,7 @@ Puppet::Functions.create_function(:'simple_grid::docker_run') do
         param 'String', :level_2_configurator
 
     end
-    def docker_run(augmented_site_level_config, current_lightweight_component, meta_info, image_name, augmented_site_level_config_file, container_augmented_site_level_config_file, config_dir, container_config_dir,  scripts_dir, container_scripts_dir, logs_dir, container_logs_dir, host_certificates_dir, container_host_certificates_dir, network, level_2_configurator)
+    def docker_run(augmented_site_level_config, current_lightweight_component, meta_info, image_name, augmented_site_level_config_file, container_augmented_site_level_config_file, config_dir, container_config_dir,  scripts_dir, container_scripts_dir, wrapper_dir, container_script_wrappers_dir, logs_dir, container_logs_dir, host_certificates_dir, container_host_certificates_dir, network, level_2_configurator)
         docker_run_parameters = meta_info['level_2_configurators'][level_2_configurator]['docker_run_parameters']
         execution_id = current_lightweight_component['execution_id']
         
@@ -38,6 +40,9 @@ Puppet::Functions.create_function(:'simple_grid::docker_run') do
         # Lifecycle Hooks
         
         docker_run << "-v #{scripts_dir}/#{execution_id}/:#{container_scripts_dir}" << " "
+        
+        # Wrappers
+        docker_run << "-v #{wrapper_dir}/:#{container_script_wrappers_dir}" << " "
 
         # Augmented Site Level Config File
         docker_run << "-v #{augmented_site_level_config_file}:#{container_augmented_site_level_config_file}" << " "

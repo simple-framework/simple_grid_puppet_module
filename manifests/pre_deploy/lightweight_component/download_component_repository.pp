@@ -6,7 +6,6 @@ class simple_grid::pre_deploy::lightweight_component::download_component_reposit
   file{"Creating directory for storing component repositories":
     ensure => directory,
     path => "${component_repository_dir}",
-    
   }
   $execution_id_id_pairs = simple_grid::get_execution_ids($augmented_site_level_config_file, $fqdn)
   $augmented_site_level_config = loadyaml("${augmented_site_level_config_file}")

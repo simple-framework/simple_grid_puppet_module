@@ -1,27 +1,32 @@
 class simple_grid::pre_deploy::lightweight_component::scripts::generate_script_dir(
   $scripts_dir = lookup('simple_grid::scripts_dir'),
+  $wrapper_dir = lookup('simple_grid::scripts::wrapper_dir'),
 ){
   file{'Creating directory for scripts':
     ensure => directory,
     path   => $scripts_dir
+  }->
+  file{'Create directory for wrapper scripts':
+    ensure => directory,
+    path   => $wrapper_dir
   }
 }
 
 class simple_grid::pre_deploy::lightweight_component::scripts::generate_script_wrappers(
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
-  $scripts_dir = lookup('simple_grid::scripts_dir'),
+  $wrapper_dir = lookup('simple_grid::scripts::wrapper_dir'),
   $retry_command_wrapper = lookup('simple_grid::scripts::wrapper::retry'),
   $lifecycle_wrapper = lookup('simple_grid::scripts::wrapper::lifecycle'),
 ){
   file { "Generate ${retry_command_wrapper}.sh":
     ensure  => 'present',
-    path    => "${scripts_dir}/${retry_command_wrapper}",
+    path    => "${wrapper_dir}/${retry_command_wrapper}",
     mode    => '0555',
     content => epp("simple_grid/${retry_command_wrapper}")
   }
   file { "Generate ${lifecycle_wrapper}":
     ensure  => 'present',
-    path    => "${scripts_dir}/${lifecycle_wrapper}",
+    path    => "${wrapper_dir}/${lifecycle_wrapper}",
     mode    => '0555',
     content => epp("simple_grid/${retry_command_wrapper}")
   }

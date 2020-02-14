@@ -48,7 +48,7 @@ do
   echo "Executing ${COMMAND} for trial ${CURRENT_TRIAL}"
   $(echo "${COMMAND}")
   EXIT_CODE=$?
-  echo "${EXIT_CODE}"
+  echo "Exit Code: ${EXIT_CODE}"
   if [ $EXIT_CODE -eq 0 ]; then
       exit
   fi 
