@@ -164,6 +164,7 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_config(
   $scripts,
   $execution_id,
   $timestamp,
+  $log_flag = 'pre_config::hook',
   $script_wrapper_dir = lookup('simple_grid::scripts::wrapper_dir'),
   $log_dir = lookup('simple_grid::simple_log_dir'),
   $lifecycle_wrapper = lookup('simple_grid::scripts::wrapper::lifecycle'),
@@ -173,7 +174,7 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_config(
   $scripts.each |Hash $script|{
     $actual_script = $script['actual_script']
     notify{"Running pre config script ${actual_script}. The output is available at ${log_dir}/${execution_id}/${timestamp}":}
-    $command = "${script_wrapper_dir}/${retry_wrapper} --command=\"${script_wrapper_dir}/${lifecycle_wrapper} ${actual_script} ${log_dir}/${execution_id}/${timestamp} pre_config\" --recovery-command=\"sleep 5\""
+    $command = "${script_wrapper_dir}/${retry_wrapper} --command=\"${script_wrapper_dir}/${lifecycle_wrapper} ${actual_script} ${log_dir}/${execution_id}/${timestamp} pre_config\" --recovery-command=\"sleep 5\" --flag='${log_flag}'"
     notify{"Running command: ${command}":}
     if $mode == lookup('simple_grid::mode::docker') or $mode == lookup('simple_grid::mode::dev') {
       exec{"Executing Pre-Config Script ${script}":
@@ -182,16 +183,18 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_config(
         user        => 'root',
         logoutput   => true,
         environment => ["HOME=/root"],
-        timeout     => 0, 
+        timeout     => 0,
+        provider    => shell
       }
     }
     elsif $mode == lookup('simple_grid::mode::release') {
       exec{"Executing Pre-Config Script ${script}":
-        command     => "${script_wrapper_dir}/${retry_wrapper} --command=\"${script_wrapper_dir}/${lifecycle_wrapper} ${actual_script} ${log_dir}/${execution_id}/${timestamp} pre_config\" --recovery-command=\"sleep 5\"",
+        command     => "${script_wrapper_dir}/${retry_wrapper} --command=\"${script_wrapper_dir}/${lifecycle_wrapper} ${actual_script} ${log_dir}/${execution_id}/${timestamp} pre_config\" --recovery-command=\"sleep 5\" --flag='${log_flag}'",
         path        => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
         user        => 'root',
         logoutput   => true,
         timeout     => 0,
+        provider    => shell
       }
     }
   }
@@ -226,10 +229,12 @@ class simple_grid::component::component_repository::lifecycle::event::pre_config
   }
   simple_grid::components::docker::build_image { 'Build pre_config image':
     image_name => $pre_config_image_name,
-    dockerfile => $pre_config_dir
+    dockerfile => $pre_config_dir,
+    log_flag   => 'pre_config::event::docker::build_image',
   }
   simple_grid::components::docker::run{'Executing pre_config container':
     command               => $docker_run_command,
+    log_flag              => 'pre_config::event::docker::run',
     container_description => "Pre-Config container for ${repository_name} with execution id: ${execution_id}"
   }
 }
@@ -280,7 +285,8 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
     notify{"Building boot image: ${image_name}":}
     simple_grid::components::docker::build_image{'Build boot Image':
       image_name => $image_name,
-      dockerfile => "${repository_path}/${level_2_configurator}/Dockerfile",
+      dockerfile => "${repository_path}/${level_2_configurator}",
+      log_flag   => 'boot::event::docker::build_image',
       before     => Simple_grid::Components::Docker::Run['Start boot container'],
     }
   }
@@ -308,6 +314,7 @@ class simple_grid::component::component_repository::lifecycle::event::boot(
   notify{"Docker run command\n ${docker_run_command}":}
   simple_grid::components::docker::run { 'Start boot container':
     command               => $docker_run_command,
+    log_flag              => 'boot::event::docker::run',
     container_description => "Container for ${repository_name} with Execution ID: ${execution_id}"
   }
 }
@@ -331,6 +338,7 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_init(
     notify{"Executing pre_init hook ${command}. The output is available at ${log_dir}/${execution_id}/${timestamp}":}
     simple_grid::components::docker::exec{"Running pre_init hook ${script_path} for Execution ID ${execution_id}":
       container_name => $container_name,
+      log_flag       => 'pre_init::hook::docker::exec',
       command        => $command
     }
     # exec{"Running pre_init hook ${script_path} for Execution ID ${execution_id}":
@@ -357,6 +365,7 @@ class simple_grid::component::component_repository::lifecycle::event::init(
   notify{"Executing init event : ${command}. The logs will be available at: ${log_dir}/${execution_id}/${timestamp}":}
   simple_grid::components::docker::exec{"Running init event for Execution ID ${execution_id}":
     container_name => $container_name,
+    log_flag       => 'init::event::docker::exec',
     command        => $command 
   }
   # exec{"Running init event for Execution ID ${execution_id}":
@@ -387,6 +396,7 @@ class simple_grid::component::component_repository::lifecycle::hook::post_init(
     notify{"Executing post_init hook ${command}. The logs will be available at ${log_dir}/${execution_id}/${timestamp}":}
     simple_grid::components::docker::exec{ "Running post_init hook ${script_path} for Execution ID ${execution_id} with script":
       container_name => $container_name,
+      log_flag       => 'post_init::hook::docker::exec',
       command        => $command
     }
     # exec{"":

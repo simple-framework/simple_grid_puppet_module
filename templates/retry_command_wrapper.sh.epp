@@ -18,15 +18,20 @@ case $i in
         REATTEMPT_INTERVAL="${i#*=}"
         shift
         ;;
+        --flag=*)
+        FLAG="${i#*=}"
+        shift
+        ;;
         -h|--help)
         echo "Usage:"
-        echo "retry_command_wrapper.sh [--command=<value>] [--recovery-command=<value>] [--reattempt-interval=<value>] [--retries=<value>]"
+        echo "retry_command_wrapper.sh [--command=<value>] [--recovery-command=<value>] [--reattempt-interval=<value>] [--retries=<value>] [--flag=<value>]"
         printf "\n"
         echo "Options:"
         echo "1. command: REQUIRED; The shell command that needs to be executed"
         echo "2. recovery-command: OPTIONAL; If the command fails, the recovery-command is executed before re-running the command."
         echo "3. retries: OPTIONAL; Number of times the command must be run before giving up."
         echo "4. reattempt-interval: OPTIONAL; Number of seconds to wait before retrial."
+        echo "4. flag: OPTIONAL; String to flag the exit code."
         exit 0
         shift
         ;;
@@ -48,6 +53,9 @@ elif [ -z "$REATTEMPT_INTERVAL" ]
 then
         echo "Using default reattempt interval of 0 seconds"
         REATTEMPT_INTERVAL=0
+elif [ -z "$FLAG" ]
+then
+        FLAG=''
 fi
 
 CURRENT_TRIAL=0
@@ -57,7 +65,7 @@ do
   echo "Executing ${COMMAND} for trial ${CURRENT_TRIAL}"
   $(echo "${COMMAND}")
   EXIT_CODE=$?
-  echo "Exit Code: ${EXIT_CODE}"
+  echo "${FLAG} Exit Code: ${EXIT_CODE}"
   if [ $EXIT_CODE -eq 0 ]; then
       exit
   fi 
