@@ -14,14 +14,19 @@ case $i in
         RECOVERY_COMMAND="${i#*=}"
         shift
         ;;
+        --reattempt-interval=*)
+        REATTEMPT_INTERVAL="${i#*=}"
+        shift
+        ;;
         -h|--help)
         echo "Usage:"
-        echo "retry_command_wrapper.sh [--command=<value>] [--recovery-command=<value>] [--retries=<value>]"
+        echo "retry_command_wrapper.sh [--command=<value>] [--recovery-command=<value>] [--reattempt-interval=<value>] [--retries=<value>]"
         printf "\n"
         echo "Options:"
         echo "1. command: REQUIRED; The shell command that needs to be executed"
         echo "2. recovery-command: OPTIONAL; If the command fails, the recovery-command is executed before re-running the command."
         echo "3. retries: OPTIONAL; Number of times the command must be run before giving up."
+        echo "4. reattempt-interval: OPTIONAL; Number of seconds to wait before retrial."
         exit 0
         shift
         ;;
@@ -35,10 +40,14 @@ elif [ -z "$RECOVERY_COMMAND" ]
 then
         echo "Using default retry command: sleep 30;"
         RECOVERY_COMMAND='sleep 30'
-elif [ -z "$NUM_OF_RETRIES" ]
+elif [ -z "$NO_OF_RETRIES" ]
 then
         echo "Using default number of retries: 3"
         NO_OF_RETRIES=3
+elif [ -z "$REATTEMPT_INTERVAL" ]
+then
+        echo "Using default reattempt interval of 0 seconds"
+        REATTEMPT_INTERVAL=0
 fi
 
 CURRENT_TRIAL=0
@@ -55,6 +64,7 @@ do
   if [[ -n "${RECOVERY_COMMAND}" ]]; then
     echo "Executing Recovery Command ${RECOVERY_COMMAND} for trial ${CURRENT_TRIAL}"
     $(echo "${RECOVERY_COMMAND}")
+    sleep $REATTEMPT_INTERVAL
   fi
   CURRENT_TRIAL=$[$CURRENT_TRIAL+1]
 done

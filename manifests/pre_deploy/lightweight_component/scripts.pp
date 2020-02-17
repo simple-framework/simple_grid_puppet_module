@@ -28,7 +28,7 @@ class simple_grid::pre_deploy::lightweight_component::scripts::generate_script_w
     ensure  => 'present',
     path    => "${wrapper_dir}/${lifecycle_wrapper}",
     mode    => '0555',
-    content => epp("simple_grid/${retry_command_wrapper}")
+    content => epp("simple_grid/${lifecycle_wrapper}")
   }
 }
 

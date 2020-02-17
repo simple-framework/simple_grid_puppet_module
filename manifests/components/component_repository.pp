@@ -164,29 +164,34 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_config(
   $scripts,
   $execution_id,
   $timestamp,
-  $scripts_dir = lookup('simple_grid::scripts_dir'),
+  $script_wrapper_dir = lookup('simple_grid::scripts::wrapper_dir'),
   $log_dir = lookup('simple_grid::simple_log_dir'),
-  $wrapper = lookup('simple_grid::scripts::wrapper::lifecycle'),
+  $lifecycle_wrapper = lookup('simple_grid::scripts::wrapper::lifecycle'),
+  $retry_wrapper = lookup('simple_grid::scripts::wrapper::retry'),
   $mode = lookup('simple_grid::mode'),
 ){
   $scripts.each |Hash $script|{
     $actual_script = $script['actual_script']
-    notify{"Running pre config script ${pre_config_script}. The output is available at ${logdir}/${execution_id}/${timestamp}":}
+    notify{"Running pre config script ${actual_script}. The output is available at ${log_dir}/${execution_id}/${timestamp}":}
+    $command = "${script_wrapper_dir}/${retry_wrapper} --command=\"${script_wrapper_dir}/${lifecycle_wrapper} ${actual_script} ${log_dir}/${execution_id}/${timestamp} pre_config\" --recovery-command=\"sleep 5\""
+    notify{"Running command: ${command}":}
     if $mode == lookup('simple_grid::mode::docker') or $mode == lookup('simple_grid::mode::dev') {
-      exec{"Executing Pre-Config Script $script":
-        command => "${scripts_dir}/${wrapper} ${actual_script} ${log_dir}/${execution_id}/${timestamp} pre_config",
-        path => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
-        user => 'root',
-        logoutput => true,
-        environment => ["HOME=/root"]
+      exec{"Executing Pre-Config Script ${script}":
+        command     => $command,
+        path        => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
+        user        => 'root',
+        logoutput   => true,
+        environment => ["HOME=/root"],
+        timeout     => 0, 
       }
     }
     elsif $mode == lookup('simple_grid::mode::release') {
-      exec{"Executing Pre-Config Script $script":
-        command   => "${scripts_dir}/${wrapper} ${actual_script} ${log_dir}/${execution_id}/${timestamp} pre_config",
-        path      => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
-        user      => 'root',
-        logoutput => true
+      exec{"Executing Pre-Config Script ${script}":
+        command     => "${script_wrapper_dir}/${retry_wrapper} --command=\"${script_wrapper_dir}/${lifecycle_wrapper} ${actual_script} ${log_dir}/${execution_id}/${timestamp} pre_config\" --recovery-command=\"sleep 5\"",
+        path        => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
+        user        => 'root',
+        logoutput   => true,
+        timeout     => 0,
       }
     }
   }
@@ -312,24 +317,29 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_init(
   $execution_id,
   $timestamp,
   $scripts,
-  $wrapper = lookup('simple_grid::scripts::wrapper::lifecycle'),
-  $log_dir = lookup('simple_grid::simple_log_dir'),
   $container_name,
+  $lifecycle_wrapper = lookup('simple_grid::scripts::wrapper::lifecycle'),
+  $log_dir = lookup('simple_grid::simple_log_dir'),
   $pre_init_hook = lookup('simple_grid::components::component_repository::lifecycle::hook::pre_init'),
-  $container_scripts_dir = lookup("simple_grid::components::component_repository::container::scripts_dir"),
+  $container_scripts_dir = lookup('simple_grid::components::component_repository::container::scripts_dir'),
+  $container_script_wrappers_dir = lookup('simple_grid::components::component_repository::container::script_dir::wrappers'),
 ){
   $scripts.each |Hash $script|{
     $script_name = split($script['actual_script'], '/')[-1]
     $script_path = "${container_scripts_dir}/${pre_init_hook}/${script_name}"
-    $command = "docker exec -t ${container_name} ${container_scripts_dir}/${wrapper} ${script_path} ${log_dir}/${timestamp} pre_init"
+    $command = "${container_script_wrappers_dir}/${lifecycle_wrapper} ${script_path} ${log_dir}/${timestamp} pre_init"
     notify{"Executing pre_init hook ${command}. The output is available at ${log_dir}/${execution_id}/${timestamp}":}
-    exec{"Running pre_init hook ${script_path} for Execution ID ${execution_id}":
-      command => $command,
-      path    => "/usr/local/bin:/usr/bin/:/bin:/opt/puppetlabs/bin",
-      user    => "root",
-      logoutput => true,
-      environment => ["HOME=/root"]
+    simple_grid::components::docker::exec{"Running pre_init hook ${script_path} for Execution ID ${execution_id}":
+      container_name => $container_name,
+      command        => $command
     }
+    # exec{"Running pre_init hook ${script_path} for Execution ID ${execution_id}":
+    #   command => $command,
+    #   path    => "/usr/local/bin:/usr/bin/:/bin:/opt/puppetlabs/bin",
+    #   user    => "root",
+    #   logoutput => true,
+    #   environment => ["HOME=/root"]
+    # }
   }
 }
 class simple_grid::component::component_repository::lifecycle::event::init(
@@ -337,43 +347,53 @@ class simple_grid::component::component_repository::lifecycle::event::init(
   $execution_id,
   $timestamp,
   $container_name,
-  $wrapper = lookup('simple_grid::scripts::wrapper::lifecycle'),
+  $lifecycle_wrapper = lookup('simple_grid::scripts::wrapper::lifecycle'),
   $log_dir = lookup('simple_grid::simple_log_dir'),
   $config_dir = lookup('simple_grid::components::component_repository::container::config_dir'),
-  $container_scripts_dir = lookup("simple_grid::components::component_repository::container::scripts_dir")
+  $container_scripts_dir = lookup('simple_grid::components::component_repository::container::scripts_dir'),
+  $container_script_wrappers_dir = lookup('simple_grid::components::component_repository::container::script_dir::wrappers'),
 ){
-  $command = "docker exec -t  ${container_name} /bin/bash -c '${container_scripts_dir}/${wrapper} ${config_dir}/init.sh ${log_dir}/${timestamp} init'"
+  $command = "${container_script_wrappers_dir}/${lifecycle_wrapper} ${config_dir}/init.sh ${log_dir}/${timestamp} init'"
   notify{"Executing init event : ${command}. The logs will be available at: ${log_dir}/${execution_id}/${timestamp}":}
-  exec{"Running init event for Execution ID ${execution_id}":
-      command => $command,
-      path    => "/usr/local/bin:/usr/bin/:/bin:/opt/puppetlabs/bin",
-      user    => "root",
-      environment => ["HOME=/root"],
-      provider => 'shell',
+  simple_grid::components::docker::exec{"Running init event for Execution ID ${execution_id}":
+    container_name => $container_name,
+    command        => $command 
   }
+  # exec{"Running init event for Execution ID ${execution_id}":
+  #     command => $command,
+  #     path    => "/usr/local/bin:/usr/bin/:/bin:/opt/puppetlabs/bin",
+  #     user    => "root",
+  #     environment => ["HOME=/root"],
+  #     provider => 'shell',
+  # }
 }
 
 class simple_grid::component::component_repository::lifecycle::hook::post_init(
   $current_lightweight_component,
   $execution_id,
   $scripts,
-  $timestamp,
-  $wrapper = lookup('simple_grid::scripts::wrapper::lifecycle'),
-  $log_dir = lookup('simple_grid::simple_log_dir'),
   $container_name,
+  $timestamp,
+  $lifecycle_wrapper = lookup('simple_grid::scripts::wrapper::lifecycle'),
+  $log_dir = lookup('simple_grid::simple_log_dir'),
   $post_init_hook = lookup('simple_grid::components::component_repository::lifecycle::hook::post_init'),
-  $container_scripts_dir = lookup("simple_grid::components::component_repository::container::scripts_dir"),
+  $container_scripts_dir = lookup('simple_grid::components::component_repository::container::scripts_dir'),
+  $container_script_wrappers_dir = lookup('simple_grid::components::component_repository::container::script_dir::wrappers'),
 ){
   $scripts.each |Hash $script|{
     $script_name = split($script['actual_script'], '/')[-1]
     $script_path = "${container_scripts_dir}/${post_init_hook}/${script_name}"
-    $command = "docker exec -t ${container_name} ${container_scripts_dir}/${wrapper} ${script_path} ${log_dir}/${timestamp} post_init"
+    $command = "${container_script_wrappers_dir}/${lifecycle_wrapper} ${script_path} ${log_dir}/${timestamp} post_init"
     notify{"Executing post_init hook ${command}. The logs will be available at ${log_dir}/${execution_id}/${timestamp}":}
-    exec{"Running post_init hook ${script_path} for Execution ID ${execution_id} with script":
-      command => $command,
-      path    => "/usr/local/bin:/usr/bin/:/bin:/opt/puppetlabs/bin",
-      user    => "root",
-      environment => ["HOME=/root"]
+    simple_grid::components::docker::exec{ "Running post_init hook ${script_path} for Execution ID ${execution_id} with script":
+      container_name => $container_name,
+      command        => $command
     }
+    # exec{"":
+    #   command => $command,
+    #   path    => "/usr/local/bin:/usr/bin/:/bin:/opt/puppetlabs/bin",
+    #   user    => "root",
+    #   environment => ["HOME=/root"]
+    # }
   }
 }
