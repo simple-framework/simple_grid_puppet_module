@@ -10,7 +10,7 @@ The usage of the module is described in the Docs available at [SIMPLE Framework'
 
 ## Fixed bugs
 This release includes the following bug fixes. It fixes the following issues:
-- [Issue 165: Swarm firewall rules](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/165)
+- [Issue 168: Retry failing commands in deploy stage with wrapper script](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/165)
 
 
 
