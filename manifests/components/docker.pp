@@ -63,7 +63,7 @@ define simple_grid::components::docker::exec(
   $wrapper_dir = lookup('simple_grid::scripts::wrapper_dir'),
   $retry_wrapper = lookup('simple_grid::scripts::wrapper::retry')
 ){
-  $docker_exec = "${wrapper_dir}/${retry_wrapper} --command='docker exec -t /bin/bash -c \"${container_name} ${command}\"' --recovery-command='sleep 10' --flag='${log_flag}'"
+  $docker_exec = "${wrapper_dir}/${retry_wrapper} --command='docker exec -t ${container_name} ${command}' --recovery-command='sleep 10' --flag='${log_flag}'"
   exec{"Executing ${command} inside container ${container_name}":
     command     => $docker_exec,
     path        => '/usr/local/bin:/usr/bin/:/bin/:/opt/puppetlabs/bin/:/usr/sue/sbin',

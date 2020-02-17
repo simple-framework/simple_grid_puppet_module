@@ -361,7 +361,7 @@ class simple_grid::component::component_repository::lifecycle::event::init(
   $container_scripts_dir = lookup('simple_grid::components::component_repository::container::scripts_dir'),
   $container_script_wrappers_dir = lookup('simple_grid::components::component_repository::container::script_dir::wrappers'),
 ){
-  $command = "${container_script_wrappers_dir}/${lifecycle_wrapper} ${config_dir}/init.sh ${log_dir}/${timestamp} init'"
+  $command = "${container_script_wrappers_dir}/${lifecycle_wrapper} ${config_dir}/init.sh ${log_dir}/${timestamp} init"
   notify{"Executing init event : ${command}. The logs will be available at: ${log_dir}/${execution_id}/${timestamp}":}
   simple_grid::components::docker::exec{"Running init event for Execution ID ${execution_id}":
     container_name => $container_name,
