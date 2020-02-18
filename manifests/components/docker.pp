@@ -5,7 +5,7 @@ define simple_grid::components::docker::build_image(
   $wrapper_dir = lookup('simple_grid::scripts::wrapper_dir'),
   $retry_wrapper = lookup('simple_grid::scripts::wrapper::retry'),
 ){
-  $build_command = "${wrapper_dir}/${retry_wrapper} --command='docker image build -t ${image_name} ${dockerfile}' --recovery-command='systemctl restart docker' --reattempt-command='sleep 10' --flag='${log_flag}'"
+  $build_command = "${wrapper_dir}/${retry_wrapper} --command='docker image build -t ${image_name} ${dockerfile}' --recovery-command='systemctl restart docker' --reattempt-interval=10 --flag='${log_flag}'"
   notify{"Executing ${build_command}":}
   exec { "Building ${image_name} image":
     command     => $build_command,
@@ -23,7 +23,7 @@ define simple_grid::components::docker::pull_image(
   $wrapper_dir = lookup('simple_grid::scripts::wrapper_dir'),
   $retry_wrapper = lookup('simple_grid::scripts::wrapper::retry')
 ){
-  $pull_command = "${wrapper_dir}/${retry_wrapper} --command='docker pull ${image_name}' --recovery-command='sleep systemctl restart docker' --reattempt-command='sleep 10' --flag='${log_flag}'"
+  $pull_command = "${wrapper_dir}/${retry_wrapper} --command='docker pull ${image_name}' --recovery-command='sleep systemctl restart docker' --reattempt-interval=10 --flag='${log_flag}'"
   notify{"Executing ${pull_command}":}
   exec { "Pulling ${image_name} image":
     command     => $pull_command,
@@ -43,7 +43,7 @@ define simple_grid::components::docker::run(
   $wrapper_dir = lookup('simple_grid::scripts::wrapper_dir'),
   $retry_wrapper = lookup('simple_grid::scripts::wrapper::retry')
 ){
-  $run_command = "${wrapper_dir}/${retry_wrapper} --command='${command}' --recovery-command='systemctl restart docker' --reattempt-command='sleep 10' --flag='${log_flag}'"
+  $run_command = "${wrapper_dir}/${retry_wrapper} --command='${command}' --recovery-command='systemctl restart docker' --reattempt-interval=10 --flag='${log_flag}'"
   notify{"Executing ${run_command}":}
   exec{"Starting container: ${container_description}":
     command     => $run_command,
@@ -63,7 +63,7 @@ define simple_grid::components::docker::exec(
   $wrapper_dir = lookup('simple_grid::scripts::wrapper_dir'),
   $retry_wrapper = lookup('simple_grid::scripts::wrapper::retry')
 ){
-  $docker_exec = "${wrapper_dir}/${retry_wrapper} --command='docker exec -t ${container_name} ${command}' --recovery-command='sleep 10' --flag='${log_flag}'"
+  $docker_exec = "${wrapper_dir}/${retry_wrapper} --command='docker exec -t ${container_name} ${command}' --recovery-interval=10 --flag='${log_flag}'"
   exec{"Executing ${command} inside container ${container_name}":
     command     => $docker_exec,
     path        => '/usr/local/bin:/usr/bin/:/bin/:/opt/puppetlabs/bin/:/usr/sue/sbin',
