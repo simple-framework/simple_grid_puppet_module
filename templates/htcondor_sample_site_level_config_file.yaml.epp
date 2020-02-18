@@ -17,15 +17,15 @@ htcondor_batch_runtime_variables:
 
 site:
   name: 'OpenStack SIMPLE dev cluster'
-  email: 'mayank.sharma@cern.ch'
+  email: 'admin@mysite.domain'
   latitude: -6.50
   longitude: 106.84
   location: CERN
   description: 'CERN WLCG Grid by SIMPLE at CERN Openstack'
   website: 'https://home.cern'
   support_website: 'https://groups.google.com/forum/#!forum/wlcg-lightweight-sites'
-  support_email: 'mayank.sharma@cern.ch'
-  security_email: 'mayank.sharma@cern.ch'
+  support_email: 'admin@mysite.domain'
+  security_email: 'admin@mysite.domain'
   grid: 'wlcg' #site_other_grid: str(), wlcg, egi,osg
   tier: 3
   bdii_host: bdii.cern.ch
