@@ -2,12 +2,14 @@ schema:  "https://raw.githubusercontent.com/WLCG-Lightweight-Sites/simple_grid_s
 
 ### Variable declaration:
 global_variables:
-  - &lightweight_component01_ip_address 188.184.104.25
-  - &lightweight_component01_fqdn simple-lc01.cern.ch
-  - &lightweight_component02_ip_address 188.184.30.19
-  - &lightweight_component02_fqdn simple-lc02.cern.ch
-  - &lightweight_component03_ip_address 188.184.84.189
-  - &lightweight_component03_fqdn simple-lc03.cern.ch
+  - &ce_ip 188.184.104.25
+  - &ce_fqdn simple-lc01.cern.ch
+  - &batch_ip 188.184.30.19
+  - &batch_fqdn simple-lc02.cern.ch
+  - &wn1_ip 188.184.84.189
+  - &wn1_fqdn simple-lc03.cern.ch
+  - &wn2_ip 188.184.84.190
+  - &wn2_fqdn simple-lc04.cern.ch
 
 htcondor_ce_runtime_variables:
   - &htcondor_ce_runtime_var_ce_host simple-lc01.cern.ch
@@ -42,12 +44,14 @@ preferred_tech_stack:
   container: docker
 
 site_infrastructure:
-  - fqdn: *lightweight_component01_fqdn
-    ip_address: *lightweight_component01_ip_address
-  - fqdn: *lightweight_component02_fqdn
-    ip_address: *lightweight_component02_ip_address
-  - fqdn: *lightweight_component03_fqdn
-    ip_address: *lightweight_component03_ip_address
+  - fqdn: *ce_fqdn
+    ip_address: *ce_ip
+  - fqdn: *batch_fqdn
+    ip_address: *batch_ip
+  - fqdn: *wn1_fqdn
+    ip_address: *wn1_ip  
+  - fqdn: *wn2_fqdn
+    ip_address: *wn2_ip
 
 lightweight_components:
   - type: compute_element
@@ -60,14 +64,21 @@ lightweight_components:
       pre_init: []
       post_init: []
     deploy:
-      - node: *lightweight_component01_fqdn
+      - node: *ce_fqdn
         container_count: 1
     preferred_tech_stack:
       level_2_configuration: sh
     config:
       condor_host_execution_id: 1
     supplemental_config:
-      some_param: some_val
+      'htcondor-ce':
+        - "MYVAR=VALUE" #Example of adding HTCondorCE configuration knobs through the site level configuration file.
+        - ANOTHER_CONDOR_KNOB: VALUE
+      'htcondor':
+        - "MYVAR=VALUE" #Example of adding HTCondor configuration knobs through the site level configuration file.
+      '/etc/hosts':
+        - "10.0.1.100 apel-host.mysite"
+
   - type: batch_system
     name: HTCondor-Batch
     repository_url: "https://github.com/andria009/simple_htcondor_batch"
@@ -78,14 +89,18 @@ lightweight_components:
       pre_init: []
       post_init: []
     deploy:
-      - node: *lightweight_component02_fqdn
+      - node: *batch_fqdn
         container_count: 1
     preferred_tech_stack:
       level_2_configuration: sh
     config:
       placeholder_param: some_value
     supplemental_config:
-      some_param: some_val
+      supplemental_config:
+      'htcondor':
+        - "MYVAR=VALUE" #Example of adding HTCondor configuration knobs through the site level configuration file.
+      '/etc/hosts':
+        - "10.0.1.100 apel-host.mysite"
   - type: worker_node
     name: HTCondor-Worker
     repository_url: "https://github.com/simple-framework/simple_htcondor_worker"
@@ -96,15 +111,19 @@ lightweight_components:
       pre_init: []
       post_init: []
     deploy:
-      - node: *lightweight_component03_fqdn
+      - node: *wn1_fqdn
+        container_count: 1      
+      - node: *wn2_fqdn
         container_count: 1
     preferred_tech_stack:
       level_2_configuration: sh
     config:
       condor_host_execution_id: 1
       num_slots: 1
+    # Creating or appending content to new/existing files inside containers through supplemental_config section
     supplemental_config:
-      some_param: some_val
+      "/some_path_in_container": 
+        - "contents to be appended" 
       
 supported_virtual_organizations:
   - *default_vo_alice
@@ -123,8 +142,11 @@ voms_config:
     vo: *default_vo_alice
     comment: sgm
   - voms_fqan: '/dteam'
+    # An example of overriding default variable's initial_uid field. The default variables is declared at:
+    # https://github.com/simple-framework/simple_grid_site_repo/blob/master/site_level_configuration_defaults.yaml
     pool_accounts:
-      - *default_pool_accounts_dteam
+      - <<: *default_pool_accounts_dteam
+        initial_uid: 20020
     vo: *default_vo_dteam
   - voms_fqan: '/dteam/ROLE=lcgadmin'
     pool_accounts:
