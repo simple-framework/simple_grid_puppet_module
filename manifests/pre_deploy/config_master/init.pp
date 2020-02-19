@@ -16,9 +16,10 @@ class simple_grid::pre_deploy::config_master::init(
   class{'simple_grid::ccm_function::config_orchestrator':}
 
   file{"Changing owner of ${host_certificates_dir} to puppet. This is required by puppet fileserver.":
-    path    => $host_certificates_dir,
-    owner   => "puppet",
     ensure  => directory,
+    path    => $host_certificates_dir,
+    owner   => 'puppet',
+    mode    => '0555', 
     recurse => true 
   }
 
