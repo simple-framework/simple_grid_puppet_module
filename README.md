@@ -10,6 +10,7 @@ The usage of the module is described in the Docs available at [SIMPLE Framework'
 
 ## Fixed bugs
 This release includes the following bug fixes. It fixes the following issues:
+- [Issue 119: Fix overlap between IP addresses for containers and swarm lb-endpoints ](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/119)
 - [Issue 168: Retry failing commands in deploy stage with wrapper script](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/168)
 
 ## New Features
