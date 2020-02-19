@@ -121,9 +121,11 @@ class simple_grid::components::swarm::recreate_ingress(
 class simple_grid::components::swarm::create_network(
   $main_manager,
   $network = lookup('simple_grid::components::swarm::network'),
-  $subnet = lookup('simple_grid::components::swarm::subnet')
+  $main_subnet = lookup('simple_grid::components::swarm::subnet'),
+  $alt_subnet = lookup('simple_grid::components::swarm::alt_subnet'),
+  $alt_subnet_ip_range = lookup('simple_grid::components::swarm::alt_subnet::ip_range'),
 ){
-  $network_cmd = "docker network create --attachable --driver=overlay --subnet=${subnet} ${network}"
+  $network_cmd = "docker network create --attachable --driver=overlay --ip-range=${alt_subnet_ip_range} --subnet=${alt_subnet} --subnet=${main_subnet} ${network}"
   $bolt_cmd    = "bolt command run '${network_cmd}' --node ${main_manager}"
   exec { 'Create Docker Swarm Network':
     command   => $bolt_cmd,
