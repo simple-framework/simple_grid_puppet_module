@@ -29,7 +29,7 @@ class simple_grid::deploy::config_master::rollback(
         dns_key=${dns_key} \
         modulepath=${modulepath} \
         --modulepath ${puppet_environmentpath}/${env_name}/site:${puppet_environmentpath}/${env_name}/modules \
-        --nodes localhost"
+        --targets localhost"
     exec{"Executing deploy master":
       command   => $command,
       path      => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',

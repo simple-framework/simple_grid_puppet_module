@@ -28,7 +28,7 @@ class Deploy < TaskHelper
                 init_cmd = "bolt task run docker::swarm_init --node #{main_manager} --modulepath #{modulepath}"
                 system init_cmd
                 puts  "** Creating SIMPLE Network on #{main_manager} **"
-                nw_cmd = "bolt command run "+"'"+"docker network create --attachable --driver=overlay --subnet=#{subnet} #{network}"+ "'" + " --nodes  #{main_manager}"
+                nw_cmd = "bolt command run "+"'"+"docker network create --attachable --driver=overlay --subnet=#{subnet} #{network}"+ "'" + " --targets  #{main_manager}"
                 puts  "***"
                 system nw_cmd
 
@@ -36,7 +36,7 @@ class Deploy < TaskHelper
         def swarm_join_managers(main_manager, managers, modulepath)
                 puts  "** Generating Token for swarm managers on #{main_manager} **"
                 puts  "***"
-                get_cmd = "bolt task run simple_grid::swarm_token node_role=manager --nodes #{main_manager} --modulepath #{modulepath}" 
+                get_cmd = "bolt task run simple_grid::swarm_token node_role=manager --targets #{main_manager} --modulepath #{modulepath}" 
                 stdout, stderr, status = Open3.capture3(get_cmd)
                 puts  "** Extracting Token **"
                 puts  "***"
@@ -52,7 +52,7 @@ class Deploy < TaskHelper
                 managers.each do |ip|
                         puts  "***"
                         puts  "** Join as Manager:#{ip} with token:#{token} **"
-                        join_cmd = "bolt task run simple_grid::swarm_join token=#{token}  manager_ip=#{main_manager}:2377 --nodes #{ip} --modulepath #{modulepath}"
+                        join_cmd = "bolt task run simple_grid::swarm_join token=#{token}  manager_ip=#{main_manager}:2377 --targets #{ip} --modulepath #{modulepath}"
                         puts join_cmd
                         puts  "***"
                         stdout, stderr, status = Open3.capture3(join_cmd)
@@ -67,7 +67,7 @@ class Deploy < TaskHelper
         def swarm_join_workers(main_manager,wn_ip, modulepath)
                 puts  "** Generating Token on #{main_manager} **"
                 puts  "***"
-                get_cmd = "bolt task run simple_grid::swarm_token node_role=worker --nodes #{main_manager} --modulepath #{modulepath}" 
+                get_cmd = "bolt task run simple_grid::swarm_token node_role=worker --targets #{main_manager} --modulepath #{modulepath}" 
                 stdout, stderr, status = Open3.capture3(get_cmd)
                 puts  "** Extracting Token **"
                 puts  "***"
@@ -83,7 +83,7 @@ class Deploy < TaskHelper
                 wn_ip.each do |wip|
                         puts  "***"
                         puts  "** Join Manager:#{main_manager} Worker:#{wip} with token:#{token} **"
-                        join_cmd = "bolt task run simple_grid::swarm_join token=#{token}  manager_ip=#{main_manager}:2377 --nodes #{wip} --modulepath #{modulepath}"
+                        join_cmd = "bolt task run simple_grid::swarm_join token=#{token}  manager_ip=#{main_manager}:2377 --targets #{wip} --modulepath #{modulepath}"
                         puts join_cmd
                         puts  "***"
                         stdout, stderr, status = Open3.capture3(join_cmd)

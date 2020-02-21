@@ -23,7 +23,7 @@ class simple_grid::deploy::config_master::init(
     Notify{"Starting Deployment with identifier: ${timestamp}. This may take a while!. Generally around 15-20 minutes per container \
 depending on several factors. Please use the SIMPLE command line utility to probe the details of the deployment. \
 You can also create a file called lc.txt containing the ip address of all LC hosts in a new line. \
-Then you can run: \"bolt command run '\${some_inspection_command}' --nodes @lc.txt\" to inspect all nodes. \
+Then you can run: \"bolt command run '\${some_inspection_command}' --targets @lc.txt\" to inspect all nodes. \
 Where, \${some_inspection_command} could be: \n docker image ls \ndocker ps -a\n":}
     exec{"Executing deploy master":
       command => "bolt task run simple_grid::deploy_master \
@@ -42,7 +42,7 @@ Where, \${some_inspection_command} could be: \n docker image ls \ndocker ps -a\n
         stage_final=${stage_final} \
         stage_config_file=${stage_config_file} \
         --modulepath ${puppet_environmentpath}/${env_name}/site/:${puppet_environmentpath}/${env_name}/modules/ \
-        --nodes localhost",
+        --targets localhost",
       path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
       user    => 'root',
       logoutput => true,

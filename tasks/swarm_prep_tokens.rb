@@ -23,7 +23,7 @@ end
 def swarm_token(main_manager,node_role)
     cmd_string = 'docker swarm join-token -q'
     cmd_string << " #{node_role}" unless node_role.nil?
-    bolt_cmd = "bolt command run '#{cmd_string}' --nodes #{main_manager}"
+    bolt_cmd = "bolt command run '#{cmd_string}' --targets #{main_manager}"
     stdout, stderr, status = Open3.capture3(bolt_cmd)
     raise Puppet::Error, "stderr: '#{stderr}'" if status != 0
     lines = stdout.split("\n")

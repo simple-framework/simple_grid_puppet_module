@@ -59,7 +59,7 @@ class DeployMaster < TaskHelper
             " deploy_step_2=#{deploy_step_2}"\
             " log_dir=#{log_dir}"\
             " --modulepath #{modulepath}"\
-            " --nodes #{_node_fqdn}"\
+            " --targets #{_node_fqdn}"\
             
             execution_status_command = "bolt task run simple_grid::deploy_status \
                 deploy_status_file=#{deploy_status_file} \
@@ -72,7 +72,7 @@ class DeployMaster < TaskHelper
                 deploy_step_2=#{deploy_step_2} \
                 log_dir=#{log_dir} \
                 --modulepath #{modulepath} \
-                --nodes #{_node_fqdn} \
+                --targets #{_node_fqdn} \
                 > #{_execution_status_output_file}"
 
             puts "Executing Step 1 deployment of #{_name} on #{_node_fqdn} with execution_id = #{_execution_id}"
@@ -137,7 +137,7 @@ class DeployMaster < TaskHelper
                 " deploy_step_2=#{deploy_step_2}"\
                 " log_dir=#{log_dir}"\
                 " --modulepath #{modulepath}"\
-                " --nodes #{_node_fqdn}"\
+                " --targets #{_node_fqdn}"\
                 
                 execution_status_command = "bolt task run simple_grid::deploy_status \
                     deploy_status_file=#{deploy_status_file} \
@@ -150,7 +150,7 @@ class DeployMaster < TaskHelper
                     deploy_step_2=#{deploy_step_2}\
                     log_dir=#{log_dir}\
                     --modulepath #{modulepath} \
-                    --nodes #{_node_fqdn} \
+                    --targets #{_node_fqdn} \
                     > #{_execution_status_output_file}"
                 puts execution_status_command
                 puts "Executing Step 2 deployment of #{_name} on #{_node_fqdn} with execution_id = #{_execution_id}"
