@@ -55,29 +55,32 @@ class simple_grid::components::swarm::init(
   $bolt_cmd = "bolt task run docker::swarm_init --targets ${main_manager}"
   $bolt_token_cmd = "bolt task run simple_grid::swarm_prep_tokens main_manager=${main_manager} swarm_status_file=${swarm_status_file} --targets localhost"
   exec { 'Initialize Docker Swarm':
-    command   => $bolt_cmd,
-    user      => 'root',
-    logoutput => true,
-    path      => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
-    environment       => ["HOME=/root"]
+    command     => $bolt_cmd,
+    user        => 'root',
+    logoutput   => true,
+    path        => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
+    environment => ['HOME=/root']
   } ~>
   exec { 'Save tokens for Docker Swarm':
     command           => $bolt_token_cmd,
     user              => 'root',
     logoutput         => true,
     path              => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
-    environment       => ["HOME=/root"]
+    environment       => ['HOME=/root']
   }
 }
 
 # Executes on LC
 class simple_grid::components::swarm::join(
-  $swarm_status_file = lookup("simple_grid::components::swarm::status_file"),
-  $modulepath = lookup("simple_grid::components::ccm::install::modules_dir"),
   $token,
-  $main_manager
+  $main_manager,
+  $role,
+  $retry_wrapper = lookup('simple_grid::scripts::wrapper::retry'),
+  $wrapper_dir = lookup('simple_grid::scripts::wrapper_dir'),
+
 ){
-  $join_cmd = "docker swarm join --token=${token}  ${main_manager}"
+  $join_cmd = "${wrapper_dir}/${retry_wrapper} --command='docker swarm join --token=${token}  ${main_manager}' \
+  --recovery-command='docker swarm leave --force' --reattempt-interval=10"
   exec { "Join swarm cluster as ${role}":
     command   => $join_cmd,
     user      => 'root',
@@ -94,7 +97,7 @@ class simple_grid::components::swarm::recreate_ingress(
   $ingress_gateway = lookup('simple_grid::components::swarm::ingress::gateway'),
   $ingress_network_name = lookup('simple_grid::components::swarm::ingress::name'),
 ){
-  $ingress_rm_cmd = "yes | docker network rm ingress"
+  $ingress_rm_cmd = 'yes | docker network rm ingress'
   $ingress_create_cmd = "docker network create \
                                       --driver overlay \
                                       --ingress \
@@ -133,6 +136,19 @@ class simple_grid::components::swarm::create_network(
     logoutput => true,
     path      => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
     environment => ['HOME=/root']
+  }
+}
+
+class simple_grid::components::swarm::leave(
+  $retry_wrapper = lookup('simple_grid::scripts::wrapper::retry'),
+  $wrapper_dir = lookup('simple_grid::scripts::wrapper_dir'),
+){
+  $leave_command = "${wrapper_dir}/${retry_wrapper} --command='docker swarm leave --force' --reattempt-interval=5"
+  exec { 'Leave swarm cluster':
+    command   => $leave_command,
+    user      => 'root',
+    logoutput => true,
+    path      => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
   }
 }
 ## TODO DNS info

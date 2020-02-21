@@ -36,7 +36,7 @@ class simple_grid::deploy::config_master::rollback(
       user      => 'root',
       logoutput => true,
       timeout   => $timeout,
-      environment => ["HOME=/root"]
+      environment => ['HOME=/root']
     }
     simple_grid::components::execution_stage_manager::set_stage {"Setting stage to deploy":
     simple_stage => lookup('simple_grid::stage::deploy')

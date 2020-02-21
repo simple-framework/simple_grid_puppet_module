@@ -8,6 +8,11 @@ class simple_grid::pre_deploy::lightweight_component::rollback(
   $swarm_status_file = lookup('simple_grid::components::swarm::status_file'),
   $simple_log_dir = lookup('simple_grid::simple_log_dir'),
 ){
+  # Use if you wish to deprecate the rollback_swarm task
+  # notify{'Leaving swarm':}
+  # class{'simple_grid::components::swarm::leave':
+  #   before => File['Removing directory for scripts']
+  # }
 
   file{"Removing augmented site level configuration file from LC":
     ensure => absent,
@@ -27,7 +32,7 @@ class simple_grid::pre_deploy::lightweight_component::rollback(
       path => "${host_certificates_dir}",
   }
 
-  file{"Removing directory for lifecycle callback scripts":
+  file{'Removing directory for scripts':
    ensure => absent,
    force  => true,
    path => "${simple_config_dir}/${lifecycle_callbacks_dir_name}"

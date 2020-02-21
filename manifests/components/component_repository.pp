@@ -118,7 +118,7 @@ class simple_grid::components::component_repository::rollback(
     user        => root,
     logoutput   => true,
     path        => '/usr/sue/sbin:/usr/sue/bin:/use/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/sbin:/bin:/opt/puppetlabs/bin',
-    environment => ["HOME=/root"]
+    environment => ['HOME=/root']
   }
   if $remove_images {
     $current_lightweight_component = simple_grid::get_lightweight_component($augmented_site_level_config_file, $execution_id)
@@ -144,14 +144,14 @@ class simple_grid::components::component_repository::rollback(
       user        => root,
       logoutput   => true,
       path        => '/usr/sue/sbin:/usr/sue/bin:/use/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/sbin:/bin:/opt/puppetlabs/bin',
-      environment => ["HOME=/root"]
+      environment => ['HOME=/root']
     }
     exec{"Removing pre_config image: ${pre_config_image_name}":
       command     => "docker rmi ${pre_config_image_name}",
       user        => root,
       logoutput   => true,
       path        => '/usr/sue/sbin:/usr/sue/bin:/use/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/sbin:/bin:/opt/puppetlabs/bin',
-      environment => ["HOME=/root"]
+      environment => ['HOME=/root']
     }
   }
   simple_grid::set_execution_status($deploy_status_file, $execution_id, $pending_deploy_status)
@@ -182,7 +182,7 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_config(
         path        => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
         user        => 'root',
         logoutput   => true,
-        environment => ["HOME=/root"],
+        environment => ['HOME=/root'],
         timeout     => 0,
         provider    => shell
       }
@@ -346,7 +346,7 @@ class simple_grid::component::component_repository::lifecycle::hook::pre_init(
     #   path    => "/usr/local/bin:/usr/bin/:/bin:/opt/puppetlabs/bin",
     #   user    => "root",
     #   logoutput => true,
-    #   environment => ["HOME=/root"]
+    #   environment => ['HOME=/root']
     # }
   }
 }
@@ -372,7 +372,7 @@ class simple_grid::component::component_repository::lifecycle::event::init(
   #     command => $command,
   #     path    => "/usr/local/bin:/usr/bin/:/bin:/opt/puppetlabs/bin",
   #     user    => "root",
-  #     environment => ["HOME=/root"],
+  #     environment => ['HOME=/root'],
   #     provider => 'shell',
   # }
 }
@@ -403,7 +403,7 @@ class simple_grid::component::component_repository::lifecycle::hook::post_init(
     #   command => $command,
     #   path    => "/usr/local/bin:/usr/bin/:/bin:/opt/puppetlabs/bin",
     #   user    => "root",
-    #   environment => ["HOME=/root"]
+    #   environment => ['HOME=/root']
     # }
   }
 }
