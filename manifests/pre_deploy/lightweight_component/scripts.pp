@@ -35,6 +35,7 @@ class simple_grid::pre_deploy::lightweight_component::scripts::generate_script_w
 class simple_grid::pre_deploy::lightweight_component::scripts::copy_lifecycle_callbacks(
   $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
   $scripts_dir = lookup('simple_grid::scripts_dir'),
+  $scripts_dir_name = lookup('simple_grid::scripts_dir_name'),
 ){
   $execution_id_master_id_pairs = simple_grid::get_execution_ids($augmented_site_level_config_file, $fqdn)
   notify{"Copying Lifecycle Callbacks on ${fqdn}":}
@@ -42,7 +43,7 @@ class simple_grid::pre_deploy::lightweight_component::scripts::copy_lifecycle_ca
     file{"Copying lifecycle callback scripts for execution id ${execution_id_master_id_pair['execution_id']}":
       ensure  => directory,
       recurse => 'remote',
-      source  => "puppet:///simple_grid/${scripts_dir}/${execution_id_master_id_pair['id']}",
+      source  => "puppet:///simple_grid/${scripts_dir_name}/${execution_id_master_id_pair['id']}",
       path    => "${scripts_dir}/${execution_id_master_id_pair['execution_id']}",
       mode    => '0766'
     }
