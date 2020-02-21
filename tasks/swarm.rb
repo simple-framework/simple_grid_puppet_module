@@ -25,7 +25,7 @@ class Deploy < TaskHelper
         # Init Swarm on CE and create WN simple
         def swarm_init(main_manager, network, subnet, modulepath)
                 puts  "** Initializing SWARM on #{main_manager} **"
-                init_cmd = "bolt task run docker::swarm_init --node #{main_manager} --modulepath #{modulepath}"
+                init_cmd = "bolt task run docker::swarm_init --targets #{main_manager} --modulepath #{modulepath}"
                 system init_cmd
                 puts  "** Creating SIMPLE Network on #{main_manager} **"
                 nw_cmd = "bolt command run "+"'"+"docker network create --attachable --driver=overlay --subnet=#{subnet} #{network}"+ "'" + " --targets  #{main_manager}"
