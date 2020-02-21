@@ -40,7 +40,7 @@ class RollbackDeployMaster < TaskHelper
             " deploy_status_pending=#{deploy_status_pending}"\
             " dns_key=#{dns_key}"\
             " --modulepath #{modulepath}"\
-            " --nodes #{_node_fqdn}"
+            " --targets #{_node_fqdn}"
 
             puts "Rolling back deployment of #{_name} on #{_node_fqdn} with execution_id = #{_execution_id}"
             deploy_stdout, deploy_stderr, deploy_status = Open3.capture3(deploy_command)  

@@ -24,7 +24,7 @@ class Deploy < TaskHelper
         end
         def swarm_leave_managers(main_manager, network, ingress_network_name, modulepath)
                 puts "Removing main manager on #{main_manager}"
-                get_cmd = "bolt task run simple_grid::swarm_leave force=true --nodes #{main_manager} --modulepath #{modulepath}" 
+                get_cmd = "bolt task run simple_grid::swarm_leave force=true --targets #{main_manager} --modulepath #{modulepath}" 
                 stdout, stderr, status = Open3.capture3(get_cmd)
                 puts get_cmd
                 if !status.success?
@@ -32,7 +32,7 @@ class Deploy < TaskHelper
                 end
                 # NOTE: Deprecated since #101 as docker swarm leave --force removes ingress network automatically
                 # puts "Removing substitute ingress network on #{main_manager}"
-                # rm_cmd = "bolt command run 'docker network rm #{ingress_network_name}' --nodes #{main_manager} --modulepath #{modulepath}" 
+                # rm_cmd = "bolt command run 'docker network rm #{ingress_network_name}' --targets #{main_manager} --modulepath #{modulepath}" 
                 # stdout, stderr, status = Open3.capture3(rm_cmd)
                 # puts rm_cmd
                 # if !status.success?
@@ -43,7 +43,7 @@ class Deploy < TaskHelper
         def swarm_leave_workers(wn_ip, modulepath)
                 wn_ip.each do |wip|
                         puts  "***"
-                        leave_cmd = "bolt task run simple_grid::swarm_leave force=true --nodes #{wip} --modulepath #{modulepath}"
+                        leave_cmd = "bolt task run simple_grid::swarm_leave force=true --targets #{wip} --modulepath #{modulepath}"
                         puts leave_cmd
                         puts  "***"
                         stdout, stderr, status = Open3.capture3(leave_cmd)

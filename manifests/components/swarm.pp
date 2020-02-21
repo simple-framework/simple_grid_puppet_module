@@ -52,8 +52,8 @@ class simple_grid::components::swarm::init(
   $main_manager,
   $swarm_status_file = lookup('simple_grid::components::swarm::status_file')
 ){
-  $bolt_cmd = "bolt task run docker::swarm_init --nodes ${main_manager}"
-  $bolt_token_cmd = "bolt task run simple_grid::swarm_prep_tokens main_manager=${main_manager} swarm_status_file=${swarm_status_file} --nodes localhost"
+  $bolt_cmd = "bolt task run docker::swarm_init --targets ${main_manager}"
+  $bolt_token_cmd = "bolt task run simple_grid::swarm_prep_tokens main_manager=${main_manager} swarm_status_file=${swarm_status_file} --targets localhost"
   exec { 'Initialize Docker Swarm':
     command   => $bolt_cmd,
     user      => 'root',
