@@ -39,7 +39,7 @@ class simple_grid::pre_deploy::config_master::init(
         path    => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
         user    => 'root',
         logoutput => true,
-        environment => ["HOME=/root"]
+        environment => ['HOME=/root']
       }
       exec{"Running puppet agent on ${node_fqdn} to initiate step 2 of pre_deploy stage ":
         command => "bolt task run simple_grid::run_puppet_agent \
@@ -50,7 +50,7 @@ class simple_grid::pre_deploy::config_master::init(
         path    => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
         user    => 'root',
         logoutput => true,
-        environment => ["HOME=/root"]
+        environment => ['HOME=/root']
       }
 
       exec{"Running puppet agent on ${node_fqdn} to initiate step 3 of pre_deploy stage ":
@@ -62,7 +62,7 @@ class simple_grid::pre_deploy::config_master::init(
         path    => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
         user    => 'root',
         logoutput => true,
-        environment => ["HOME=/root"]
+        environment => ['HOME=/root']
       }
     }
     elsif $mode == lookup('simple_grid::mode::release') {

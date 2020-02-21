@@ -27,7 +27,7 @@ class simple_grid::pre_deploy::config_master::rollback(
       path    => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
       user    => 'root',
       logoutput => true,
-      environment => ["HOME=/root"]
+      environment => ['HOME=/root']
     }
   }
   elsif $mode == lookup('simple_grid::mode::release') {
@@ -60,7 +60,7 @@ class simple_grid::pre_deploy::config_master::rollback(
       path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
       user    => 'root',
       logoutput => true,
-      environment => ["HOME=/root"]
+      environment => ['HOME=/root']
     }
   }
 

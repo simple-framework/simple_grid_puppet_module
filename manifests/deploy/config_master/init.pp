@@ -46,7 +46,7 @@ Where, \${some_inspection_command} could be: \n docker image ls \ndocker ps -a\n
       path    => '/usr/local/bin/:/usr/bin/:/bin/:/opt/puppetlabs/bin/',
       user    => 'root',
       logoutput => true,
-      environment => ["HOME=/root"],
+      environment => ['HOME=/root'],
       timeout => $timeout
       }
  }
