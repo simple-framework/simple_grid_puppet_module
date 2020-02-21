@@ -20,15 +20,11 @@ class simple_grid::pre_deploy::lightweight_component::rollback(
     force  => true,
     path   => "${swarm_status_file}",
   }
-  
-  $copy_host_certificates = simple_grid::check_presence_host_certificates($host_certificates_dir, $fqdn)
-  notify{"Were host certificates copied for this node at ${copy_host_certificates}?":}
-  if $copy_host_certificates {
-    file{"Removing host copy_host_certificates from ${host_certificates_dir}":
-        ensure => absent,
-        force  => true,
-        path => "${host_certificates_dir}",
-    }  
+
+  file{"Removing host copy_host_certificates from ${host_certificates_dir}":
+      ensure => absent,
+      force  => true,
+      path => "${host_certificates_dir}",
   }
 
   file{"Removing directory for lifecycle callback scripts":
