@@ -102,8 +102,8 @@ class simple_grid::components::swarm::recreate_ingress(
                                       --gateway ${ingress_gateway} \
                                       --opt com.docker.network.driver.mtu=1200 \
                                       ${ingress_network_name}"
-  $bolt_ingress_network_rm_cmd    = "bolt command run '${ingress_rm_cmd}' --node ${main_manager}"
-  $bolt_ingress_network_create_cmd    = "bolt command run '${ingress_create_cmd}' --node ${main_manager}"
+  $bolt_ingress_network_rm_cmd    = "bolt command run '${ingress_rm_cmd}' --targets ${main_manager}"
+  $bolt_ingress_network_create_cmd    = "bolt command run '${ingress_create_cmd}' --targets ${main_manager}"
   exec { 'Delete existing Ingress Network':
     command   => $bolt_ingress_network_rm_cmd,
     user      => 'root',
@@ -126,7 +126,7 @@ class simple_grid::components::swarm::create_network(
   $alt_subnet_ip_range = lookup('simple_grid::components::swarm::alt_subnet::ip_range'),
 ){
   $network_cmd = "docker network create --attachable --driver=overlay --ip-range=${alt_subnet_ip_range} --subnet=${alt_subnet} --subnet=${main_subnet} ${network}"
-  $bolt_cmd    = "bolt command run '${network_cmd}' --node ${main_manager}"
+  $bolt_cmd    = "bolt command run '${network_cmd}' --targets ${main_manager}"
   exec { 'Create Docker Swarm Network':
     command   => $bolt_cmd,
     user      => 'root',
