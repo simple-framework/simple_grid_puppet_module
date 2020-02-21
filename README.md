@@ -10,15 +10,12 @@ The usage of the module is described in the Docs available at [SIMPLE Framework'
 
 ## Fixed bugs
 This release includes the following bug fixes. It fixes the following issues:
-- [Issue 119: Fix overlap between IP addresses for containers and swarm lb-endpoints ](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/119)
-- [Issue 168: Retry failing commands in deploy stage with wrapper script](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/168)
+- [Issue 177: Retry joining swarm using wrapper script](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/177)
+- [Issue 179: Fix copy operation on Lifecycle Callback scripts](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/179)
+- [Issue 181: Deprecate --nodes in puppet bolt commands](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/181)
 
 ## New Features
 This release includes the following new features:
-- YAML Compiler version bumped to 1.0.6
-- [Issue 170: Updated templates for HTCondor cluster](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/170)
-
-
-
-
-
+- [Issue 101: Fix copy operation for host_certicates](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/101)
+- [Issue 180: --advertise-addr to handle multiple network interfaces](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/180)
+- [Issue 186: Update PDK to 1.7.1](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/186)
