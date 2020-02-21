@@ -50,23 +50,33 @@ class simple_grid::components::swarm::configure::firewall{
 #Executes on CM
 class simple_grid::components::swarm::init(
   $main_manager,
+  $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
+  $subnet = lookup('simple_grid::components::swarm::subnet'),
+  $meta_info_prefix = lookup('simple_grid::components::site_level_config_file::objects:meta_info_prefix'),
+  $dns_parent_name = lookup('simple_grid::components::site_level_config_file::objects:dns_parent'),
   $swarm_status_file = lookup('simple_grid::components::swarm::status_file')
 ){
-  $bolt_cmd = "bolt task run docker::swarm_init --targets ${main_manager}"
-  $bolt_token_cmd = "bolt task run simple_grid::swarm_prep_tokens main_manager=${main_manager} swarm_status_file=${swarm_status_file} --targets localhost"
-  exec { 'Initialize Docker Swarm':
-    command     => $bolt_cmd,
-    user        => 'root',
-    logoutput   => true,
-    path        => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
-    environment => ['HOME=/root']
-  } ~>
-  exec { 'Save tokens for Docker Swarm':
-    command           => $bolt_token_cmd,
-    user              => 'root',
-    logoutput         => true,
-    path              => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
-    environment       => ['HOME=/root']
+  $dns_file_content = simple_grid::generate_dns_file_content($augmented_site_level_config_file, $subnet, $meta_info_prefix, $dns_parent_name)
+  $dns_file_content['hash'].each |Hash $dns|{
+    if $dns['host_fqdn'] == $main_manager {
+      $ip_addr = $dns['host_ip']
+      $bolt_cmd = "bolt task run simple_grid::swarm_init advertise_addr=${ip_addr}  --targets ${main_manager}"
+      $bolt_token_cmd = "bolt task run simple_grid::swarm_prep_tokens main_manager=${main_manager} swarm_status_file=${swarm_status_file} --targets localhost"
+      exec { 'Initialize Docker Swarm':
+        command     => $bolt_cmd,
+        user        => 'root',
+        logoutput   => true,
+        path        => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
+        environment => ['HOME=/root']
+      } ~>
+      exec { 'Save tokens for Docker Swarm':
+        command           => $bolt_token_cmd,
+        user              => 'root',
+        logoutput         => true,
+        path              => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
+        environment       => ['HOME=/root']
+      }
+    }
   }
 }
 
@@ -75,17 +85,26 @@ class simple_grid::components::swarm::join(
   $token,
   $main_manager,
   $role,
+  $augmented_site_level_config_file = lookup('simple_grid::components::yaml_compiler::output'),
+  $subnet = lookup('simple_grid::components::swarm::subnet'),
+  $meta_info_prefix = lookup('simple_grid::components::site_level_config_file::objects:meta_info_prefix'),
+  $dns_parent_name = lookup('simple_grid::components::site_level_config_file::objects:dns_parent'),
   $retry_wrapper = lookup('simple_grid::scripts::wrapper::retry'),
   $wrapper_dir = lookup('simple_grid::scripts::wrapper_dir'),
-
 ){
-  $join_cmd = "${wrapper_dir}/${retry_wrapper} --command='docker swarm join --token=${token}  ${main_manager}' \
-  --recovery-command='docker swarm leave --force' --reattempt-interval=10"
-  exec { "Join swarm cluster as ${role}":
-    command   => $join_cmd,
-    user      => 'root',
-    logoutput => true,
-    path      => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
+  $dns_file_content = simple_grid::generate_dns_file_content($augmented_site_level_config_file, $subnet, $meta_info_prefix, $dns_parent_name)
+  $dns_file_content['hash'].each |Hash $dns|{
+    if $dns['host_fqdn'] == $fqdn {
+      $ip_addr = $dns['host_ip']
+      $join_cmd = "${wrapper_dir}/${retry_wrapper} --command='docker swarm join --token=${token} --advertise-addr=${ip_addr} ${main_manager}' \
+      --recovery-command='docker swarm leave --force' --reattempt-interval=10"
+      exec { "Join swarm cluster as ${role}":
+        command   => $join_cmd,
+        user      => 'root',
+        logoutput => true,
+        path      => '/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/puppetlabs/bin',
+      }
+    }
   }
 }
 #Executes on CM
