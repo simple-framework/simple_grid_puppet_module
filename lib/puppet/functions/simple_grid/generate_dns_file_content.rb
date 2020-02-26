@@ -1,4 +1,5 @@
 require 'yaml'
+require 'psych'
 require 'ipaddr'
 require_relative 'get_level_2_configurator.rb'
 
@@ -17,7 +18,11 @@ Puppet::Functions.create_function(:'simple_grid::generate_dns_file_content') do
         ip_index = 10
         data = YAML.load_file(augmented_site_level_config_file)
         if data.key?(dns_key)
-            return ''
+            return {
+                "dns_pre_exists" => true,
+                "string"         => data[dns_key],
+                "hash"           => YAML.load(data[dns_key].to_yaml)
+            }
         end
         lightweight_components = data['lightweight_components']
         lightweight_components.each do |lightweight_component|
@@ -41,8 +46,9 @@ Puppet::Functions.create_function(:'simple_grid::generate_dns_file_content') do
             end    
             dns_content << {"container_fqdn" => "#{container_fqdn}", "host_fqdn" => host_fqdn, "host_ip" => host_ip,'container_ip' => ip_address.to_s, 'type' => container_type, 'execution_id' => execution_id}
         end
-        { "string" => dns_content.to_yaml.lines.to_a[1..-1].join, 
-          "hash"   => dns_content 
+        { "string"         => dns_content.to_yaml.lines.to_a[1..-1].join, 
+          "hash"           => dns_content,
+          "dns_pre_exists" => false
         }
     end
 
