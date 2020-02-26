@@ -2,7 +2,7 @@
     "description": "Forces a puppet agent run on the specified host",
     "input_method": "stdin",
     "files": ["ruby_task_helper/files/task_helper.rb"],
-    "implementation": [
+    "implementations": [
       { 
           "name": "run_puppet_agent.rb"
       }

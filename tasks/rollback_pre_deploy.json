@@ -2,7 +2,7 @@
     "description": "Rolls back the pre-deployment stage for all LC nodes specified in the given augmented site level configuration file",
     "input_method": "stdin",
     "files": ["ruby_task_helper/files/task_helper.rb"],
-    "implementation": [
+    "implementations": [
       { 
           "name": "rollback_pre_deploy.rb"
       }
