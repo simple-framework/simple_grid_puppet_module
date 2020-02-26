@@ -1,0 +1,21 @@
+{
+    "description": "Check if all nodes in the deployment are in the same major stage",
+    "input_method": "stdin",
+    "files": ["ruby_task_helper/files/task_helper.rb"],
+    "implementations": [
+      { 
+          "name": "check_stage.rb"
+      }
+    ],
+
+    "parameters": {
+        "augmented_site_level_config_file": {
+          "type": "String[1]",
+          "description": "The location of augmented site level config file on the lightweight component node"
+        },
+        "site_infrastructure_key": {
+          "type": "String[1]",
+          "description": "The name for the yaml object that contains dns info in the augmented_site_level_config_file."
+        }
+    }
+}
