@@ -2,7 +2,7 @@
     "description": "Rollback deployment of a lightweight component on an LC type node",
     "input_method": "stdin",
     "files": ["ruby_task_helper/files/task_helper.rb"],
-    "implementation": [
+    "implementations": [
       { 
           "name": "rollback_deploy.rb"
       }
