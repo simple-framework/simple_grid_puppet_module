@@ -7,7 +7,9 @@ class simple_grid::components::swarm::install::generate_dns_info_and_swarm_statu
   $swarm_status_file = lookup('simple_grid::components::swarm::status_file')
 ){
   $dns_file_content = simple_grid::generate_dns_file_content($augmented_site_level_config_file, $subnet, $meta_info_prefix, $dns_parent_name)
-  if length($dns_file_content['string']) > 1 {
+  notify { "Found pre-existing dns config: ${dns_file_content['dns_pre_exists']}":
+  }
+  if !$dns_file_content['dns_pre_exists'] {
     notify{"Writing DNS data to ${dns_file}":}
     file{'Creating DNS data file':
       ensure  => present,
