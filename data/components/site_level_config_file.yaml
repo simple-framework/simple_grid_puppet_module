@@ -8,6 +8,9 @@ simple_grid::components::site_level_config_file::install::htcondor_sample_file: 
 simple_grid::components::site_level_config_file::objects:meta_info_prefix: meta_info_
 simple_grid::components::site_level_config_file::objects:dns_parent: 'dns'
 
+#site-infraastructure
+simple_grid::components::site_level_config_file::objects:site_infrastructure: 'site_infrastructure'
+
 #tech_stack
 simple_grid::components::site_level_config_file::objects::preferred_tech_stack: 'preferred_tech_stack'
 simple_grid::components::site_level_config_file::objects::preferred_tech_stack::container_orchestration: 'container_orchestration'
