@@ -1,6 +1,6 @@
 ---
 # Versions
-simple_grid::version: 1.0.14
+simple_grid::version: 1.0.15
 simple_grid::version::yaml_compiler::dev: "master"
 simple_grid::version::yaml_compiler::release: "1.0.6"
 simple_grid::version::env: "v1.0.0"
