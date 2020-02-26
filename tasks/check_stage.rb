@@ -16,19 +16,33 @@ class CheckStage < TaskHelper
         end
         return lines[found_index].strip()
     end
-    def task(augmented_site_level_config_file:nil, site_infrastructure_key:nil, **kwargs)
-        output = {}
+    def check_mismatch(cluster_state, expected_stage)
+        outliers = []
+        cluster_state.each do |fqdn, stage|
+            if !stage.start_with? expected_stage
+                outliers.append({"fqdn" => fqdn, "stage" => stage})
+            end 
+        end
+        return {"expected_stage" => "#{expected_stage}", "outliers" => outliers}
+    end
+    def task(augmented_site_level_config_file:nil, site_infrastructure_key:nil, expected_stage:nil, **kwargs)
+        cluster_state = {}
         augmented_site_level_config = YAML.load_file(augmented_site_level_config_file)
         site_infrastructure = augmented_site_level_config[site_infrastructure_key]
+        site_infrastructure.prepend({'fqdn' => 'localhost', 'ip_address' => '0.0.0.0'})
         site_infrastructure.each do |node|
             fqdn = node['fqdn']
             bolt_cmd = "bolt command run 'cat /etc/simple_grid/.stage' -t #{fqdn}"
             stdout, stderr, status = Open3.capture3(bolt_cmd)
             if status.success?
-                output[fqdn] = extract_stage(stdout)
+                cluster_state[fqdn] = extract_stage(stdout)
             end
         end
-        return output
+        if expected_stage.downcase == "none"
+            return cluster_state
+        end
+        mismatch_restults = check_mismatch(cluster_state, expected_stage)
+        return mismatch_restults
     end
 end
 

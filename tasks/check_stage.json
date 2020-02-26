@@ -16,6 +16,12 @@
         "site_infrastructure_key": {
           "type": "String[1]",
           "description": "The name for the yaml object that contains dns info in the augmented_site_level_config_file."
+        },
+        "expected_stage":
+        {
+            "type": "String[1]",
+            "default": "None",
+            "description": "The stage which all nodes must be in. Ignore if you just want to print the stage in which each node is"
         }
     }
 }
