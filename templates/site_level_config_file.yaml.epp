@@ -81,7 +81,7 @@ lightweight_components:
 
   - type: batch_system
     name: HTCondor-Batch
-    repository_url: "https://github.com/andria009/simple_htcondor_batch"
+    repository_url: "https://github.com/simple-framework/simple_htcondor_batch"
     repository_revision: "master"
     execution_id: 1
     lifecycle_hooks:
