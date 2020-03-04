@@ -10,7 +10,7 @@ The usage of the module is described in the Docs available at [SIMPLE Framework'
 
 ## Fixed bugs
 This release includes the following bug fixes. It fixes the following issues:
-- [Issue 199: Fix HTCondor Batch repository url in templates](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/199)
+- [Issue 201: Fix email in templates](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/201)
 
 ## New Features
 This release includes the following new features:
