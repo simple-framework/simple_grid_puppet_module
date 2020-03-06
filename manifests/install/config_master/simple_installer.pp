@@ -20,10 +20,17 @@ class simple_grid::install::config_master::simple_installer(
   notify {"Installing Git":}
   include 'git'
 
+  notify{'Enabling Docker Auto-Updates':}
+  class{'simple_grid::components::docker::repo::enable':}
+
   notify{"Installing Docker":}
   class{"docker":
-      version => lookup('simple_grid::components::docker::version')
+      version  => lookup('simple_grid::components::docker::version')
   }
+
+  notify{'Disabling Docker Auto-Updates':}
+  class{'simple_grid::components::docker::repo::disable':}
+
   notify{"Installing Puppet CCM":}
   class {"simple_grid::components::ccm::install":}
 
