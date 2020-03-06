@@ -73,3 +73,29 @@ define simple_grid::components::docker::exec(
     provider    => shell
   }
 }
+
+class simple_grid::components::docker::repo::disable(
+  $yum_repo_name = lookup('simple_grid::components::docker::yum_repo_name')
+){
+  exec{'Disable docker repo':
+    command     => "yum-config-manager --disable ${yum_repo_name}",
+    path        => '/usr/local/bin:/usr/bin/:/bin/:/opt/puppetlabs/bin/:/usr/sue/sbin',
+    user        => 'root',
+    logoutput   => true,
+    environment => ['HOME=/root'],
+    provider    => shell
+  }
+}
+
+class simple_grid::components::docker::repo::enable(
+  $yum_repo_name = lookup('simple_grid::components::docker::yum_repo_name')
+){
+  exec{'Rnable docker repo':
+    command     => "yum-config-manager --enable ${yum_repo_name}",
+    path        => '/usr/local/bin:/usr/bin/:/bin/:/opt/puppetlabs/bin/:/usr/sue/sbin',
+    user        => 'root',
+    logoutput   => true,
+    environment => ['HOME=/root'],
+    provider    => shell
+  }
+}

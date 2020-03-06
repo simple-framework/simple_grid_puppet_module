@@ -95,6 +95,13 @@ Puppet::Functions.create_function(:'simple_grid::docker_run') do
         if docker_run_parameters.key?('privileged') and docker_run_parameters['privileged'] == true
             docker_run << " --privileged" << " "
         end
+
+        #################
+        # restart policy
+        #################
+
+        docker_run << "--restart always" << " "
+
         ###############
         # Image name and command
         ###############
