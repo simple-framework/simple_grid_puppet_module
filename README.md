@@ -10,9 +10,10 @@ The usage of the module is described in the Docs available at [SIMPLE Framework'
 
 ## Fixed bugs
 This release includes the following bug fixes. It fixes the following issues:
-- [Issue 201: Fix email in templates](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/201)
 
 ## New Features
 This release includes the following new features:
+- [Issue 171: Container restart policy](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/171)
+- [Issue 203: Disable auto-updates for docker to prevent containers from stopping](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/203)
 
 
