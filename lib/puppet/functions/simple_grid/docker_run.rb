@@ -100,7 +100,7 @@ Puppet::Functions.create_function(:'simple_grid::docker_run') do
         # restart policy
         #################
 
-        docker_run << "--restart-policy always" << " "
+        docker_run << "--restart always" << " "
 
         ###############
         # Image name and command
