@@ -58,7 +58,7 @@ class simple_grid::components::swarm::init(
   $dns_parent_name = lookup('simple_grid::components::site_level_config_file::objects:dns_parent'),
   $swarm_status_file = lookup('simple_grid::components::swarm::status_file')
 ){
-  $dns_file_content = simple_grid::generate_dns_file_content($augmented_site_level_config_file, $subnet, $meta_info_prefix, $dns_parent_name)
+  $dns_file_content = simple_grid::generate_dns_file_content($augmented_site_level_config_file, $subnet, $meta_info_prefix, $dns_parent_name, true)
   $dns_file_content['hash'].each |Hash $dns|{
     if $dns['host_fqdn'] == $main_manager {
       $ip_addr = $dns['host_ip']
@@ -94,7 +94,7 @@ class simple_grid::components::swarm::join(
   $retry_wrapper = lookup('simple_grid::scripts::wrapper::retry'),
   $wrapper_dir = lookup('simple_grid::scripts::wrapper_dir'),
 ){
-  $dns_file_content = simple_grid::generate_dns_file_content($augmented_site_level_config_file, $subnet, $meta_info_prefix, $dns_parent_name)
+  $dns_file_content = simple_grid::generate_dns_file_content($augmented_site_level_config_file, $subnet, $meta_info_prefix, $dns_parent_name, true)
   $dns_file_content['hash'].each |Hash $dns|{
     if $dns['host_fqdn'] == $fqdn {
       $ip_addr = $dns['host_ip']
