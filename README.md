@@ -13,7 +13,6 @@ This release includes the following bug fixes. It fixes the following issues:
 
 ## New Features
 This release includes the following new features:
-- [Issue 171: Container restart policy](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/171)
-- [Issue 203: Disable auto-updates for docker to prevent containers from stopping](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/203)
+- [Issue 207: Multiple Containers, Same or Different Type, Single Host use case](https://github.com/WLCG-Lightweight-Sites/simple_grid_puppet_module/issues/207)
 
 
